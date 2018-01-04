@@ -1,10 +1,10 @@
-var debug = process.env.NODE_ENV !== "production";
 var webpack = require("webpack");
 var path = require("path");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
   context: path.join(__dirname, "src"),
-  devtool: debug ? "inline-sourcemap" : false,
+  devtool: "inline-sourcemap",
   entry: "./js/client.js",
   module: {
     loaders: [
@@ -26,13 +26,6 @@ module.exports = {
         loaders: ["style-loader", "css-loader"]
       },
       {
-        test: /\.js?/,
-        loader: "babel-loader",
-        query: {
-          presets: ["es2015", "react"]
-        }
-      },
-      {
         test: /\.png$/,
         loader: "url-loader?limit=100000"
       },
@@ -50,16 +43,10 @@ module.exports = {
     path: __dirname + "/src/",
     filename: "client.min.js"
   },
-  plugins: debug
-    ? [
-        new webpack.ProvidePlugin({
-          $: "jquery",
-          jQuery: "jquery"
-        })
-      ]
-    : [
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
-      ]
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    }),new UglifyJSPlugin()
+  ]
 };

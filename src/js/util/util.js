@@ -43,3 +43,13 @@ export function persianToLatin(string){
 
   return result;
 }
+
+export function convertMillisecondToString(millisecond) {
+  var hour = parseInt(millisecond / 1000 / 3600);
+  var minute = parseInt((millisecond / 1000 - hour * 3600) / 60);
+  if (hour != 0) {
+    return hour + " ساعت و " + minute + " دقیقه";
+  } else {
+    return minute + " دقیقه";
+  }
+}

@@ -1,6 +1,6 @@
-import React from "react";
-import axios from "axios";
-import TopMovies from "./TopMovies";
+import React, { Component } from "react";
+import TopMovies from "../topmovies/TopMovies";
+import Banners from "./Banners";
 
 export default class Main extends React.Component {
   constructor() {
@@ -23,21 +23,20 @@ export default class Main extends React.Component {
 
   render() {
     if (this.state.result == null) {
-      console.log("!");
       return <div />;
     } else if (this.state.result == null) {
-      console.log("@");
       return <div />;
     } else {
-      console.log("#");
-      return (
-        <div>
-          {this.state.result.data.bundles.map(
-            (bundle, l) =>
-              bundle.type == 0 ? <TopMovies key={l} bundle={bundle} /> : null
-          )}
-        </div>
-      );
+      var components = [];
+      this.state.result.data.bundles.forEach((bundle, l) => {
+        if (bundle.type == 2) {
+          components.push(<TopMovies key={l} movies={bundle.movies} id={bundle.id} title={bundle.title}/>);
+        } else if (bundle.type == 1) {
+          components.push(<Banners key={l} bundle={bundle} />);
+        }
+      });
+
+      return <div>{components}</div>;
     }
   }
 }

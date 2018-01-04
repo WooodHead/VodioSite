@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Component } from "react";
 import { latinToPersian, persianToLatin } from "../util/util";
 import { ToastContainer, toast, style } from "react-toastify";
 
 export default class Header extends React.Component {
   notify() {
     style({
-      colorProgressDefault: "linear-gradient(to right, #fff , #fa2053)",
+      colorProgressDefault: "linear-gradient(to right, #fff , #eb0089)",
       TOP_LEFT: {
         top: "4.4em",
         left: "7.7em"
@@ -58,7 +58,7 @@ export default class Header extends React.Component {
         success: function(data, textStatus, request) {
           this.setState({ login: data });
           this.setState({ closeNotify: true });
-          sessionStorage.setItem("session",data.data.token);
+          sessionStorage.setItem("session", data.data.token);
           $("#sign-out").addClass("header-sign-out");
           $(".header-login-drop").hide(200);
           sessionStorage.setItem("login", "LOGGED_IN");
@@ -109,7 +109,11 @@ export default class Header extends React.Component {
         )}
         <div className="header-inner max-width">
           <a href="#" className="logo" title="وودیو">
-            <img src="img/logo.png" alt="وودیو" />
+            <img
+              style={{ width: "100px", height: "60px" }}
+              src="img/logo.jpg"
+              alt="وودیو"
+            />
           </a>
           <div className="">
             <nav className="header-menu">

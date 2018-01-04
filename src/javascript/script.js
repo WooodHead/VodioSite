@@ -44,7 +44,6 @@ $(document).ready(function() {
     $(".header-category-drop-down").slideToggle(100);
   });
   $(".show-main-menu-btn").click(function(event) {
-    console.log("im here");
     var id = event.target.id;
     $(".header-menu").slideToggle(100);
   });

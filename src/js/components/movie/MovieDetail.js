@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 export default class MovieDetail extends React.Component {
@@ -55,15 +55,15 @@ export default class MovieDetail extends React.Component {
           {this.props.movie.genres != null ? (
             <Genre genres={this.props.movie.genres} />
           ) : null}
-         
+
           {this.state.director != null ? (
             <Director directors={this.state.director} />
           ) : null}
-         
+
           {this.state.actors != null ? (
             <Actor actors={this.state.actors} />
           ) : null}
-         
+
           {this.state.provider != null ? (
             <Provider providers={this.state.provider} />
           ) : null}
@@ -71,7 +71,7 @@ export default class MovieDetail extends React.Component {
           {this.state.researcher != null ? (
             <Researcher researchers={this.state.researcher} />
           ) : null}
-         
+
           <div>
             <strong>خلاصه داستان:</strong> <p>{this.props.movie.description}</p>
           </div>

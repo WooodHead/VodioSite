@@ -1,28 +1,22 @@
 import "../css/style.css";
-
+import "slick-carousel/slick/slick.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter, Switch, Route } from "react-router-dom";
-import { CookiesProvider } from 'react-cookie';
+import { HashRouter } from "react-router-dom";
+import { Provider } from "mobx-react";
 import "../javascript/script";
-import Main from "./components/main/Main";
-import Movie from "./components/movie/Movie";
+import "slick-carousel";
 import Layout from "./components/Layout";
-import Agent from "./components/agent/Agent";
+
+import sessionStore from "./stores/SesssionStore";
 
 const app = document.getElementById("app");
 
 ReactDOM.render(
-  <HashRouter>
-  <CookiesProvider>
-    <Layout>
-      <Switch>
-        <Route exact path="/" component={Main} />
-        <Route path="/movie/:id" component={Movie} />
-        <Route path="/agent/:id" component={Agent} />
-      </Switch>
-    </Layout>
-    </CookiesProvider>
-  </HashRouter>,
+  <Provider session={sessionStore}>
+    <HashRouter>
+      <Layout />
+    </HashRouter>
+  </Provider>,
   app
 );

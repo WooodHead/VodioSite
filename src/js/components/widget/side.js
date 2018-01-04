@@ -1,29 +1,9 @@
-import React from "react";
+import React, { Component } from 'react';
 
 export default class Side extends React.Component {
   render() {
     return (
       <div className="widget-left">
-        <div className="shop-options">
-          <div className="shop-option green">
-            <span className="icon-delivery-truck shop-option-icon" />
-            <strong className="shop-option-text">
-              ارسال رایگان برای خرید های بالا ۱۰۰ هزار تومان
-            </strong>
-          </div>
-          <div className="shop-option red">
-            <span className="icon-discount shop-option-icon" />
-            <strong className="shop-option-text">
-              کوپن‌تخفیف برای خرید‌های بالای ۱۰۰ هزارتومان
-            </strong>
-          </div>
-          <div className="shop-option blue">
-            <span className="icon-credit-cards shop-option-icon" />
-            <strong className="shop-option-text">
-              امکان انتقال وجه و پرداخت امن درگاه های بانکی
-            </strong>
-          </div>
-        </div>
         <div className="widget-ad">
           <a href="#">
             <img src="images/Best-Anim.png" alt="بهترین انیمیشن ها" />
@@ -108,56 +88,6 @@ export default class Side extends React.Component {
             اطلاعات کامل باکس آفیس{" "}
             <span className="icon-arrow-pointing-to-left" />
           </a>
-        </div>
-        <div className="widget">
-          <div className="widget-header" />
-          <strong className="widget-header-title">آخرین تریلرها</strong>
-          <div className="widget-content">
-            <a href="#" className="wiget-trailer-first">
-              <img src="images/trailer-01.jpg" alt="movie name" />
-              <div className="wiget-trailer-first-bg">
-                <span className="icon-play-1" />
-              </div>
-              <div className="wiget-trailer-first-meta">
-                <strong>پایان بازی مهناز افشار در سریال عاشقانه</strong>
-              </div>
-            </a>
-            <div className="wiget-trailers">
-              <a href="#" className="wiget-trailer">
-                <div className="wiget-trailer-img">
-                  <img src="images/trailer-tiny-01.jpg" alt="movie name" />
-                  <div className="wiget-trailer-img-bg">
-                    <span className="icon-play-1" />
-                  </div>
-                </div>
-                <strong className="wiget-trailer-title">
-                  تریلر فیلم سلام بمبئی
-                </strong>
-              </a>
-              <a href="#" className="wiget-trailer">
-                <div className="wiget-trailer-img">
-                  <img src="images/trailer-tiny-02.jpg" alt="movie name" />
-                  <div className="wiget-trailer-img-bg">
-                    <span className="icon-play-1" />
-                  </div>
-                </div>
-                <strong className="wiget-trailer-title">
-                  تریلر فیلم سینمایی ویلایی ها
-                </strong>
-              </a>
-              <a href="#" className="wiget-trailer">
-                <div className="wiget-trailer-img">
-                  <img src="images/trailer-tiny-03.jpg" alt="movie name" />
-                  <div className="wiget-trailer-img-bg">
-                    <span className="icon-play-1" />
-                  </div>
-                </div>
-                <strong className="wiget-trailer-title">
-                  تریلر فیلم سینمایی ترمینال غرب
-                </strong>
-              </a>
-            </div>
-          </div>
         </div>
         <div className="widget">
           <div className="widget-header" />
