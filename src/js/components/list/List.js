@@ -2,6 +2,7 @@ import React from "react";
 import "../../../css/infinite.css";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+import MainUrl from '../../util/RequestHandler'
 
 @inject("session")
 @observer
@@ -21,7 +22,7 @@ export default class List extends React.Component {
     this.props.session.showFooter = false;
     $.ajax({
       type: "GET",
-      url: "http://localhost:58583/movielist.ashx",
+      url: MainUrl+"/movielist.ashx",
       success: function(data, textStatus, request) {
         this.setState({ elements: data.data });
       }.bind(this),
@@ -38,7 +39,7 @@ export default class List extends React.Component {
         this.setState({ isLoading: true });
         $.ajax({
           type: "GET",
-          url: "http://localhost:58583/movielist.ashx",
+          url: MainUrl+"/movielist.ashx",
           success: function(data, textStatus, request) {
             this.setState({
               isLoading: false
@@ -78,7 +79,7 @@ export default class List extends React.Component {
                 <img
                   class={"movie-list-item-img"}
                   src={
-                    "http://localhost:58583/image.ashx?file=" +
+                    MainUrl+"/image.ashx?file=" +
                     element.thumbnail.url +
                     "&width=" +
                     width

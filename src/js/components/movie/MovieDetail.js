@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import MainUrl from "../../util/RequestHandler";
 
 export default class MovieDetail extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class MovieDetail extends React.Component {
   componentDidMount() {
     $.ajax({
       type: "GET",
-      url: "http://localhost:58583/role.ashx?movieId=" + this.props.movie.id,
+      url: MainUrl + "/role.ashx?movieId=" + this.props.movie.id,
       success: function(data, textStatus, request) {
         var directorTemp;
         var ActorTemp;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import MainUrl from '../../util/RequestHandler'
 
 export default class Comment extends React.Component {
   constructor() {
@@ -11,7 +12,7 @@ export default class Comment extends React.Component {
     } else {
       $.ajax({
         type: "POST",
-        url: "http://localhost:58583/setcomment.ashx",
+        url: MainUrl+"/setcomment.ashx",
         data: JSON.stringify({
           name:
             $.trim(this.state.name) == "" ? "بی نام" : $.trim(this.state.name),

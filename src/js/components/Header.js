@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { latinToPersian, persianToLatin } from "../util/util";
 import { ToastContainer, toast, style } from "react-toastify";
+import logo from "../../img/Logo.jpg";
+import "bootstrap/dist/css/bootstrap.css";
+import MainUrl from "../util/RequestHandler";
 
 export default class Header extends React.Component {
   notify() {
@@ -51,7 +54,8 @@ export default class Header extends React.Component {
       $.ajax({
         type: "GET",
         url:
-          "http://localhost:58583/verify.ashx?msisdn=" +
+          MainUrl +
+          "/verify.ashx?msisdn=" +
           this.state.msisdn +
           "&code=" +
           persianToLatin(this.state.code),
@@ -68,7 +72,7 @@ export default class Header extends React.Component {
     } else {
       $.ajax({
         type: "GET",
-        url: "http://localhost:58583/login.ashx?msisdn=" + this.state.msisdn,
+        url: MainUrl + "/login.ashx?msisdn=" + this.state.msisdn,
         success: function(data, textStatus, request) {
           this.setState({ login: data });
           this.notify();
@@ -111,7 +115,7 @@ export default class Header extends React.Component {
           <a href="#" className="logo" title="وودیو">
             <img
               style={{ width: "100px", height: "60px" }}
-              src="img/logo.jpg"
+              src={logo}
               alt="وودیو"
             />
           </a>

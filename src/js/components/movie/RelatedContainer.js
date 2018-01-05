@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Realated from "./Related";
+import {MainUrl} from '../../util/RequestHandler'
 
 export default class RelatedContainer extends React.Component {
   constructor() {
@@ -11,7 +12,7 @@ export default class RelatedContainer extends React.Component {
   componentDidMount() {
     $.ajax({
       type: "GET",
-      url: "http://localhost:58583/related.ashx?movieId=" + this.props.movieId,
+      url: MainUrl+"/related.ashx?movieId=" + this.props.movieId,
       success: function(data, textStatus, request) {
         this.setState({ relatedMovies: data.data });
       }.bind(this),

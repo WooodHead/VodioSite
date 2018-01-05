@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
+import {MainUrl} from "../../util/RequestHandler";
 
 export default class TopMovie extends React.Component {
   constructor(props) {
@@ -53,8 +54,7 @@ export default class TopMovie extends React.Component {
           >
             <img
               src={
-                "http://localhost:58583/image.ashx?file=" +
-                this.props.movie.thumbnail.url
+                MainUrl + "/image.ashx?file=" + this.props.movie.thumbnail.url
               }
               className="top-moviez-post-image"
               alt="Game Of Thrones"

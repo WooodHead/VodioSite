@@ -3,6 +3,7 @@ import Comment from "./Comment";
 import { inject, observer } from "mobx-react";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
 var moment = require("moment-jalaali");
+import MainUrl from '../../util/RequestHandler'
 
 @inject("session")
 @observer
@@ -19,7 +20,7 @@ export default class MovieComment extends React.Component {
   getComments() {
     $.ajax({
       type: "Get",
-      url: "http://localhost:58583/comments.ashx?movieId=" + this.props.movieId,
+      url: MainUrl+"/comments.ashx?movieId=" + this.props.movieId,
       success: function(data, textStatus, jQxhr) {
         if (data.errorCode != 0) {
         } else {

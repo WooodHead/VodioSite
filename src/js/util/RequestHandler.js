@@ -1,0 +1,1 @@
+export const MainUrl = "http://185.105.236.3";

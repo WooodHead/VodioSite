@@ -1,11 +1,12 @@
+const path = require("path");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 var webpack = require("webpack");
-var path = require("path");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
-  context: path.join(__dirname, "src"),
-  devtool: "inline-sourcemap",
-  entry: "./js/client.js",
+  entry: {
+    app: "./src/index.js"
+  },
   module: {
     loaders: [
       {
@@ -39,14 +40,20 @@ module.exports = {
       }
     ]
   },
-  output: {
-    path: __dirname + "/src/",
-    filename: "client.min.js"
-  },
   plugins: [
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
-    }),new UglifyJSPlugin()
-  ]
+    }),
+    new CleanWebpackPlugin(["dist"]),
+    new HtmlWebpackPlugin({
+      template : __dirname + '/src/index.html',
+      filename:'index.html',
+      inject :'body'
+    })
+  ],
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist")
+  }
 };

@@ -3,6 +3,9 @@ import "../../../css/login.css";
 import { inject, observer } from 'mobx-react';
 import { latinToPersian, persianToLatin } from "../../util/util";
 import Loading from "../loading/Loading";
+import vodio from '../../../img/Vodio.jpg'
+import vodioLogo from '../../../img/Vodio-Logo.jpg'
+import MainUrl from '../../util/RequestHandler'
 
 @inject('session')
 @observer
@@ -26,7 +29,7 @@ export default class Login extends React.Component {
     $.ajax({
       type: "GET",
       url:
-        "http://localhost:58583/login.ashx?msisdn=" + persianToLatin(this.state.mobileNumber),
+      MainUrl+ "/login.ashx?msisdn=" + persianToLatin(this.state.mobileNumber),
       success: function(data, textStatus, request) {
         if (data.errorCode != 0) {
         } else if (data.data != null && data.data.otpSent == true) {
@@ -44,7 +47,7 @@ export default class Login extends React.Component {
     $.ajax({
       type: "GET",
       url:
-        "http://localhost:58583/verify.ashx?msisdn=" +
+      MainUrl+"/verify.ashx?msisdn=" +
         persianToLatin(this.state.mobileNumber) +
         "&code=" +
         persianToLatin(this.state.otpCode),
@@ -94,7 +97,7 @@ export default class Login extends React.Component {
                 X
               </button>
               <div className="foodmoodlogo">
-                <img src="../../../img/Vodio-Logo.jpg" />
+                <img src={vodioLogo} />
               </div>
               <div className="login">
                 <input
@@ -132,7 +135,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="foodmoodpicture">
-              <img src="../../../img/Vodio.jpg" />
+              <img src={vodio} />
             </div>
             <div />
           </div>

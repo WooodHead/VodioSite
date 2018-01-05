@@ -1,4 +1,5 @@
 import React from "react";
+import MainUrl from '../../util/RequestHandler'
 
 export default class Banners extends React.Component {
   componentDidMount() {
@@ -19,7 +20,7 @@ export default class Banners extends React.Component {
       components.push(
         <img
           key={l}
-          src={"http://localhost:58583/image.ashx?file=" + banner.url}
+          src={MainUrl + "/image.ashx?file=" + banner.url}
         />
       );
     });

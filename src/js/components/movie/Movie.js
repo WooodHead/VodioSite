@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import MovieDetail from "./MovieDetail";
 import MovieComment from "./MovieComment";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
-import Side from "../widget/side";
 import TopMovies from "../topmovies/TopMovies";
 import { Link } from "react-router-dom";
+import { MainUrl } from "../../util/RequestHandler";
 
 export default class Movie extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ export default class Movie extends React.Component {
   componentDidMount() {
     $.ajax({
       type: "GET",
-      url: "http://localhost:58583/movie.ashx?movieId=1",
+      url: MainUrl+"/movie.ashx?movieId=1",
       success: function(data, textStatus, request) {
         this.setState({ movie: data.data });
         this.setState({
@@ -48,7 +48,7 @@ export default class Movie extends React.Component {
         $.ajax({
           type: "GET",
           url:
-            "http://localhost:58583/related.ashx?movieId=" +
+            MainUrl+"/related.ashx?movieId=" +
             this.state.movie.id,
           success: function(data, textStatus, request) {
             this.setState({ relatedMovies: data.data });
@@ -137,7 +137,7 @@ export default class Movie extends React.Component {
                       <img
                         style={posterStyle}
                         src={
-                          "http://localhost:58583/image.ashx?file=" +
+                          MainUrl+"/image.ashx?file=" +
                           this.state.movie.thumbnail.url
                         }
                         alt="movie name"
