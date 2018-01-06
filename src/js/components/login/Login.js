@@ -5,13 +5,13 @@ import { latinToPersian, persianToLatin } from "../../util/util";
 import Loading from "../loading/Loading";
 import vodio from '../../../img/Vodio.jpg'
 import vodioLogo from '../../../img/Vodio-Logo.jpg'
-import MainUrl from '../../util/RequestHandler'
+import {MainUrl} from '../../util/RequestHandler'
 
 @inject('session')
 @observer
 export default class Login extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { mobileNumber: null, otpCode: null, showLoading: false };
   }
 

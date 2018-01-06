@@ -3,13 +3,13 @@ import Comment from "./Comment";
 import { inject, observer } from "mobx-react";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
 var moment = require("moment-jalaali");
-import MainUrl from '../../util/RequestHandler'
+import {MainUrl} from '../../util/RequestHandler'
 
 @inject("session")
 @observer
 export default class MovieComment extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { comments: null, commentCount: 0 };
   }
 
@@ -104,7 +104,7 @@ export default class MovieComment extends React.Component {
   render() {
     return (
       <div className="single-product-dec-content">
-        {this.props.session.session == "" ? (
+        {this.props.session.session == null ? (
           <div className="register-panel">
             ثبت نظر فقط برای اعضا می باشد.
             <a className=" register-button" onClick={this.showLogin.bind(this)}>

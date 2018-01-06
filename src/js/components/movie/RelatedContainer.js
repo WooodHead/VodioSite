@@ -3,8 +3,8 @@ import Realated from "./Related";
 import {MainUrl} from '../../util/RequestHandler'
 
 export default class RelatedContainer extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       relatedMovies: null
     };

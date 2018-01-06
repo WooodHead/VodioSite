@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import MainUrl from '../../util/RequestHandler'
+import {MainUrl} from '../../util/RequestHandler'
 
 export default class Comment extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { text: "", email: "", name: "" };
   }
   sendComment() {

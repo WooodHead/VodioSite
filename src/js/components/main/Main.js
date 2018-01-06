@@ -4,15 +4,14 @@ import Banners from "./Banners";
 import {MainUrl} from "../../util/RequestHandler";
 
 export default class Main extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       result: null
     };
   }
 
   componentDidMount() {
-    console.log(MainUrl + "/home.ashx");
     $.ajax({
       type: "GET",
       url: MainUrl + "/home.ashx",

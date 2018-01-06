@@ -4,7 +4,6 @@ import TopMovie from "./TopMovie";
 
 export default class TopMovies extends React.Component {
   componentDidMount() {
-    console.log(this.props.id);
     $(".multiple-items" + this.props.id).slick({
       infinite: true,
       speed: 300,

@@ -1,1 +1,1 @@
-export const MainUrl = "http://185.105.236.3";
+export const MainUrl = "http://localhost:58583";

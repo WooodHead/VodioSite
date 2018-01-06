@@ -1,9 +1,10 @@
 import { observable } from "mobx";
 
 class SessionStore {
-  @observable session = "";
+  @observable session = null;
   @observable showLogin = false;
   @observable showFooter = true;
+  @observable history = null;
 }
 
 var sessionStore = new SessionStore;

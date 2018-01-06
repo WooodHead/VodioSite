@@ -1,5 +1,5 @@
 import React from "react";
-import MainUrl from '../../util/RequestHandler'
+import {MainUrl} from '../../util/RequestHandler'
 
 export default class Banners extends React.Component {
   componentDidMount() {

@@ -6,7 +6,7 @@ import { MainUrl } from "../../util/RequestHandler";
 
 @inject("session")
 @observer
-export default class List extends React.Component {
+export default class SearchList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,14 +16,14 @@ export default class List extends React.Component {
       count: 0,
       firstLoad: true
     };
-    console.log("asdf");
   }
 
   componentDidMount() {
     this.props.session.showFooter = false;
+    var url = MainUrl + "/Search.ashx?keyword=" + this.props.match.params.keyword;
     $.ajax({
       type: "GET",
-      url: MainUrl + "/movielist.ashx",
+      url: url,
       success: function(data, textStatus, request) {
         this.setState({ elements: data.data, firstLoad: false });
       }.bind(this),
@@ -36,12 +36,11 @@ export default class List extends React.Component {
         var height = d.scrollTop + $(window).height() - 90;
         var offset = $(".movie-list").innerHeight();
 
-        // console.log("height : " + height + ", offset : " + offset);
         if (offset < height && !this.state.isLoading) {
           this.setState({ isLoading: true });
           $.ajax({
             type: "GET",
-            url: MainUrl + "/movielist.ashx",
+            url: MainUrl + "/Search.ashx?keyword=" + url,
             success: function(data, textStatus, request) {
               this.setState({
                 isLoading: false
@@ -61,54 +60,63 @@ export default class List extends React.Component {
   }
 
   render() {
-    var childElements = this.state.elements.map(
-      function(element, l) {
-        var width = $(".row-header").width();
-        if (width > 1400) {
-          width = width * 12.5 / 100;
-        } else if (width > 1200) {
-          width = width * 14.28 / 100;
-        } else if (width > 1000) {
-          width = width * 16.6 / 100;
-        } else if (width > 600) {
-          width = width * 25 / 100;
-        } else if (width > 400) {
-          width = width * 50 / 100;
-        }
-        return (
-          <div class="box movie-list-item" key={l}>
-            <Link to={{ pathname: "/movie/" }} class="movie-list-item-link">
-              <span class="movie-list-item-cover">
-                <img
-                  class={"movie-list-item-img"}
-                  src={
-                    MainUrl +
-                    "/image.ashx?file=" +
-                    element.thumbnail.url +
-                    "&width=" +
-                    width
-                  }
-                />
-              </span>
-              <h2 class="movie-list-item-title">
-                <span class="movie-list-item-title-persian">
-                  {element.title}
+    var childElements = null;
+    if (this.state.elements != null) {
+      childElements = this.state.elements.map(
+        function(element, l) {
+          var width = $(".row-header").width();
+          if (width > 1400) {
+            width = width * 12.5 / 100;
+          } else if (width > 1200) {
+            width = width * 14.28 / 100;
+          } else if (width > 1000) {
+            width = width * 16.6 / 100;
+          } else if (width > 600) {
+            width = width * 25 / 100;
+          } else if (width > 400) {
+            width = width * 50 / 100;
+          }
+          return (
+            <div class="box movie-list-item" key={l}>
+              <Link to={{ pathname: "/movie/" }} class="movie-list-item-link">
+                <span class="movie-list-item-cover">
+                  <img
+                    class={"movie-list-item-img"}
+                    src={
+                      MainUrl +
+                      "/image.ashx?file=" +
+                      element.thumbnail.url +
+                      "&width=" +
+                      width
+                    }
+                  />
                 </span>
-                <span class="movie-list-item-title-english" />
-              </h2>
-            </Link>
-          </div>
-        );
-      }.bind(this)
-    );
+                <h2 class="movie-list-item-title">
+                  <span class="movie-list-item-title-persian">
+                    {element.title}
+                  </span>
+                  <span class="movie-list-item-title-english" />
+                </h2>
+              </Link>
+            </div>
+          );
+        }.bind(this)
+      );
+    }
 
     return (
       <div class="movie-list">
-        <div class="row-header">
-          <div class="header_title">لیست</div>
+        <div class="top-moviez-slide-title-background">
+          <h5 class="top-moviez-slide-title">نتایج جستجو</h5>
         </div>
-        <div class="list-content-header">
-          {childElements}
+        <div class="list-content-header" style={{ width: "100%" }}>
+          {this.state.elements != null ? (
+            childElements
+          ) : (
+            <div style={{ width: "100%", textAlign: "center" }}>
+              نتیجه ای یافت نشد.
+            </div>
+          )}
           {this.state.isLoading && (
             <div class="box ">
               <div class="cssload-thecube-container-list">
