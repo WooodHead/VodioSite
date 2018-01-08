@@ -1,5 +1,4 @@
 $(document).ready(function() {
- 
   $(".last-content-right-tabs > ul > li > a").click(function(event) {
     event.preventDefault();
     $(this)
@@ -45,7 +44,7 @@ $(function() {
       if (target.length) {
         $("html, body").animate(
           {
-            scrollTop: target.offset().top
+            scrollTop: 0
           },
           1000
         );

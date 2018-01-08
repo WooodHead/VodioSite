@@ -16,7 +16,7 @@
   margin: auto;
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 50%; 
   margin-top: -33px;
   margin-left: -33px;
   transform: rotateZ(45deg);

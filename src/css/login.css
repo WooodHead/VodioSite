@@ -30,6 +30,16 @@
   width: 45%;
   float: right;
 }
+.closemodal {
+  width: 40px;
+  margin-top: 20px;
+  padding:10px;
+}
+.closemodal:hover {
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
 .register {
   display: none;
 }
@@ -59,7 +69,8 @@
   border: none;
   cursor: pointer;
 }
-.login p,.register p {
+.login p,
+.register p {
   font: 500 0.75em/27px "IRSans", Sans-serif;
 }
 .login p button {
@@ -78,8 +89,8 @@
 .foodmoodlogo img {
   width: 100%;
   max-width: 205px;
-  margin-top: 70px;
   margin-bottom: 40px;
+  max-height: 145px;
 }
 .foodmoodform input {
   display: block;
@@ -92,6 +103,7 @@
   text-align: right;
   padding: 10px;
   font-family: "IRSans";
+  text-align: center;
 }
 .foodmoodform input:hover,
 .foodmoodform input:focus,
@@ -114,6 +126,7 @@
   padding: 10px;
   cursor: pointer;
   margin: 5% auto;
+  margin-bottom:0px;
   font-family: "IRSans";
 }
 .foodmoodpicture {
@@ -158,6 +171,7 @@
     float: none;
     text-align: center;
     height: auto;
+    display: none;
   }
 }
 @media (min-width: 768px) {

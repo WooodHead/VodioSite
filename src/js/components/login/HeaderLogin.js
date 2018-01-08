@@ -159,6 +159,10 @@ export default class HeaderLogin extends React.Component {
     $(".login-cover-page").fadeToggle(100);
   }
 
+  showLogin(){
+    this.props.session.showLogin = true;
+  }
+
   render() {
     return (
       <div className="header-login">
@@ -170,9 +174,9 @@ export default class HeaderLogin extends React.Component {
         )}
         <div
           className="header-login-win"
-          onClick={this.toggleLogin.bind(this)}
+          onClick={this.showLogin.bind(this)}
         />
-        <div className="header-login-drop">
+        {/* <div className="header-login-drop">
           <div className="header-login-drop-form">
             <input
               id="header-login-input-id"
@@ -195,7 +199,7 @@ export default class HeaderLogin extends React.Component {
             onClick={this.closeLogin.bind(this)}
           />
         </div>
-        <div class="login-cover-page" onClick={this.closeLogin.bind(this)} />
+        <div class="login-cover-page" onClick={this.closeLogin.bind(this)} /> */}
       </div>
     );
   }

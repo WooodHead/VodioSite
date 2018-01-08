@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import {MainUrl} from '../../util/RequestHandler'
+import { MainUrl } from "../../util/RequestHandler";
+import { inject, observer } from "mobx-react";
 
+@inject("session")
+@observer
 export default class Comment extends React.Component {
   constructor(props) {
     super(props);
@@ -8,11 +11,14 @@ export default class Comment extends React.Component {
   }
   sendComment() {
     if ($.trim(this.state.text) == "") {
-      $('#text-validation').slideDown("100",'linear');
+      $("#text-validation").slideDown("100", "linear");
     } else {
       $.ajax({
         type: "POST",
-        url: MainUrl+"/setcomment.ashx",
+        headers: {
+          token: this.props.session.session
+        },
+        url: MainUrl + "/setcomment.ashx",
         data: JSON.stringify({
           name:
             $.trim(this.state.name) == "" ? "بی نام" : $.trim(this.state.name),
@@ -37,7 +43,7 @@ export default class Comment extends React.Component {
   textChange(e) {
     this.setState({ text: e.target.value });
     if ($.trim(e.target.value) != "") {
-      $('#text-validation').slideUp("100");
+      $("#text-validation").slideUp("100");
     }
   }
 
@@ -57,7 +63,9 @@ export default class Comment extends React.Component {
             دیدگاه خود را بیان کنید!
           </h3>
           <div className="comment-form">
-            <span id="text-validation" className="validation-error">لطفا نظر خود را وارد کنید</span>
+            <span id="text-validation" className="validation-error">
+              لطفا نظر خود را وارد کنید
+            </span>
             <textarea
               className="comment-text-box"
               id="comment"

@@ -110,6 +110,14 @@ export default class Movie extends React.Component {
     });
   }
 
+  purchase(){
+    if(this.props.session.session != null && this.props.session.session != ""){
+      
+    }else{
+      this.props.session.session.showLogin = true;
+    }
+  }
+
   render() {
     if (this.state.movie) {
       const videoStyle = { width: "100%", height: "400px", background: "red" };
@@ -120,33 +128,16 @@ export default class Movie extends React.Component {
             <div className="content-inner">
               <div className="single-product-container">
                 <div className="single-product-container-center">
-                  <div class="movie-main-content-detail">
-                    <div className="single-product-dec-content-text">
-                      {this.state.movie.genres != null ? (
-                        <Genre genres={this.state.movie.genres} />
-                      ) : null}
-
-                      {this.state.director != null ? (
-                        <Director directors={this.state.director} />
-                      ) : null}
-
-                      {this.state.actors != null ? (
-                        <Actor actors={this.state.actors} />
-                      ) : null}
-
-                      {this.state.provider != null ? (
-                        <Provider providers={this.state.provider} />
-                      ) : null}
-
-                      {this.state.researcher != null ? (
-                        <Researcher researchers={this.state.researcher} />
-                      ) : null}
-
-                      <div>
-                        <strong>خلاصه داستان:</strong>{" "}
-                        <p>{this.state.movie.description}</p>
-                      </div>
-                    </div>
+                  <div class="movie-main-content-poster">
+                    <img
+                      style={posterStyle}
+                      src={
+                        MainUrl +
+                        "/image.ashx?file=" +
+                        this.state.movie.thumbnail.url
+                      }
+                      alt="movie name"
+                    />
                   </div>
                   <div class="movie-main-content-info">
                     <h1 className="single-product-title">
@@ -183,7 +174,7 @@ export default class Movie extends React.Component {
                     </div>
 
                     <div class="single-product-add-container">
-                      <a href="#" className="single-product-add">
+                      <a onClick={this.purchase.bind(this)} className="single-product-add">
                         <span className="icon-add-to-card" />
                         <strong class="single-product-add-strong">
                           {latinToPersian(this.state.movie.price.toString()) +
@@ -192,16 +183,33 @@ export default class Movie extends React.Component {
                       </a>
                     </div>
                   </div>
-                  <div class="movie-main-content-poster">
-                    <img
-                      style={posterStyle}
-                      src={
-                        MainUrl +
-                        "/image.ashx?file=" +
-                        this.state.movie.thumbnail.url
-                      }
-                      alt="movie name"
-                    />
+                  <div class="movie-main-content-detail">
+                    <div className="single-product-dec-content-text">
+                      {this.state.movie.genres != null ? (
+                        <Genre genres={this.state.movie.genres} />
+                      ) : null}
+
+                      {this.state.director != null ? (
+                        <Director directors={this.state.director} />
+                      ) : null}
+
+                      {this.state.actors != null ? (
+                        <Actor actors={this.state.actors} />
+                      ) : null}
+
+                      {this.state.provider != null ? (
+                        <Provider providers={this.state.provider} />
+                      ) : null}
+
+                      {this.state.researcher != null ? (
+                        <Researcher researchers={this.state.researcher} />
+                      ) : null}
+
+                      <div>
+                        <strong>خلاصه داستان:</strong>{" "}
+                        <p>{this.state.movie.description}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -211,7 +219,7 @@ export default class Movie extends React.Component {
                   <ul>
                     <li className="current" id="tab-detail">
                       <a onClick={this.onMovieDetailClick.bind(this)}>
-                        توضیحات سریال
+                        تیزر
                       </a>
                     </li>
                     <li className="" id="tab-comment">

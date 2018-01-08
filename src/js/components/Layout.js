@@ -11,6 +11,8 @@ import Movie from "./movie/Movie";
 import Agent from "./agent/Agent";
 import List from "./list/List";
 import SearchList from "./search/SearchList";
+import Vodio from "./vodio/Vodio";
+import ContactUs from "./contact/ContactUs";
 
 @inject("session")
 @withRouter
@@ -39,6 +41,8 @@ class Layout extends React.Component {
             <Route path="/agent/:id" component={Agent} />
             <Route path="/list" component={List} />
             <Route path="/search/:keyword" component={SearchList} />
+            <Route path="/vodio" component={Vodio} />
+            <Route path="/ContactUs" component={ContactUs} />
           </Switch>
         </div>
         {this.props.session.showFooter && <Footer />}

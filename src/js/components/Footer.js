@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class Footer extends React.Component {
   render() {
@@ -12,26 +13,23 @@ export default class Footer extends React.Component {
             <strong className="footer-title">لینک‌ها</strong>
             <ul>
               <li>
-                <a href="#">سوالات متداول</a>
+              <Link to={{ pathname: "/" }}>صفحه اصلی</Link>
               </li>
               <li>
-                <a href="#">سوالات متداول</a>
+              <Link to={{ pathname: "/vodio" }}>ودیو چیست؟</Link>
               </li>
               <li>
-                <a href="#">تخفیف و ارسال رایگان</a>
+              <Link to={{ pathname: "/ContactUs" }}>تماس با ما</Link>
               </li>
               <li>
-                <a href="#">مناسب بندی‌ها</a>
-              </li>
-              <li>
-                <a href="#">درباره ما</a>
+                <a href="#">پرسش های متداول</a>
               </li>
             </ul>
           </div>
           <div className="footer-contact">
             <strong className="footer-title">تماس‌با‌ما</strong>
             <div className="footer-contact-content">
-              <p>آدرس: بندرعباس بلوار ساحلی پارک غدیر</p>
+              <p>خ یوسف اباد، بالاتر از میدان فرهنگ، پ 283، واحد 6</p>
               <p>تلفن: ۳۲۲۲۰۰۰۰ ۰۷۶</p>
               <p>ایمیل: Info@yourmail.com</p>
               <div className="footer-contact-content-socail">
@@ -51,15 +49,13 @@ export default class Footer extends React.Component {
             </div>
           </div>
           <div className="footer-url-finder-download">
-            <strong className="footer-title">فیلم نت در کامپیوتر شما</strong>
+            <strong className="footer-title">
+              © تمام حقوق این سایت متعلق به ودیو می باشد.
+            </strong>
             <div className="footer-url-finder-download-content">
-              برای راحتی و دریافت اخرین اخبار و تریلر و فیلم ها نرم افزار فیلم
-              نت را دانلود و نصب کنید
+              تمامي كالاها و خدمات اين سایت، حسب مورد، داراي مجوزهاي لازم از
+              مراجع مربوطه مي‌باشند.
             </div>
-            <a href="#" className="footer-url-finder-download-btn">
-              <span className="icon-download-cloud" />
-              <strong>دریافت نرم افزار</strong>
-            </a>
           </div>
           <div className="footer-news-letter">
             <strong className="footer-title">خبرنامه</strong>
