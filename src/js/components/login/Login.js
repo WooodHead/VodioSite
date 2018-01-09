@@ -134,6 +134,21 @@ export default class Login extends React.Component {
           } else if (data.data != null && data.data.canLogin == true) {
             this.props.session.session = data.data.token;
             this.props.session.showLogin = false;
+            if(this.props.session.movieIdForPurchase != -1){
+              this.props.session.showLoading = true;
+              $.ajax({
+                type: "GET",
+                headers: {
+                  token: this.props.session.session
+                },
+                url: MainUrl + "/NextpayPurchaseHandler.ashx?movieId="+this.props.session.movieIdForPurchase,
+                success: function(data, textStatus, jQxhr) {
+                }.bind(this),
+                error: function(jqXhr, textStatus, errorThrown) {
+                }
+              });
+              this.props.session.movieIdForPurchase = -1;
+            }
             sessionStorage.setItem("session", data.data.token);
             sessionStorage.removeItem("otp");
             sessionStorage.removeItem("msisdn");

@@ -32,7 +32,7 @@ export default class Comment extends React.Component {
           } else {
           }
           this.props.onCommentSubmit();
-        },
+        }.bind(this),
         error: function(jqXhr, textStatus, errorThrown) {
           console.log(errorThrown);
         }

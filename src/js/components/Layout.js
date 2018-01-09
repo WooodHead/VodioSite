@@ -13,6 +13,8 @@ import List from "./list/List";
 import SearchList from "./search/SearchList";
 import Vodio from "./vodio/Vodio";
 import ContactUs from "./contact/ContactUs";
+import ErrorPage from "./error/ErrorPage";
+import Loading from "./loading/Loading";
 
 @inject("session")
 @withRouter
@@ -37,16 +39,18 @@ class Layout extends React.Component {
         <div class="main-holder">
           <Switch>
             <Route exact path="/" component={Main} />
-            <Route path="/movie/:id" component={Movie} />
+            <Route path="/movie/:id/:status?" component={Movie} />
             <Route path="/agent/:id" component={Agent} />
             <Route path="/list" component={List} />
             <Route path="/search/:keyword" component={SearchList} />
             <Route path="/vodio" component={Vodio} />
             <Route path="/ContactUs" component={ContactUs} />
+            <Route path="/error" component={ErrorPage} />
           </Switch>
         </div>
         {this.props.session.showFooter && <Footer />}
         {this.props.session.showLogin && <Login />}
+        {this.props.session.showLoading && <Loading />}
       </div>
     );
   }

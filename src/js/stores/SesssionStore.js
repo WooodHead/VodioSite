@@ -6,6 +6,9 @@ class SessionStore {
   @observable showLogin = false;
   @observable showFooter = true;
   @observable history = null;
+  @observable showLoading = false;
+
+  @observable movieIdForPurchase = -1;
 
   @observable title = "لیست";
   @observable reload = false;

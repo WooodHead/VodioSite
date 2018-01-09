@@ -16,7 +16,8 @@ export default class HeaderLogin extends React.Component {
       textLoginInputValue: "",
       textLoginPlaceholderInputValue: "شماره همراه خود را وارد کنید",
       closeNotify: false,
-      code: ""
+      code: "",
+      toastId : null
     };
   }
 

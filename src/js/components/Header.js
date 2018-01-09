@@ -7,7 +7,6 @@ import Search from "./search/Search";
 import HeaderLogin from "./login/HeaderLogin";
 import { Link } from "react-router-dom";
 import Category from "./Category";
-import Loading from "./loading/Loading";
 
 @inject("session")
 @observer

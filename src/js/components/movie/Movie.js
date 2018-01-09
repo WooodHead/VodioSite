@@ -5,7 +5,11 @@ import { latinToPersian, convertMillisecondToString } from "../../util/util";
 import TopMovies from "../topmovies/TopMovies";
 import { Link } from "react-router-dom";
 import { MainUrl } from "../../util/RequestHandler";
+import { inject, observer } from "mobx-react";
+import { ToastContainer, toast, style } from "react-toastify";
 
+@inject("session")
+@observer
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
@@ -21,8 +25,45 @@ export default class Movie extends React.Component {
       researcher: null,
       actors: null,
       provider: null,
-      loadPage: false
+      loadPage: false,
+      toastId: null
     };
+  }
+
+  notify(success) {
+    if (success == true) {
+      var id = toast.success("خرید شما با موفقیت انجام شد", {
+        position: toast.POSITION.TOP_RIGHT,
+        closeButton: false,
+        className: {
+          textAlign: "center",
+          fontSize: "11px",
+          right: "0em",
+          top: "0em"
+        },
+        autoClose: 3000
+      });
+      this.setState({ toastId: id });
+    } else {
+      var id = toast.error("خرید شما با مشکل مواجه شد. لطفا دوباره تلاش کنید", {
+        position: toast.POSITION.TOP_RIGHT,
+        closeButton: false,
+        className: {
+          textAlign: "center",
+          fontSize: "11px",
+          right: "0em",
+          top: "0em"
+        },
+        autoClose: 3000
+      });
+      this.setState({ toastId: id });
+    }
+    setTimeout(
+      function() {
+        toast.dismiss(this.state.toastId);
+      }.bind(this),
+      3000
+    );
   }
 
   onMovieDetailClick() {
@@ -42,6 +83,13 @@ export default class Movie extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.match.params.status) {
+      if (this.props.match.params.status == "success") {
+        this.notify(true);
+      } else if (this.props.match.params.status == "fail") {
+        this.notify(false);
+      }
+    }
     const { id } = this.props.match.params;
     $.ajax({
       type: "GET",
@@ -110,11 +158,47 @@ export default class Movie extends React.Component {
     });
   }
 
-  purchase(){
-    if(this.props.session.session != null && this.props.session.session != ""){
-      
-    }else{
-      this.props.session.session.showLogin = true;
+  purchase() {
+    if (
+      this.props.session.session != null &&
+      this.props.session.session != ""
+    ) {
+      this.props.session.showLoading = true;
+      var url =
+        MainUrl +
+        "/NextpayPurchaseHandler.ashx?movieId=" +
+        this.state.movie.id +
+        "&token=" +
+        this.props.session.session;
+        console.log(url);
+      window.location.replace(url);
+      // $.ajax({
+      //   type: "GET",
+      //   headers: {
+      //     token: this.props.session.session
+      //   },
+      //   url:
+      //     MainUrl +
+      //     "/NextpayPurchaseHandler.ashx?movieId=" +
+      //     this.state.movie.id,
+      //   success: function(data, textStatus, jQxhr) {
+      //     this.notify();
+      //     setTimeout(function() {
+      //       toast.dismiss(this.state.toastId);
+      //     }.bind(this), 3000);
+      //     this.props.session.showLoading = false;
+      //   }.bind(this),
+      //   error: function(jqXhr, textStatus, errorThrown) {
+      //     this.notify();
+      //     setTimeout(function() {
+      //       toast.dismiss(this.state.toastId);
+      //     }.bind(this), 3000);
+      //     this.props.session.showLoading = false;
+      //   }
+      // });
+    } else {
+      this.props.session.showLogin = true;
+      this.props.session.movieIdForPurchase = this.state.movie.id;
     }
   }
 
@@ -174,13 +258,24 @@ export default class Movie extends React.Component {
                     </div>
 
                     <div class="single-product-add-container">
-                      <a onClick={this.purchase.bind(this)} className="single-product-add">
+                      <a
+                        onClick={this.purchase.bind(this)}
+                        className="single-product-add"
+                      >
                         <span className="icon-add-to-card" />
                         <strong class="single-product-add-strong">
                           {latinToPersian(this.state.movie.price.toString()) +
                             " تومان"}
                         </strong>
                       </a>
+                      {!this.state.closeNotify && (
+                        <ToastContainer
+                          toastClassName={{
+                            font: " 500 .8em/40px 'IRSans',Sans-serif"
+                          }}
+                          autoClose={1}
+                        />
+                      )}
                     </div>
                   </div>
                   <div class="movie-main-content-detail">
@@ -218,9 +313,7 @@ export default class Movie extends React.Component {
                 <div className="single-product-dec-header">
                   <ul>
                     <li className="current" id="tab-detail">
-                      <a onClick={this.onMovieDetailClick.bind(this)}>
-                        تیزر
-                      </a>
+                      <a onClick={this.onMovieDetailClick.bind(this)}>تیزر</a>
                     </li>
                     <li className="" id="tab-comment">
                       <a onClick={this.onCommentClick.bind(this)}>
