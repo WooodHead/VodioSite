@@ -6,7 +6,6 @@
   top: 0;
   bottom: 0;
   z-index: 1000;
-  margin: auto 10px;
   background-color: rgba(0, 0, 0, 0.7);
 }
 .foodmoodcontent {

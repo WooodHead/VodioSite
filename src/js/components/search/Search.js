@@ -1,6 +1,8 @@
 import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
+import exit from "../../../img/search.png";
+import { Link } from "react-router-dom";
 
 @inject("session")
 @observer
@@ -8,6 +10,15 @@ export default class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = { searchResult: null, searchInputValue: "" };
+  }
+
+  componentDidMount() {
+    $("#searchContainer").on(
+      "focusout",
+      function() {
+        this.setState({ searchResult: null, searchInputValue: "" });
+      }.bind(this)
+    );
   }
 
   close() {
@@ -42,69 +53,75 @@ export default class Search extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
-      $(".header-search-drop").hide(200);
-      $(".search-cover-page").fadeToggle(100);
-      $("#SearchDropdown").fadeToggle(100);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
+      this.setState({ searchResult: null, searchInputValue: "" });
     } else {
-      $(".header-search-drop").addClass("no-input-shake");
+      $(".search-container").addClass("no-input-shake");
       setTimeout(function() {
-        $(".header-search-drop").removeClass("no-input-shake");
+        $(".search-container").removeClass("no-input-shake");
       }, 500);
     }
   }
 
+  onClick() {
+    $("#searchInput").focus();
+    // if ($("#searchInput").width() >= 280) {
+    this.search();
+    // } else {
+    //   $("#searchContainer").width(340);
+    //   $("#searchInput").width(285);
+    // }
+  }
+
   render() {
     return (
-      <div className="header-search">
-        <div
-          className="header-search-show"
-          onClick={this.toggleSearch.bind(this)}
+      <div id="searchContainer" class="search-container">
+        <input
+          id="searchInput"
+          className="search-header-input search-dropdown"
+          onChange={this.searchFunction.bind(this)}
+          value={this.state.searchInputValue}
+          placeholder="جستجو ..."
         />
-        <div className="header-search-drop">
-          <input
-            id="searchInput"
-            type="text"
-            className="search-header-input search-dropdown"
-            placeholder="جستجو کن ..."
-            onChange={this.searchFunction.bind(this)}
-            value={this.state.searchInputValue}
-          />
 
-          <button
-            type="submit"
-            className="search-header-submit"
-            onClick={this.search.bind(this)}
-          />
+        <img
+          style={{
+            width: "35px",
+            height: "35px",
+            padding: "5px",
+            top: "0px",
+            left: "0px",
+            float: "left"
+          }}
+          src={exit}
+          onClick={this.onClick.bind(this)}
+        />
 
-          <div
-            className="header-search-close"
-            onClick={this.close.bind(this)}
-          />
-        </div>
         {this.state.searchResult != null ? (
           <div id="SearchDropdown" class="search-dropdown-content">
             <div class="search-result">
               {this.state.searchResult.length == 0 ? (
                 <div />
               ) : (
-                <ul>
+                <ul style={{ width: "100%" }}>
                   {this.state.searchResult.map((search, l) => (
                     <li key={l} class="search-result-li">
-                      <div>
-                        <span>
-                          <span>{search.title}</span>
-                          {search.director != null ? (
-                            <span>{"کارگردان : " + search.director}</span>
-                          ) : null}
-                        </span>
-                        <img
-                          src={
-                            "http://localhost:58583//image.ashx?file=" +
-                            search.thumbnail.url
-                          }
-                        />
-                      </div>
+                      <Link to={{ pathname: "/movie/" + search.id }}>
+                        <div>
+                          <span>
+                            <span>{search.title}</span>
+                            {search.director != null ? (
+                              <span>{"کارگردان : " + search.director}</span>
+                            ) : null}
+                          </span>
+                          <img
+                            src={
+                              "http://localhost:58583//image.ashx?file=" +
+                              search.thumbnail.url
+                            }
+                          />
+                        </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -112,7 +129,6 @@ export default class Search extends React.Component {
             </div>
           </div>
         ) : null}
-        <div class="search-cover-page" onClick={this.toggleSearch.bind(this)} />
       </div>
     );
   }

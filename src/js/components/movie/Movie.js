@@ -7,6 +7,10 @@ import { Link } from "react-router-dom";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import { ToastContainer, toast, style } from "react-toastify";
+import hdImage from "../../../img/hd.svg";
+import teaserImage from "../../../img/teaser.svg";
+import commentImage from "../../../img/Comment.svg";
+import purchaseImage from "../../../img/Buy.svg";
 
 @inject("session")
 @observer
@@ -170,7 +174,6 @@ export default class Movie extends React.Component {
         this.state.movie.id +
         "&token=" +
         this.props.session.session;
-        console.log(url);
       window.location.replace(url);
       // $.ajax({
       //   type: "GET",
@@ -205,7 +208,8 @@ export default class Movie extends React.Component {
   render() {
     if (this.state.movie) {
       const videoStyle = { width: "100%", height: "400px", background: "red" };
-      const posterStyle = { width: "100%" };
+      const posterStyle = { width: "80%" };
+      const hdStyle = { width: "100%" };
       return (
         <div>
           <div className="content-container max-width">
@@ -225,22 +229,30 @@ export default class Movie extends React.Component {
                   </div>
                   <div class="movie-main-content-info">
                     <h1 className="single-product-title">
-                      {this.state.movie.title}
+                      <img class="hd-image" src={hdImage} alt="hd" />
+                      <span style={{ paddingRight: "10px" }}>
+                        {this.state.movie.title}
+                      </span>
                     </h1>
                     <div className="single-product-header-meta">
-                      <span>{latinToPersian(this.state.durationString)} </span>
-                      <span>
+                      <span style={{ fontSize: "12px" }}>
+                        {latinToPersian(this.state.durationString)}{" "}
+                      </span>
+                      <span style={{ display: "inline-flex" }}>
                         {this.state.movie.categories.map(category => (
-                          <Link
-                            to={{
-                              pathname: "/List",
-                              query: { name: category.name }
-                            }}
+                          <p
                             className="single-product-category"
                             key={category.id}
                           >
-                            {category.name}
-                          </Link>
+                            <Link
+                              to={{
+                                pathname: "/List",
+                                query: { name: category.name }
+                              }}
+                            >
+                              {category.name}
+                            </Link>
+                          </p>
                         ))}
                       </span>
                     </div>
@@ -262,7 +274,14 @@ export default class Movie extends React.Component {
                         onClick={this.purchase.bind(this)}
                         className="single-product-add"
                       >
-                        <span className="icon-add-to-card" />
+                        <img
+                          src={purchaseImage}
+                          style={{
+                            width: "20px",
+                            marginLeft: "15px",
+                            marginRight: "15px"
+                          }}
+                        />
                         <strong class="single-product-add-strong">
                           {latinToPersian(this.state.movie.price.toString()) +
                             " تومان"}
@@ -299,11 +318,21 @@ export default class Movie extends React.Component {
                       {this.state.researcher != null ? (
                         <Researcher researchers={this.state.researcher} />
                       ) : null}
-
-                      <div>
-                        <strong>خلاصه داستان:</strong>{" "}
-                        <p>{this.state.movie.description}</p>
-                      </div>
+                    </div>
+                  </div>
+                  <div class="movie-main-content-story-line">
+                    <div>
+                      <strong style={{ color: "#7d1d65" }}>
+                        خلاصه داستان:
+                      </strong>
+                      <p
+                        style={{
+                          textAlign: "justify",
+                          textJustify: "inter-word"
+                        }}
+                      >
+                        {this.state.movie.description}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -313,10 +342,43 @@ export default class Movie extends React.Component {
                 <div className="single-product-dec-header">
                   <ul>
                     <li className="current" id="tab-detail">
-                      <a onClick={this.onMovieDetailClick.bind(this)}>تیزر</a>
+                      <a
+                        style={{ display: "inline-block" }}
+                        onClick={this.onMovieDetailClick.bind(this)}
+                      >
+                        <img
+                          src={teaserImage}
+                          style={{
+                            width: "20px",
+                            marginLeft: "5px"
+                          }}
+                        />
+                        تیزر
+                      </a>
+                    </li>
+                    <li>
+                      <div
+                        style={{
+                          width: "1px",
+                          top: "15%",
+                          background: "black",
+                          height: "70%",
+                          position: "relative"
+                        }}
+                      />
                     </li>
                     <li className="" id="tab-comment">
-                      <a onClick={this.onCommentClick.bind(this)}>
+                      <a
+                        style={{ display: "inline-block" }}
+                        onClick={this.onCommentClick.bind(this)}
+                      >
+                        <img
+                          src={commentImage}
+                          style={{
+                            width: "20px",
+                            marginLeft: "5px"
+                          }}
+                        />
                         نظرات کاربران
                       </a>
                     </li>

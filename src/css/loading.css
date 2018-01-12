@@ -1,6 +1,6 @@
 .cssload-thecube-container {
   margin:0;
-  position: absolute;
+  position: fixed;
   background: rgba(0, 0, 0, 0.753);
   z-index: 99999999;
   padding: 0;

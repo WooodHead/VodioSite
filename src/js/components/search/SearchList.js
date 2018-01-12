@@ -10,9 +10,8 @@ export default class SearchList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      elements: [],
+      elements: null,
       isLoading: false,
-      class: "first",
       count: 0,
       firstLoad: true
     };
@@ -20,7 +19,8 @@ export default class SearchList extends React.Component {
 
   componentDidMount() {
     this.props.session.showFooter = false;
-    var url = MainUrl + "/Search.ashx?keyword=" + this.props.match.params.keyword;
+    var url =
+      MainUrl + "/Search.ashx?keyword=" + this.props.match.params.keyword;
     $.ajax({
       type: "GET",
       url: url,
@@ -64,42 +64,47 @@ export default class SearchList extends React.Component {
     if (this.state.elements != null) {
       childElements = this.state.elements.map(
         function(element, l) {
-          var width = $(".row-header").width();
-          if (width > 1400) {
-            width = width * 12.5 / 100;
-          } else if (width > 1200) {
-            width = width * 14.28 / 100;
-          } else if (width > 1000) {
-            width = width * 16.6 / 100;
-          } else if (width > 600) {
-            width = width * 25 / 100;
-          } else if (width > 400) {
-            width = width * 50 / 100;
-          }
-          return (
-            <div class="box movie-list-item" key={l}>
-              <Link to={{ pathname: "/movie/" }} class="movie-list-item-link">
-                <span class="movie-list-item-cover">
-                  <img
-                    class={"movie-list-item-img"}
-                    src={
-                      MainUrl +
-                      "/image.ashx?file=" +
-                      element.thumbnail.url +
-                      "&width=" +
-                      width
-                    }
-                  />
-                </span>
-                <h2 class="movie-list-item-title">
-                  <span class="movie-list-item-title-persian">
-                    {element.title}
+          if (element != null) {
+            var width = $(".row-header").width();
+            if (width > 1400) {
+              width = width * 12.5 / 100;
+            } else if (width > 1200) {
+              width = width * 14.28 / 100;
+            } else if (width > 1000) {
+              width = width * 16.6 / 100;
+            } else if (width > 600) {
+              width = width * 25 / 100;
+            } else if (width > 400) {
+              width = width * 50 / 100;
+            }
+            return (
+              <div class="box movie-list-item" key={l}>
+                <Link
+                  to={{ pathname: "/movie/" + element.id }}
+                  class="movie-list-item-link"
+                >
+                  <span class="movie-list-item-cover">
+                    <img
+                      class={"movie-list-item-img"}
+                      src={
+                        MainUrl +
+                        "/image.ashx?file=" +
+                        element.thumbnail.url +
+                        "&width=" +
+                        width
+                      }
+                    />
                   </span>
-                  <span class="movie-list-item-title-english" />
-                </h2>
-              </Link>
-            </div>
-          );
+                  <h2 class="movie-list-item-title">
+                    <span class="movie-list-item-title-persian">
+                      {element.title}
+                    </span>
+                    <span class="movie-list-item-title-english" />
+                  </h2>
+                </Link>
+              </div>
+            );
+          }
         }.bind(this)
       );
     }

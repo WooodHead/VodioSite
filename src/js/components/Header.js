@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import logo from "../../img/Logo.jpg";
+import logo from "../../img/logo.svg";
 import "bootstrap/dist/css/bootstrap.css";
 import { MainUrl } from "../util/RequestHandler";
 import { inject, observer } from "mobx-react";
@@ -20,6 +20,16 @@ export default class Header extends React.Component {
   }
 
   componentDidMount() {
+    $(window).click(function() {
+      if ($(window).width() < 1001) {
+        $(".header-menu").hide(100);
+      }
+    });
+
+    $("#menucontainer").click(function(event) {
+      event.stopPropagation();
+    });
+
     setTimeout(
       function() {
         $.ajax({
@@ -60,11 +70,12 @@ export default class Header extends React.Component {
         <div className="header-inner max-width">
           <Link to={{ pathname: "/" }} className="logo" title="وودیو">
             <img
-              style={{ width: "100px", height: "60px" }}
+              style={{ width: "70px", height: "40px", marginTop: "10px" }}
               src={logo}
               alt="وودیو"
             />
           </Link>
+          <span className="show-main-menu-btn icon-menu-1" />
           <div className="">
             <nav className="header-menu">
               <ul className="header-menu-ul">
@@ -76,48 +87,37 @@ export default class Header extends React.Component {
                 </li>
                 <li>
                   <a href="#">
-                    <span className="help-icon-img" />
-                    <div className="home-menu-title">راهنمای خرید</div>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
                     <span className="ask-movie-icon-img" />
                     <div className="home-menu-title">درخواست فیلم</div>
                   </a>
                 </li>
-                <li>
-                  <a href="#">
-                    <span className="contact-icon-img" />
-                    <div className="home-menu-title">تماس با ما</div>
-                  </a>
-                </li>
               </ul>
             </nav>
-
-            <div className="header-left-meta">
-              {this.props.session.session != null &&
-              this.props.session.session != "" ? (
-                <div class="header-sign-out">
-                  <div
-                    class="dropdown"
-                    id="sign-out"
-                    class="header-sign-out"
-                    onClick={this.myFunction.bind(this)}
-                  />
-                  <div id="myDropdown" class="dropdown-content">
-                    <a href="#home">خریدها</a>
-                    <a href="#contact">پروفایل</a>
-                    <a onClick={this.signOutClicked.bind(this)}>خروج</a>
-                  </div>
-                </div>
-              ) : (
-                <HeaderLogin />
-              )}
+            <div style={{ display: "inline-flex", float: "left" }}>
               <Search />
-              <Category categories={this.state.categories} />
+              <div className="header-left-meta">
+                {this.props.session.session != null &&
+                this.props.session.session != "" ? (
+                  <div class="header-sign-out">
+                    <div
+                      class="dropdown"
+                      id="sign-out"
+                      class="header-sign-out"
+                      onClick={this.myFunction.bind(this)}
+                    />
+                    <div id="myDropdown" class="dropdown-content">
+                      <a href="#home">خریدها</a>
+                      <a href="#contact">پروفایل</a>
+                      <a onClick={this.signOutClicked.bind(this)}>خروج</a>
+                    </div>
+                  </div>
+                ) : (
+                  <HeaderLogin />
+                )}
+
+                <Category categories={this.state.categories} />
+              </div>
             </div>
-            <span className="show-main-menu-btn icon-menu-1" />
           </div>
         </div>
         {/* <a class="test-popup-link" href="http://cinemamarket.ir/UploadedData/1/Contents/poster/Vilaeeha(Po-NLogo-1)-HTS-CinemaMarket.jpg">Open popup</a> */}

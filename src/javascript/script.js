@@ -27,6 +27,7 @@ $(document).ready(function() {
     }
   });
   $(".show-main-menu-btn").click(function(event) {
+    event.stopPropagation();
     var id = event.target.id;
     $(".header-menu").slideToggle(100);
   });
@@ -50,35 +51,6 @@ $(function() {
         );
         return false;
       }
-    }
-  });
-});
-$(function() {
-  var nav = $("#header");
-  var TopMoviez = $(".content-holder");
-  var navHomeY = nav.offset().top;
-  var isFixed = false;
-  var $w = $(window);
-  $w.scroll(function() {
-    var scrollTop = $w.scrollTop();
-    var shouldBeFixed = scrollTop > navHomeY;
-    if (shouldBeFixed && !isFixed) {
-      TopMoviez.css({ margin: "100px auto 0" });
-      nav.css({
-        position: "fixed",
-        background: "rgba(255,255,255,1)",
-        boxShadow: "0 20px 30px rgba(0,0,0,.1)",
-        top: 0,
-        left: nav.offset().left,
-        width: nav.width()
-      });
-      isFixed = true;
-    } else if (!shouldBeFixed && isFixed) {
-      nav.css({
-        position: "absolute",
-        boxShadow: "none"
-      });
-      isFixed = false;
     }
   });
 });

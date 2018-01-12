@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import TopMovies from "../topmovies/TopMovies";
 import Banners from "./Banners";
 import {MainUrl} from "../../util/RequestHandler";
+import { inject, observer } from "mobx-react";
 
+@inject("session")
+@observer
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -12,11 +15,13 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
+    this.props.session.showLoading = true;
     $.ajax({
       type: "GET",
       url: MainUrl + "/home.ashx",
       success: function(data, textStatus, request) {
         this.setState({ result: data });
+        this.props.session.showLoading = false;
       }.bind(this),
       error: function(request, textStatus, errorThrown) {}
     });
