@@ -270,23 +270,42 @@ export default class Movie extends React.Component {
                     </div>
 
                     <div class="single-product-add-container">
-                      <a
-                        onClick={this.purchase.bind(this)}
-                        className="single-product-add"
-                      >
-                        <img
-                          src={purchaseImage}
-                          style={{
-                            width: "20px",
-                            marginLeft: "15px",
-                            marginRight: "15px"
-                          }}
-                        />
-                        <strong class="single-product-add-strong">
-                          {latinToPersian(this.state.movie.price.toString()) +
-                            " تومان"}
-                        </strong>
-                      </a>
+                      {this.state.movie.bought == true ? (
+                        <a
+                          onClick={this.download.bind(this)}
+                          className="single-product-add"
+                        >
+                          <img
+                            src={purchaseImage}
+                            style={{
+                              width: "20px",
+                              marginLeft: "15px",
+                              marginRight: "15px"
+                            }}
+                          />
+                          <strong class="single-product-add-strong">
+                            دانلود
+                          </strong>
+                        </a>
+                      ) : (
+                        <a
+                          onClick={this.purchase.bind(this)}
+                          className="single-product-add"
+                        >
+                          <img
+                            src={purchaseImage}
+                            style={{
+                              width: "20px",
+                              marginLeft: "15px",
+                              marginRight: "15px"
+                            }}
+                          />
+                          <strong class="single-product-add-strong">
+                            {latinToPersian(this.state.movie.price.toString()) +
+                              " تومان"}
+                          </strong>
+                        </a>
+                      )}
                       {!this.state.closeNotify && (
                         <ToastContainer
                           toastClassName={{

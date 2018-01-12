@@ -3,6 +3,7 @@ import "../../../css/infinite.css";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
+import ListIcon from "../../../img/List.svg";
 
 @inject("session")
 @observer
@@ -70,7 +71,10 @@ export default class List extends React.Component {
           }
           return (
             <div class="box movie-list-item" key={l}>
-              <Link to={{ pathname: "/movie/" + element.id }} class="movie-list-item-link">
+              <Link
+                to={{ pathname: "/movie/" + element.id }}
+                class="movie-list-item-link"
+              >
                 <span class="movie-list-item-cover">
                   <img
                     class={"movie-list-item-img"}
@@ -99,6 +103,14 @@ export default class List extends React.Component {
     return (
       <div class="movie-list">
         <div class="row-header">
+          <img
+            src={ListIcon}
+            style={{
+              width: "10px",
+              marginRight: "10px",
+              marginLeft: "5px"
+            }}
+          />
           <div class="header_title">{this.props.session.title}</div>
         </div>
         <div class="list-content-header">

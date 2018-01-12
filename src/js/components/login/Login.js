@@ -3,10 +3,12 @@ import "../../../css/login.css";
 import { inject, observer } from "mobx-react";
 import { latinToPersian, persianToLatin } from "../../util/util";
 import Loading from "../loading/Loading";
-import vodio from "../../../img/Vodio.jpg";
-import vodioLogo from "../../../img/Vodio-Logo.jpg";
+import vodio from "../../../img/vodio.png";
+import vodioLogo from "../../../img/login-logo.png";
 import { MainUrl } from "../../util/RequestHandler";
 import exit from "../../../img/exit.svg";
+import timerLogo from "../../../img/Timer.svg";
+import pointerLogo from "../../../img/pointer.png";
 
 @inject("session")
 @observer
@@ -142,8 +144,8 @@ export default class Login extends React.Component {
                 this.props.session.movieIdForPurchase +
                 "&token=" +
                 this.props.session.session;
+                this.props.session.movieIdForPurchase = -1;
               window.location.replace(url);
-              this.props.session.movieIdForPurchase = -1;
             }
             sessionStorage.setItem("session", data.data.token);
             sessionStorage.removeItem("otp");
@@ -317,7 +319,7 @@ export default class Login extends React.Component {
                   placeholder="شماره همراه"
                 />
 
-                <p style={{ textAlign: "center" }}>
+                <p style={{ textAlign: "center", color: "white" }}>
                   برای عضویت در نت فیلم شماره همراه خود را وارد کنید.
                 </p>
                 <button
@@ -336,7 +338,7 @@ export default class Login extends React.Component {
                   onChange={this.otpCodeChanged.bind(this)}
                   placeholder="کد فعال سازی"
                 />
-                <p style={{ textAlign: "center" }}>
+                <p style={{ textAlign: "center", color: "white" }}>
                   کد فعال سازی برای شما ارسال سد.
                 </p>
                 <button
@@ -375,16 +377,40 @@ export default class Login extends React.Component {
                       ) : null}
                     </div>
                   ) : (
-                    <p>لطفا منتظر بمانید</p>
+                    <p style={{ textAlign: "center", color: "white" }}>
+                      لطفا منتظر بمانید
+                      <img
+                        src={timerLogo}
+                        style={{
+                          width: "15px",
+                          marginRight: "5px",
+                          marginLeft: "5px"
+                        }}
+                      />
+                      {this.state.showCountDown == true
+                        ? this.state.countDownText
+                        : null}
+                    </p>
                   )}
-                  {this.state.showCountDown == true ? (
-                    <p>{this.state.countDownText}</p>
-                  ) : null}
                 </div>
               </div>
             </div>
             <div className="foodmoodpicture">
-              <img src={vodio} />
+              <img src={vodio} className="foodmoodpicture-img" />
+              <div class="vodio-caption">
+                <img src={pointerLogo} class="pointer" />
+                <p
+                  style={{
+                    color: "white",
+                    position: "absolute",
+                    marginTop: "27px",
+                    left: "55px",
+                    float: "left"
+                  }}
+                >
+                  A Trop to the Moon
+                </p>
+              </div>
             </div>
             <div />
           </div>

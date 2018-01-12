@@ -22,6 +22,7 @@
   bottom: 0;
   margin: auto;
   box-shadow: 0 8px 33px rgba(0, 0, 0, 0.3);
+  background: #7a2364;
 }
 .foodmoodform {
   display: inline-block;
@@ -33,6 +34,9 @@
   width: 40px;
   margin-top: 20px;
   padding:10px;
+}
+.closemodal:path {
+  fill:red;
 }
 .closemodal:hover {
   border-radius: 20px;
@@ -83,13 +87,14 @@
   text-align: center;
   display: block;
   max-width: 205px;
+  margin-top: 50px;
   margin: 2% auto;
+  padding-top: 30px;
 }
 .foodmoodlogo img {
   width: 100%;
-  max-width: 205px;
+  max-width: 140px;
   margin-bottom: 40px;
-  max-height: 145px;
 }
 .foodmoodform input {
   display: block;
@@ -117,7 +122,7 @@
 }
 .submitfoodmood {
   display: block;
-  background: #7d1d65;
+  background: #24a59c;
   color: #ffffff;
   width: 175px;
   border: none;
@@ -132,7 +137,7 @@
   width: 55%;
   display: inline-block;
 }
-.foodmoodpicture img {
+.foodmoodpicture-img {
   float: left;
   width: 100%;
   max-width: 590px;
@@ -201,3 +206,35 @@
   font: 17px "IRSans";
   cursor: pointer;
 }
+
+input::-webkit-input-placeholder {
+  color: #caa7c1 !important;
+  }
+   
+  input:-moz-placeholder { /* Firefox 18- */
+  color: #caa7c1 !important;  
+  }
+   
+  input::-moz-placeholder {  /* Firefox 19+ */
+  color: #caa7c1 !important;  
+  }
+   
+  input:-ms-input-placeholder {  
+  color: #caa7c1 !important;  
+  }
+
+  .vodio-caption{
+    width: 55%;
+    height: 70px;
+    position: absolute;
+    bottom: 0;
+  }
+  .pointer {
+    float: left;
+    background: url(../img/pointer.png) no-repeat;
+    margin-top: 27px;
+    width: 15px;
+    background-size: contain;
+    margin-left:27px;
+  }
+  

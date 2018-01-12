@@ -43,14 +43,23 @@ export default class Category extends React.Component {
     }
     return (
       <div className="header-category">
-        <div className="header-category-show" id="header-category-show"  onClick={this.toggleCategory}>
+        <div
+          className="header-category-show"
+          id="header-category-show"
+          onClick={this.toggleCategory}
+        >
           <span>دسته‌بندی‌ها</span>
         </div>
         <div id="category-header" className="header-category-drop-down">
           <div className="closemainmenu" id="closemainmenu" />
           <div className="header-category-drop-down-main-menu">
             {this.props.categories != null ? (
-              <ul>
+              <ul
+                style={{
+                  width: "100%",
+                  height: "200px"
+                }}
+              >
                 {this.props.categories.map(category => (
                   <li
                     key={category.id}
@@ -88,7 +97,7 @@ export default class Category extends React.Component {
             )}
           </div>
         </div>
-        <div class="cover-page"  onClick={this.toggleCategory}/>
+        <div class="cover-page" onClick={this.toggleCategory} />
       </div>
     );
   }
