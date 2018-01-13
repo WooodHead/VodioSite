@@ -1,6 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../util/RequestHandler";
+import "../../css/category.css";
 
 @inject("session")
 @observer
@@ -20,7 +21,6 @@ export default class Category extends React.Component {
   }
 
   onCategoryClicked(category, genre) {
-    $("#category" + category.id).slideToggle(100);
     // this.props.session.history.push("/list");
     // this.props.session.offset = 0;
     // var url = this.makeUrl(category, genre);
@@ -37,22 +37,53 @@ export default class Category extends React.Component {
     $(".header-category-drop-down").slideToggle(100);
     $(".cover-page").fadeToggle(100);
   }
+
+  componentDidUpdate() {
+    if (this.props.categories != null) {
+      var width = $(window).width();
+      if (width > 740) {
+        this.props.categories.map(category =>
+          $("#" + "category" + category.id).hover(
+            function() {
+              $("#" + "category12" + category.id).show();
+            },
+            function() {
+              $("#" + "category12" + category.id).hide();
+            }
+          )
+        );
+      } else {
+        this.props.categories.map(category =>
+          $("#" + "category" + category.id).click(
+            function() {
+              this.props.categories.forEach(element => {
+                console.log(element);
+                $("#" + "category12" + element.id).hide();
+              });
+              $("#" + "category12" + category.id).show();
+            }.bind(this)
+          )
+        );
+      }
+    }
+  }
+
   render() {
     if (this.props.categories != null) {
       $("#category-header").width(100 * this.props.categories.length);
     }
     return (
-      <div className="header-category">
+      <div class="header-category">
         <div
-          className="header-category-show"
+          class="header-category-show"
           id="header-category-show"
-          onClick={this.toggleCategory}
+          onClick={this.toggleCategory.bind(this)}
         >
           <span>دسته‌بندی‌ها</span>
         </div>
-        <div id="category-header" className="header-category-drop-down">
-          <div className="closemainmenu" id="closemainmenu" />
-          <div className="header-category-drop-down-main-menu">
+        <div id="category-header" class="header-category-drop-down">
+          <div class="closemainmenu" id="closemainmenu" />
+          <div class="header-category-drop-down-main-menu">
             {this.props.categories != null ? (
               <ul
                 style={{
@@ -62,6 +93,7 @@ export default class Category extends React.Component {
               >
                 {this.props.categories.map(category => (
                   <li
+                    id={"category" + category.id}
                     key={category.id}
                     className="header-category-drop-down-main-menu-item"
                   >
@@ -78,7 +110,7 @@ export default class Category extends React.Component {
                     </a>
                     <SubCategory
                       category={category}
-                      id={"category" + category.id}
+                      identifier={"category12" + category.id}
                     />
                   </li>
                 ))}
@@ -97,7 +129,6 @@ export default class Category extends React.Component {
             )}
           </div>
         </div>
-        <div class="cover-page" onClick={this.toggleCategory} />
       </div>
     );
   }
@@ -132,7 +163,7 @@ class SubCategory extends React.Component {
 
   render() {
     return (
-      <ul id={this.props.id}>
+      <ul id={this.props.identifier}>
         {this.props.category.genres.map(genre => (
           <li key={genre.id}>
             <a
@@ -142,7 +173,7 @@ class SubCategory extends React.Component {
                 genre
               )}
             >
-              {genre.name}
+              {genre.name + this.props.identifier}
             </a>
           </li>
         ))}

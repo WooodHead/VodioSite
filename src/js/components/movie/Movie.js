@@ -162,6 +162,10 @@ export default class Movie extends React.Component {
     });
   }
 
+  download() {
+    
+  }
+
   purchase() {
     if (
       this.props.session.session != null &&

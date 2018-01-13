@@ -238,17 +238,7 @@ header#header {
   height: 45px;
   float: left;
 }
-.header-category-show {
-  width: 120px;
-  height: 45px;
-  border-radius: 45px;
-  background: url("../img/header-meta-icons.png") no-repeat 70px -135px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0, 0, 0.68, -0.07);
-}
-.header-category-show:hover {
-  background-color: #e2e2e2;
-}
+
 .closemainmenu {
   width: 30px;
   float: left;
@@ -258,74 +248,7 @@ header#header {
   cursor: pointer;
   display: none;
 }
-.header-category-drop-down {
-  display: none;
-  width: 100%;
-  max-width: 400px;
-  overflow: hidden;
-  background: #fff;
-  position: absolute;
-  left: 0;
-  z-index: 10000000000000001;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 15px 30px;
-  border-radius: 5px;
-  box-sizing: border-box;
-  top: 75px;
-}
-.header-category-drop-down-main-menu {
-  display: block;
-  width: 100%;
-  height: 265px;
-  position: relative;
-  padding-bottom: 20px;
-}
-.header-category-drop-down-main-menu .header-category-drop-down-main-menu-item {
-  display: block;
-  list-style: none;
-  width: 100px;
-  height: 85px;
-  float: right;
-  border-bottom: solid 2px #eee;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item:hover {
-  border-color: #eb0089;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  a {
-  display: block;
-  width: 100%;
-  height: 85px;
-  color: #b3b3b3;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item:hover
-  a {
-  color: #eb0089;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item:hover
-  ul
-  li
-  a {
-  color: #b3b3b3;
-}
-/* .header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item:hover
-  ul {
-  display: block;
-} */
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  a
-  strong {
-  display: block;
-  width: 100%;
-  text-align: center;
-  font: 300 0.85em/45px "IRSans", Sans-serif;
-  overflow-x: hidden;
-}
+
 .hcdmmi-icon {
   display: block;
   width: 100%;
@@ -336,53 +259,7 @@ header#header {
 .hcdmmi-icon:before {
   line-height: 65px;
 }
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  ul {
-  display: none;
-  position: absolute;
-  width: 560px;
-  overflow: hidden;
-  left: 0;
-  right: 20px;
-  padding-top: 20px;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  ul
-  li {
-  display: block;
-  float: right;
-  width: 16.6666666666667%;
-  height: 40px;
-  box-sizing: border-box;
-  font: 300 0.75em/40px "IRSans", Sans-serif;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  ul
-  li
-  a {
-  display: block;
-  width: 100%;
-  height: 40px;
-  border-radius: 5px;
-  padding-right: 20px;
-  box-sizing: border-box;
-}
-.header-category-drop-down-main-menu
-  .header-category-drop-down-main-menu-item
-  ul
-  li
-  a:hover {
-  background: #f7f7f7;
-}
-.header-category-show span {
-  display: block;
-  margin-right: 45px;
-  font: 300 0.75em/45px "IRSans", Sans-serif;
-  color: #eb0089;
-}
+
 .header-login-win-show {
   display: none;
   position: absolute;
@@ -3961,59 +3838,7 @@ footer#footer {
   .header-search {
     margin-right: 2px;
   }
-  .header-category-drop-down-main-menu {
-    padding-bottom: 0px;
-    height: auto;
-    display: block;
-    position: fixed;
-    left: 0px;
-    background: white;
-    top: 110px;
-    width: 170px;
-    z-index: 2000;
-  }
-  .header-category-drop-down-main-menu
-    .header-category-drop-down-main-menu-item {
-    display: block;
-    width: 100%;
-    border-bottom: solid 2px #eee;
-    height: auto;
-  }
-  .header-category-drop-down-main-menu-item {
-    display: block;
-    list-style: none;
-    width: 100%;
-    float: right;
-    border-bottom: solid 2px #eee;
-  }
-
-  .header-category-drop-down-main-menu
-    .header-category-drop-down-main-menu-item
-    a {
-    display: block;
-    width: 100%;
-    color: #b3b3b3;
-    height: auto;
-  }
-
-  .header-category-drop-down-main-menu
-    .header-category-drop-down-main-menu-item
-    ul {
-    display: none;
-    position: inherit;
-    padding-top: 0px;
-  }
-  .header-category-drop-down-main-menu
-    .header-category-drop-down-main-menu-item
-    ul
-    li {
-    display: block;
-    float: right;
-    width: 100%;
-    height: 40px;
-    box-sizing: border-box;
-    font: 300 0.75em/40px "IRSans", Sans-serif;
-  }
+ 
   .icon-play-button {
     display: none;
   }
