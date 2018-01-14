@@ -7,6 +7,11 @@ module.exports = {
   entry: {
     app: "./src/index.js"
   },
+  resolve: {
+    alias: {
+      webworkify: "webworkify-webpack-dropin"
+    }
+  },
   module: {
     loaders: [
       {
@@ -47,14 +52,14 @@ module.exports = {
     }),
     new CleanWebpackPlugin(["dist"]),
     new HtmlWebpackPlugin({
-      template : __dirname + '/src/index.html',
-      filename:'index.html',
-      inject :'body'
+      template: __dirname + "/src/index.html",
+      filename: "index.html",
+      inject: "body"
     })
   ],
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: '/'
+    publicPath: "/"
   }
 };

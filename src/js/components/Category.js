@@ -21,13 +21,17 @@ export default class Category extends React.Component {
   }
 
   onCategoryClicked(category, genre) {
-    // this.props.session.history.push("/list");
-    // this.props.session.offset = 0;
-    // var url = this.makeUrl(category, genre);
-    // this.props.session.listUrl = url;
-    // this.props.session.isInitiating = true;
-    // this.props.session.title = category.name;
-    // this.props.session.fetchList();
+    var width = $(window).width();
+    if (width > 740) {
+      this.props.session.history.push("/list");
+      this.props.session.offset = 0;
+      var url = this.makeUrl(category, genre);
+      this.props.session.listUrl = url;
+      this.props.session.isInitiating = true;
+      this.props.session.title = category.name;
+      this.props.session.fetchList();
+      this.closeMainMenu();
+    }
   }
   closeMainMenu() {
     $(".header-category-drop-down").hide();
@@ -39,6 +43,14 @@ export default class Category extends React.Component {
   }
 
   componentDidUpdate() {
+    $(window).click(function() {
+      $("#category-header").hide(100);
+    });
+
+    $("#category-header").click(function(event) {
+      event.stopPropagation();
+    });
+
     if (this.props.categories != null) {
       var width = $(window).width();
       if (width > 740) {
@@ -82,7 +94,11 @@ export default class Category extends React.Component {
           <span>دسته‌بندی‌ها</span>
         </div>
         <div id="category-header" class="header-category-drop-down">
-          <div class="closemainmenu" id="closemainmenu" />
+          <div
+            class="closemainmenu"
+            id="closemainmenu"
+            onClick={this.closeMainMenu.bind(this)}
+          />
           <div class="header-category-drop-down-main-menu">
             {this.props.categories != null ? (
               <ul
@@ -111,6 +127,7 @@ export default class Category extends React.Component {
                     <SubCategory
                       category={category}
                       identifier={"category12" + category.id}
+                      onClose={this.closeMainMenu.bind(this)}
                     />
                   </li>
                 ))}
@@ -156,14 +173,33 @@ class SubCategory extends React.Component {
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
     this.props.session.listUrl = url;
-    this.props.session.title = category.name + " - " + genre.name;
+    var title = category.name;
+    if (genre) {
+      title = title + " - " + genre.name;
+    }
+    title = this.props.session.title;
     this.props.session.isInitiating = true;
     this.props.session.fetchList();
+    this.props.onClose();
   }
 
   render() {
+    var allGenres = null;
+    if ($(window).width() < 741) {
+      allGenres = (
+        <li>
+          <a
+            onClick={this.onGenreClicked.bind(this, this.props.category, null)}
+          >
+            همه
+          </a>
+        </li>
+      );
+    }
+
     return (
       <ul id={this.props.identifier}>
+        {allGenres}
         {this.props.category.genres.map(genre => (
           <li key={genre.id}>
             <a
@@ -173,7 +209,7 @@ class SubCategory extends React.Component {
                 genre
               )}
             >
-              {genre.name + this.props.identifier}
+              {genre.name}
             </a>
           </li>
         ))}
