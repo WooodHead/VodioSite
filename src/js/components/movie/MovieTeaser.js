@@ -9,6 +9,7 @@ import playIcon from "../../../img/player/play.svg";
 import fastforwardIcon from "../../../img/player/fast-forward.svg";
 import fastbackwardIcon from "../../../img/player/fast-backward.svg";
 import "../../../css/controls.css";
+import { latinToPersian, persianToLatin } from "../../util/util";
 
 export default class MovieTeaser extends React.Component {
   constructor(props) {
@@ -18,14 +19,14 @@ export default class MovieTeaser extends React.Component {
       showInitialPlay: false,
       showControls: true,
       url:
-        "http://media.vodio.ir/StreamTokenHandler.ashx?token=D279F8F1-3A49-4676-91BE-3741AEDEFBB7&movieId=1"
+        "http://s4.filmnet.co/m3u8handler.ashx?id=2016&key=4f4272c5-3d4f-4673-901a-f3d071ab6b13&__DeviceId=b54b4f9d-c33f-4edc-a0f8-5cd2acb54280&clienttype=3"
     };
   }
 
   initiateVideo() {
     this.setState({ showControls: true, showInitialPlay: false });
     var url =
-      "http://media.vodio.ir/StreamTokenHandler.ashx?token=D279F8F1-3A49-4676-91BE-3741AEDEFBB7&movieId=1";
+      "http://s4.filmnet.co/m3u8handler.ashx?id=2016&key=4f4272c5-3d4f-4673-901a-f3d071ab6b13&__DeviceId=b54b4f9d-c33f-4edc-a0f8-5cd2acb54280&clienttype=3";
     this.addEventListeners(url);
     // var bufferingIdx = -1;
     // var events = {
@@ -78,46 +79,63 @@ export default class MovieTeaser extends React.Component {
     this.addEventListeners();
   }
 
+  fullScreen() {
+    var element = document.getElementById("player");
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
+
   render() {
     return (
-      <div
-        id="player"
-        style={{
-          background: "black",
-          width: "931px",
-          height: "500px",
-          margin: "10px",
-          right: "50%",
-          position: "relative",
-          marginRight: "-465px"
-        }}
-      >
-        {this.state.showInitialPlay && (
-          <InitialPlay initialPlay={this.initiateVideo.bind(this)} />
-        )}
-        {this.state.showLoading && <Loading />}
+      <div class="player-container">
+        <div id="player" class="fullscreen">
+          {this.state.showInitialPlay && (
+            <InitialPlay initialPlay={this.initiateVideo.bind(this)} />
+          )}
+          {this.state.showLoading && <Loading />}
 
-        {this.state.showControls && (
-          <div id="video-controls" class="controls display-control">
-            <button id="playpause" type="button" data-state="play">
-              Play/Pause
-            </button>
+          {this.state.showControls && (
+            <div id="video-controls" class="controls display-control">
+              <button id="playpause" type="button" data-state="play">
+                Play/Pause
+              </button>
+              <p id="currentTime" class="current-time">
+                {latinToPersian("00:00:00")}
+              </p>
+              <p id="duration" class="duration">
+                / {latinToPersian("00:00:00")}{" "}
+              </p>
 
-            <button id="mute" type="button" data-state="mute">
-              Mute/Unmute
-            </button>
-            <div class=".volume-bar"></div>
-            <div class="dropdown">
-              <button id="quality-btn" class="dropbtn btn-settings" />
-              <div id="quality" class="dropdown-content" />
+              <button id="mute" type="button" data-state="mute">
+                Mute/Unmute
+              </button>
+
+              <div id="volume" class="volume">
+                <div id="volume-mask" class="volume-mask" />
+                <input type="range" id="volume-bar" class="volume-bar" />
+              </div>
+              <div class="dropdown">
+                <button id="quality-btn" class="dropbtn btn-settings" />
+                <div id="quality" class="dropdown-content" />
+              </div>
+
+              <div class="progress-container" id="progress">
+                <div
+                  id="progress-bar"
+                  style={{ height: "100%", background: "#7d1d65" }}
+                />
+              </div>
             </div>
-
-            <div class="progress-container" id="progress">
-              <div id="progress-bar" style={{height:'100%',background:'#7d1d65'}}/>
-            </div>
-          </div>
-        )}
-        <video id="video" />
+          )}
+          <video id="video" />
+        </div>
       </div>
     );
   }
@@ -196,9 +214,18 @@ export default class MovieTeaser extends React.Component {
       playpause = document.getElementById("playpause"),
       mute = document.getElementById("mute"),
       progress = document.getElementById("progress"),
-      progressBar = document.getElementById("progress-bar");
+      progressBar = document.getElementById("progress-bar"),
+      volume = document.getElementById("volume"),
+      volumeBar = document.getElementById("volume-bar"),
+      volumeMask = document.getElementById("volume-mask"),
+      duration = document.getElementById("duration"),
+      currentTime = document.getElementById("currentTime");
 
     var videoSource = url;
+
+    volumeBar.value = 100;
+    video.volume = 1;
+    volumeMask.style.width = volumeBar.value / 100 * volume.offsetWidth + "px";
 
     video.controls = false;
 
@@ -212,6 +239,29 @@ export default class MovieTeaser extends React.Component {
         initVideoQualityOptions(hls);
       });
     }
+
+    volumeBar.addEventListener(
+      "input",
+      function() {
+        video.volume = volumeBar.value / 100;
+        volumeMask.style.width =
+          volumeBar.value / 100 * volume.offsetWidth + "px";
+          if(volumeBar.value == 0){
+            mute.setAttribute("data-state","unmute")
+          }else{
+            mute.setAttribute("data-state","mute")
+          }
+      },
+      false
+    );
+
+    // volume.addEventListener("click", function(e) {
+    //   var posX = $(this).offset().left;
+    //   var pos = (e.pageX - posX) / 130;
+    //   volumeBar.value = pos * 100;
+    //   console.log(pos * 100);
+    //   video.volume = volumeBar.value;
+    // });
 
     // Add events for buttons
     playpause.addEventListener("click", function(e) {
@@ -263,6 +313,36 @@ export default class MovieTeaser extends React.Component {
       progress.value = video.currentTime;
       progressBar.style.width =
         Math.floor(video.currentTime / video.duration * 100) + "%";
+
+      var durationHour = parseInt(video.duration / 3600);
+      var durationMinute = parseInt(
+        (video.duration - durationHour * 3600) / 60
+      );
+      var durationSecond =
+        parseInt(video.duration) - durationHour * 3600 - durationMinute * 60;
+
+      var currentHour = parseInt(video.currentTime / 3600);
+      var currentMinute = parseInt(
+        (video.currentTime - currentHour * 3600) / 60
+      );
+      var currentSecond =
+        parseInt(video.currentTime) - currentHour * 3600 - currentMinute * 60;
+
+      currentTime.innerHTML = latinToPersian(
+        ("0" + currentHour).slice(-2) +
+          ":" +
+          ("0" + currentMinute).slice(-2) +
+          ":" +
+          ("0" + currentSecond).slice(-2)
+      );
+      duration.innerHTML = latinToPersian(
+        "/ " +
+          ("0" + durationHour).slice(-2) +
+          ":" +
+          ("0" + durationMinute).slice(-2) +
+          ":" +
+          ("0" + durationSecond).slice(-2)
+      );
     });
 
     // Changes the button state of certain button's so the correct visuals can be displayed with CSS
