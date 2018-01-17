@@ -19,7 +19,8 @@ export default class MovieTeaser extends React.Component {
       showInitialPlay: false,
       showControls: true,
       url:
-        "http://s4.filmnet.co/m3u8handler.ashx?id=2016&key=4f4272c5-3d4f-4673-901a-f3d071ab6b13&__DeviceId=b54b4f9d-c33f-4edc-a0f8-5cd2acb54280&clienttype=3"
+        "http://s4.filmnet.co/m3u8handler.ashx?id=2016&key=4f4272c5-3d4f-4673-901a-f3d071ab6b13&__DeviceId=b54b4f9d-c33f-4edc-a0f8-5cd2acb54280&clienttype=3",
+      volume: 0
     };
   }
 
@@ -112,25 +113,32 @@ export default class MovieTeaser extends React.Component {
               <p id="duration" class="duration">
                 / {latinToPersian("00:00:00")}{" "}
               </p>
-
-              <button id="mute" type="button" data-state="mute">
-                Mute/Unmute
+              <button
+                id="fullscreen"
+                class="fullscreen-button"
+                type="button"
+                onClick={this.fullScreen.bind(this)}
+              >
+                Play/Pause
               </button>
 
-              <div id="volume" class="volume">
-                <div id="volume-mask" class="volume-mask" />
-                <input type="range" id="volume-bar" class="volume-bar" />
+              <div id="volume-container" class="volume-container">
+                <button id="mute" type="button" data-state="unmute">
+                  Mute/Unmute
+                </button>
+
+                <div id="volume" class="volume vertical-heighest-first">
+                  <div id="volume-mask" class="volume-mask" />
+                  <input type="range" id="volume-bar" class="volume-bar" />
+                </div>
               </div>
               <div class="dropdown">
                 <button id="quality-btn" class="dropbtn btn-settings" />
-                <div id="quality" class="dropdown-content" />
               </div>
+              <div id="quality" class="dropdown-quality" />
 
-              <div class="progress-container" id="progress">
-                <div
-                  id="progress-bar"
-                  style={{ height: "100%", background: "#7d1d65" }}
-                />
+              <div class="seek-container" id="seek-container">
+                <input type="range" id="seek-bar" min="0" class="seek-bar" />
               </div>
             </div>
           )}
@@ -219,14 +227,18 @@ export default class MovieTeaser extends React.Component {
       volumeBar = document.getElementById("volume-bar"),
       volumeMask = document.getElementById("volume-mask"),
       duration = document.getElementById("duration"),
-      currentTime = document.getElementById("currentTime");
+      currentTime = document.getElementById("currentTime"),
+      volumeContainer = document.getElementById("volume-container"),
+      seekBar = document.getElementById("seek-bar"),
+      seekContainer = document.getElementById("seek-container");
 
     var videoSource = url;
 
     volumeBar.value = 100;
-    video.volume = 1;
-    volumeMask.style.width = volumeBar.value / 100 * volume.offsetWidth + "px";
-
+    video.volume = 0;
+    volumeMask.style.width =
+      volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+    seekBar.value = 0;
     video.controls = false;
 
     // HLS video init
@@ -240,79 +252,73 @@ export default class MovieTeaser extends React.Component {
       });
     }
 
-    volumeBar.addEventListener(
-      "input",
-      function() {
-        video.volume = volumeBar.value / 100;
-        volumeMask.style.width =
-          volumeBar.value / 100 * volume.offsetWidth + "px";
-          if(volumeBar.value == 0){
-            mute.setAttribute("data-state","unmute")
-          }else{
-            mute.setAttribute("data-state","mute")
-          }
-      },
-      false
-    );
-
-    // volume.addEventListener("click", function(e) {
-    //   var posX = $(this).offset().left;
-    //   var pos = (e.pageX - posX) / 130;
-    //   volumeBar.value = pos * 100;
-    //   console.log(pos * 100);
-    //   video.volume = volumeBar.value;
-    // });
-
-    // Add events for buttons
     playpause.addEventListener("click", function(e) {
       if (video.paused || video.ended) video.play();
       else video.pause();
     });
 
-    mute.addEventListener("click", function(e) {
-      video.muted = !video.muted;
-      changeButtonState("mute");
+    volumeContainer.addEventListener("mouseover", function(e) {
+      volume.style.display = "block";
+      volumeContainer.style.height = "195px";
+      volumeMask.style.width =
+        volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+    });
+    volumeContainer.addEventListener("mouseout", function(e) {
+      volume.style.display = "none";
+      volumeContainer.style.height = "30px";
     });
 
-    // React to the user clicking within the progress bar
-    progress.addEventListener("click", function(e) {
-      var pos =
-        (e.pageX -
-          (this.offsetLeft +
-            this.offsetParent.offsetLeft +
-            player.offsetLeft)) /
-        this.offsetWidth;
-      video.currentTime = pos * video.duration;
-    });
-
-    // Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
-    video.addEventListener("loadedmetadata", function() {
-      progress.setAttribute("max", video.duration);
-    });
-
-    // Add event listeners for video specific events
-    video.addEventListener(
-      "play",
-      function() {
-        changeButtonState("playpause");
-      },
-      false
-    );
-    video.addEventListener(
-      "pause",
-      function() {
-        changeButtonState("playpause");
-      },
-      false
+    mute.addEventListener(
+      "click",
+      function(e) {
+        video.muted = !video.muted;
+        changeButtonState("mute");
+        if (mute.getAttribute("data-state") == "unmute") {
+          volumeBar.value = this.state.volume;
+          volumeMask.style.width =
+            volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+        } else {
+          this.setState({ volume: volumeBar.value });
+          volumeBar.value = 0;
+          volumeMask.style.width = "0px";
+        }
+      }.bind(this)
     );
 
-    // As the video is playing, update the progress bar
-    video.addEventListener("timeupdate", function() {
-      if (!progress.getAttribute("max"))
-        progress.setAttribute("max", video.duration);
-      progress.value = video.currentTime;
-      progressBar.style.width =
-        Math.floor(video.currentTime / video.duration * 100) + "%";
+    volumeBar.addEventListener(
+      "input",
+      function() {
+        video.volume = volumeBar.value / 100;
+        volumeMask.style.width =
+          volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+        this.setState({ volume: volumeBar.value });
+        if (volumeBar.value == 0) {
+          mute.setAttribute("data-state", "mute");
+        } else {
+          video.muted = false;
+          mute.setAttribute("data-state", "unmute");
+        }
+      }.bind(this),
+      false
+    );
+
+    function TimeUpdate() {
+      var video = document.getElementById("video"),
+        seekBar = document.getElementById("seek-bar");
+
+      if (!seekBar.getAttribute("max"))
+        seekBar.setAttribute("max", video.duration);
+      seekBar.value = video.currentTime;
+      var val = (video.currentTime + 10) / video.duration;
+      seekBar.style.backgroundImage =
+        "-webkit-gradient(linear, left top, right top, " +
+        "color-stop(" +
+        val +
+        ", #7d1d65), " +
+        "color-stop(" +
+        val +
+        ", transparent)" +
+        ")";
 
       var durationHour = parseInt(video.duration / 3600);
       var durationMinute = parseInt(
@@ -343,6 +349,95 @@ export default class MovieTeaser extends React.Component {
           ":" +
           ("0" + durationSecond).slice(-2)
       );
+    }
+
+    seekBar.addEventListener(
+      "mousedown",
+      function() {
+        video.removeEventListener("timeupdate", TimeUpdate);
+      }.bind(this)
+    );
+
+    seekBar.addEventListener(
+      "mouseup",
+      function() {
+        video.currentTime = seekBar.value;
+        video.addEventListener("timeupdate", TimeUpdate);
+      }.bind(this)
+    );
+
+    seekBar.addEventListener(
+      "input",
+      function() {
+        var val =
+          ($("#seek-bar").val() - $("#seek-bar").attr("min")) /
+          ($("#seek-bar").attr("max") - $("#seek-bar").attr("min"));
+
+        $("#seek-bar").css(
+          "background-image",
+          "-webkit-gradient(linear, left top, right top, " +
+            "color-stop(" +
+            val +
+            ", #7d1d65), " +
+            "color-stop(" +
+            val +
+            ", transparent)" +
+            ")"
+        );
+      }.bind(this),
+      false
+    );
+
+    // Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
+    video.addEventListener("loadedmetadata", function() {
+      seekBar.setAttribute("max", video.duration);
+    });
+
+    video.addEventListener("loadeddata", function() {
+      video.addEventListener("timeupdate", TimeUpdate);
+    });
+
+    // Add event listeners for video specific events
+    video.addEventListener(
+      "play",
+      function() {
+        changeButtonState("playpause");
+      },
+      false
+    );
+    video.addEventListener(
+      "pause",
+      function() {
+        changeButtonState("playpause");
+      },
+      false
+    );
+
+    video.addEventListener("progress", function() {
+      var bg = "linear-gradient(to right,";
+      console.log(video.buffered);
+      for (var i = 0; i < video.buffered.length; i++) {
+        if (i > 0) {
+          bg =
+            bg +
+            ",white " +
+            video.buffered.start(i) / video.duration * 100 +
+            "%,";
+        }
+        bg =
+          bg +
+          "#ed6fcd " +
+          video.buffered.start(i) / video.duration * 100 +
+          "%," +
+          "#ed6fcd " +
+          video.buffered.end(i) / video.duration * 100 +
+          "%," +
+          " white " +
+          video.buffered.end(i) / video.duration * 100 +
+          "%";
+      }
+      bg = bg + ")";
+      seekContainer.style.backgroundImage = bg;
     });
 
     // Changes the button state of certain button's so the correct visuals can be displayed with CSS
@@ -357,7 +452,7 @@ export default class MovieTeaser extends React.Component {
         }
       } else if (type == "mute") {
         // Mute button
-        mute.setAttribute("data-state", video.muted ? "unmute" : "mute");
+        mute.setAttribute("data-state", video.muted ? "mute" : "unmute");
       }
     }
 
