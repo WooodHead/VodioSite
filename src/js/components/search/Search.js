@@ -86,12 +86,9 @@ export default class Search extends React.Component {
 
         <img
           style={{
-            width: "35px",
-            height: "35px",
-            padding: "5px",
-            top: "0px",
-            left: "0px",
-            float: "left"
+            width: "24px",
+            height: "24px",
+            padding: "6px"
           }}
           src={exit}
           onClick={this.onClick.bind(this)}

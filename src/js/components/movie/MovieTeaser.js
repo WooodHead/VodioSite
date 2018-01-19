@@ -27,7 +27,9 @@ export default class MovieTeaser extends React.Component {
       error: {
         cannotPlay: false
       },
-      doesPlayed: false
+      doesPlayed: false,
+      testText: "",
+      showTestText: false
     };
   }
 
@@ -123,6 +125,9 @@ export default class MovieTeaser extends React.Component {
     return (
       <div class="player-container">
         <div id="player" class="fullscreen">
+          {this.state.showTestText && (
+            <div class="error-cannot-play">{this.state.testText}</div>
+          )}
           {this.state.error.cannotPlay && (
             <div class="error-cannot-play">این ویدیو قابلیت پخش ندارد</div>
           )}
@@ -139,19 +144,21 @@ export default class MovieTeaser extends React.Component {
                   type="button"
                   data-state="play"
                   onClick={this.play.bind(this)}
+                  style={{background:"red"}}
                 >
                   Play/Pause
                 </button>
               )}
               {Hls.isSupported() && (
                 <div>
-                  <p id="currentTime" class="current-time">
+                  <p id="currentTime" class="current-time" style={{background:"green"}}>
                     {latinToPersian("00:00:00")}
                   </p>
-                  <p id="duration" class="duration">
+                  <p id="duration" class="duration" style={{background:"yellow"}}>
                     / {latinToPersian("00:00:00")}
                   </p>
                   <button
+                  style={{background:"purple"}}
                     id="fullscreen"
                     class="fullscreen-button"
                     type="button"
@@ -160,22 +167,22 @@ export default class MovieTeaser extends React.Component {
                     Play/Pause
                   </button>
 
-                  <div id="volume-container" class="volume-container">
-                    <button id="mute" type="button" data-state="unmute">
+                  <div id="volume-container" class="volume-container" style={{background:"blue"}}>
+                    <button id="mute" type="button" data-state="unmute" style={{background:"pink"}}>
                       Mute/Unmute
                     </button>
 
-                    <div id="volume" class="volume vertical-heighest-first">
+                    <div id="volume" class="volume vertical-heighest-first" style={{background:"orange"}}>
                       <div id="volume-mask" class="volume-mask" />
                       <input type="range" id="volume-bar" class="volume-bar" />
                     </div>
                   </div>
                   <div class="dropdown">
-                    <button id="quality-btn" class="dropbtn btn-settings" />
+                    <button id="quality-btn" style={{background:"brown"}} class="dropbtn btn-settings" />
                   </div>
-                  <div id="quality" class="dropdown-quality" />
+                  <div id="quality" class="dropdown-quality" style={{background:"aqua"}}/>
 
-                  <div class="seek-container" id="seek-container">
+                  <div class="seek-container" id="seek-container" style={{background:"blueviolet"}}>
                     <input
                       type="range"
                       id="seek-bar"
@@ -195,73 +202,6 @@ export default class MovieTeaser extends React.Component {
 
   addEventListeners() {
     var url = this.state.url;
-    var videoControls = document.getElementById("video-controls"),
-      video = document.getElementById("video"),
-      player = document.getElementById("player");
-    // HLS video init
-    // Hide controls in case of no mouse or touch activity for 10 seconds
-
-    // Display controls on mouseover
-    player.addEventListener("mouseover", function() {
-      videoControls.classList.add("display-control");
-    });
-
-    // Hide controls on mouse out of video
-    var isOnPlayer = false;
-
-    player.addEventListener("mouseenter", function() {
-      isOnPlayer = true;
-    });
-
-    // Make mouse out function for nested children
-    function makeMouseOutFn(elem) {
-      var list = traverseChildren(elem);
-      return function onMouseOut(event) {
-        var e = event.toElement || event.relatedTarget;
-        if (!!~list.indexOf(e)) {
-          return;
-        }
-        isOnPlayer = false;
-        hideControls();
-      };
-    }
-
-    player.addEventListener("mouseout", makeMouseOutFn(player), true);
-
-    // Hide controls if no mouse movement for 12 seconds
-    var timer = setTimeout(hideControls, 12000);
-    document.addEventListener("mousemove", function() {
-      if (isOnPlayer) {
-        videoControls.classList.add("display-control");
-      }
-      clearTimeout(timer);
-      timer = setTimeout(hideControls, 12000);
-    });
-
-    function hideControls() {
-      if (!video.paused) {
-        videoControls.classList.remove("display-control");
-      }
-    }
-
-    // Utility function for traverse children nodes
-    function traverseChildren(elem) {
-      var children = [];
-      var q = [];
-      q.push(elem);
-      while (q.length > 0) {
-        var elem = q.pop();
-        children.push(elem);
-        pushAll(elem.children);
-      }
-      function pushAll(elemArray) {
-        for (var i = 0; i < elemArray.length; i++) {
-          q.push(elemArray[i]);
-        }
-      }
-      return children;
-    }
-
     var player = document.getElementById("player"),
       video = document.getElementById("video"),
       videoControls = document.getElementById("video-controls"),
@@ -278,293 +218,364 @@ export default class MovieTeaser extends React.Component {
       seekBar = document.getElementById("seek-bar"),
       seekContainer = document.getElementById("seek-container");
 
-    var videoSource = url;
-
-    volumeBar.value = 100;
-    video.volume = 0;
-    volumeMask.style.width =
-      volumeBar.value / 100 * volumeBar.offsetWidth + "px";
-    seekBar.value = 0;
-    video.controls = false;
-
     if (Hls.isSupported()) {
+      this.setState({ testText: "supported", showTestText: true });
       try {
         var hls = new Hls();
-        hls.loadSource(videoSource);
+        hls.loadSource(url);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, function() {
           video.play();
           initVideoQualityOptions(hls);
         });
-      } catch (err) {
-        this.setState({ error: { cannotPlay: true } });
-      }
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = url;
-      video.addEventListener("canplay", function() {
-        video.play();
-      });
-    }
 
-    playpause.addEventListener("click", function(e) {
-      if (video.paused || video.ended) video.play();
-      else video.pause();
-    });
+        // HLS video init
+        // Hide controls in case of no mouse or touch activity for 10 seconds
 
-    volumeContainer.addEventListener("mouseover", function(e) {
-      volume.style.display = "block";
-      volumeContainer.style.height = "195px";
-      volumeMask.style.width =
-        volumeBar.value / 100 * volumeBar.offsetWidth + "px";
-    });
-    volumeContainer.addEventListener("mouseout", function(e) {
-      volume.style.display = "none";
-      volumeContainer.style.height = "30px";
-    });
+        // Display controls on mouseover
+        player.addEventListener("mouseover", function() {
+          videoControls.classList.add("display-control");
+        });
 
-    mute.addEventListener(
-      "click",
-      function(e) {
-        video.muted = !video.muted;
-        changeButtonState("mute");
-        if (mute.getAttribute("data-state") == "unmute") {
-          volumeBar.value = this.state.volume;
-          volumeMask.style.width =
-            volumeBar.value / 100 * volumeBar.offsetWidth + "px";
-        } else {
-          this.setState({ volume: volumeBar.value });
-          volumeBar.value = 0;
-          volumeMask.style.width = "0px";
+        // Hide controls on mouse out of video
+        var isOnPlayer = false;
+
+        player.addEventListener("mouseenter", function() {
+          isOnPlayer = true;
+        });
+        // Make mouse out function for nested children
+        function makeMouseOutFn(elem) {
+          var list = traverseChildren(elem);
+          return function onMouseOut(event) {
+            var e = event.toElement || event.relatedTarget;
+            if (!!~list.indexOf(e)) {
+              return;
+            }
+            isOnPlayer = false;
+            hideControls();
+          };
         }
-      }.bind(this)
-    );
 
-    volumeBar.addEventListener(
-      "input",
-      function() {
-        video.volume = volumeBar.value / 100;
+        player.addEventListener("mouseout", makeMouseOutFn(player), true);
+
+        // Hide controls if no mouse movement for 12 seconds
+        var timer = setTimeout(hideControls, 12000);
+        document.addEventListener("mousemove", function() {
+          if (isOnPlayer) {
+            videoControls.classList.add("display-control");
+          }
+          clearTimeout(timer);
+          timer = setTimeout(hideControls, 12000);
+        });
+
+        function hideControls() {
+          if (!video.paused) {
+            videoControls.classList.remove("display-control");
+          }
+        }
+
+        // Utility function for traverse children nodes
+        function traverseChildren(elem) {
+          var children = [];
+          var q = [];
+          q.push(elem);
+          while (q.length > 0) {
+            var elem = q.pop();
+            children.push(elem);
+            pushAll(elem.children);
+          }
+          function pushAll(elemArray) {
+            for (var i = 0; i < elemArray.length; i++) {
+              q.push(elemArray[i]);
+            }
+          }
+          return children;
+        }
+
+        volumeBar.value = 100;
+        video.volume = 1;
         volumeMask.style.width =
           volumeBar.value / 100 * volumeBar.offsetWidth + "px";
-        this.setState({ volume: volumeBar.value });
-        if (volumeBar.value == 0) {
-          mute.setAttribute("data-state", "mute");
-        } else {
-          video.muted = false;
-          mute.setAttribute("data-state", "unmute");
+        seekBar.value = 0;
+        video.controls = false;
+
+        playpause.addEventListener("click", function(e) {
+          if (video.paused || video.ended) video.play();
+          else video.pause();
+        });
+
+        if (!isMobile) {
+          volumeContainer.addEventListener("mouseover", function(e) {
+            volume.style.display = "block";
+            volumeContainer.style.height = "195px";
+            volumeMask.style.width =
+              volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+          });
+          volumeContainer.addEventListener("mouseout", function(e) {
+            volume.style.display = "none";
+            volumeContainer.style.height = "30px";
+          });
         }
-      }.bind(this),
-      false
-    );
+  
+        mute.addEventListener(
+          "click",
+          function(e) {
+            video.muted = !video.muted;
+            changeButtonState("mute");
+            if (mute.getAttribute("data-state") == "unmute") {
+              volumeBar.value = this.state.volume;
+              volumeMask.style.width =
+                volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+            } else {
+              this.setState({ volume: volumeBar.value });
+              volumeBar.value = 0;
+              volumeMask.style.width = "0px";
+            }
+          }.bind(this)
+        );
 
-    function TimeUpdate() {
-      var video = document.getElementById("video"),
-        seekBar = document.getElementById("seek-bar");
+        volumeBar.addEventListener(
+          "input",
+          function() {
+            video.volume = volumeBar.value / 100;
+            volumeMask.style.width =
+              volumeBar.value / 100 * volumeBar.offsetWidth + "px";
+            this.setState({ volume: volumeBar.value });
+            if (volumeBar.value == 0) {
+              mute.setAttribute("data-state", "mute");
+            } else {
+              video.muted = false;
+              mute.setAttribute("data-state", "unmute");
+            }
+          }.bind(this),
+          false
+        );
 
-      if (!seekBar.getAttribute("max"))
-        seekBar.setAttribute("max", video.duration);
-      seekBar.value = video.currentTime;
-      var val = video.currentTime / video.duration;
-      seekBar.style.backgroundImage =
-        "-webkit-gradient(linear, left top, right top, " +
-        "color-stop(" +
-        val +
-        ", #7d1d65), " +
-        "color-stop(" +
-        val +
-        ", transparent)" +
-        ")";
+        function TimeUpdate() {
+          var video = document.getElementById("video"),
+            seekBar = document.getElementById("seek-bar");
 
-      var durationHour = parseInt(video.duration / 3600);
-      var durationMinute = parseInt(
-        (video.duration - durationHour * 3600) / 60
-      );
-      var durationSecond =
-        parseInt(video.duration) - durationHour * 3600 - durationMinute * 60;
-
-      var currentHour = parseInt(video.currentTime / 3600);
-      var currentMinute = parseInt(
-        (video.currentTime - currentHour * 3600) / 60
-      );
-      var currentSecond =
-        parseInt(video.currentTime) - currentHour * 3600 - currentMinute * 60;
-
-      currentTime.innerHTML = latinToPersian(
-        ("0" + currentHour).slice(-2) +
-          ":" +
-          ("0" + currentMinute).slice(-2) +
-          ":" +
-          ("0" + currentSecond).slice(-2)
-      );
-      duration.innerHTML = latinToPersian(
-        "/ " +
-          ("0" + durationHour).slice(-2) +
-          ":" +
-          ("0" + durationMinute).slice(-2) +
-          ":" +
-          ("0" + durationSecond).slice(-2)
-      );
-    }
-
-    seekBar.addEventListener(
-      "mousedown",
-      function() {
-        video.removeEventListener("timeupdate", TimeUpdate);
-      }.bind(this)
-    );
-
-    seekBar.addEventListener(
-      "mouseup",
-      function() {
-        video.currentTime = seekBar.value;
-        video.addEventListener("timeupdate", TimeUpdate);
-      }.bind(this)
-    );
-
-    seekBar.addEventListener(
-      "input",
-      function() {
-        var val =
-          ($("#seek-bar").val() - $("#seek-bar").attr("min")) /
-          ($("#seek-bar").attr("max") - $("#seek-bar").attr("min"));
-
-        $("#seek-bar").css(
-          "background-image",
-          "-webkit-gradient(linear, left top, right top, " +
+          if (!seekBar.getAttribute("max"))
+            seekBar.setAttribute("max", video.duration);
+          seekBar.value = video.currentTime;
+          var val = video.currentTime / video.duration;
+          seekBar.style.backgroundImage =
+            "-webkit-gradient(linear, left top, right top, " +
             "color-stop(" +
             val +
             ", #7d1d65), " +
             "color-stop(" +
             val +
             ", transparent)" +
-            ")"
+            ")";
+
+          var durationHour = parseInt(video.duration / 3600);
+          var durationMinute = parseInt(
+            (video.duration - durationHour * 3600) / 60
+          );
+          var durationSecond =
+            parseInt(video.duration) -
+            durationHour * 3600 -
+            durationMinute * 60;
+
+          var currentHour = parseInt(video.currentTime / 3600);
+          var currentMinute = parseInt(
+            (video.currentTime - currentHour * 3600) / 60
+          );
+          var currentSecond =
+            parseInt(video.currentTime) -
+            currentHour * 3600 -
+            currentMinute * 60;
+
+          currentTime.innerHTML = latinToPersian(
+            ("0" + currentHour).slice(-2) +
+              ":" +
+              ("0" + currentMinute).slice(-2) +
+              ":" +
+              ("0" + currentSecond).slice(-2)
+          );
+          duration.innerHTML = latinToPersian(
+            "/ " +
+              ("0" + durationHour).slice(-2) +
+              ":" +
+              ("0" + durationMinute).slice(-2) +
+              ":" +
+              ("0" + durationSecond).slice(-2)
+          );
+        }
+
+        seekBar.addEventListener(
+          "mousedown",
+          function() {
+            video.removeEventListener("timeupdate", TimeUpdate);
+          }.bind(this)
         );
-      }.bind(this),
-      false
-    );
 
-    // Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
-    video.addEventListener("loadedmetadata", function() {
-      seekBar.setAttribute("max", video.duration);
-    });
+        seekBar.addEventListener(
+          "mouseup",
+          function() {
+            video.currentTime = seekBar.value;
+            video.addEventListener("timeupdate", TimeUpdate);
+          }.bind(this)
+        );
 
-    video.addEventListener("loadeddata", function() {
-      video.addEventListener("timeupdate", TimeUpdate);
-    });
+        seekBar.addEventListener(
+          "input",
+          function() {
+            var val =
+              ($("#seek-bar").val() - $("#seek-bar").attr("min")) /
+              ($("#seek-bar").attr("max") - $("#seek-bar").attr("min"));
 
-    // Add event listeners for video specific events
-    video.addEventListener(
-      "play",
-      function() {
-        changeButtonState("playpause");
-      },
+            $("#seek-bar").css(
+              "background-image",
+              "-webkit-gradient(linear, left top, right top, " +
+                "color-stop(" +
+                val +
+                ", #7d1d65), " +
+                "color-stop(" +
+                val +
+                ", transparent)" +
+                ")"
+            );
+          }.bind(this),
+          false
+        );
 
-      false
-    );
-    video.addEventListener(
-      "pause",
-      function() {
-        changeButtonState("playpause");
-      },
-      false
-    );
+        // Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
+        video.addEventListener("loadedmetadata", function() {
+          seekBar.setAttribute("max", video.duration);
+        });
 
-    video.addEventListener("progress", function() {
-      var bg = "linear-gradient(to right,";
-      for (var i = 0; i < video.buffered.length; i++) {
-        if (i > 0) {
-          bg =
-            bg +
-            ",white " +
-            video.buffered.start(i) / video.duration * 100 +
-            "%,";
-        }
-        bg =
-          bg +
-          "#ed6fcd " +
-          video.buffered.start(i) / video.duration * 100 +
-          "%," +
-          "#ed6fcd " +
-          video.buffered.end(i) / video.duration * 100 +
-          "%," +
-          " white " +
-          video.buffered.end(i) / video.duration * 100 +
-          "%";
-      }
-      bg = bg + ")";
-      seekContainer.style.backgroundImage = bg;
-    });
+        video.addEventListener("loadeddata", function() {
+          video.addEventListener("timeupdate", TimeUpdate);
+        });
 
-    // Changes the button state of certain button's so the correct visuals can be displayed with CSS
-    function changeButtonState(type) {
-      // Play/Pause button
-      if (type == "playpause") {
-        if (video.paused || video.ended) {
-          playpause.setAttribute("data-state", "play");
-          videoControls.classList.add("display-control");
-        } else {
-          playpause.setAttribute("data-state", "pause");
-        }
-      } else if (type == "mute") {
-        // Mute button
-        mute.setAttribute("data-state", video.muted ? "mute" : "unmute");
-      }
-    }
+        // Add event listeners for video specific events
+        video.addEventListener(
+          "play",
+          function() {
+            changeButtonState("playpause");
+          },
 
-    // Video Quality Controls
+          false
+        );
+        video.addEventListener(
+          "pause",
+          function() {
+            changeButtonState("playpause");
+          },
+          false
+        );
 
-    function initVideoQualityOptions(hls) {
-      var qualityBtn = document.getElementById("quality-btn");
-      var quality = document.getElementById("quality");
+        video.addEventListener("progress", function() {
+          var bg = "linear-gradient(to right,";
+          for (var i = 0; i < video.buffered.length; i++) {
+            if (i > 0) {
+              bg =
+                bg +
+                ",white " +
+                video.buffered.start(i) / video.duration * 100 +
+                "%,";
+            }
+            bg =
+              bg +
+              "#ed6fcd " +
+              video.buffered.start(i) / video.duration * 100 +
+              "%," +
+              "#ed6fcd " +
+              video.buffered.end(i) / video.duration * 100 +
+              "%," +
+              " white " +
+              video.buffered.end(i) / video.duration * 100 +
+              "%";
+          }
+          bg = bg + ")";
+          seekContainer.style.backgroundImage = bg;
+        });
 
-      qualityBtn.addEventListener("click", function(event) {
-        makeActive();
-        quality.classList.toggle("show");
-      });
-
-      //Create and append the options
-      var qualities = hls.levels;
-      for (var i = 0; i < qualities.length; i++) {
-        var q = document.createElement("a");
-        q.setAttribute("data-value", i);
-        q.setAttribute("class", "quality");
-        q.text = qualities[i].name + "p";
-        quality.appendChild(q);
-      }
-
-      // update dropdown selection
-      var elems = document.querySelectorAll("#quality a");
-
-      function makeActive(UserSelectionEvent) {
-        for (var i = 0; i < elems.length; i++) {
-          if (!UserSelectionEvent && i == hls.currentLevel) {
-            elems[i].classList.add("active");
-          } else {
-            elems[i].classList.remove("active");
+        // Changes the button state of certain button's so the correct visuals can be displayed with CSS
+        function changeButtonState(type) {
+          // Play/Pause button
+          if (type == "playpause") {
+            if (video.paused || video.ended) {
+              playpause.setAttribute("data-state", "play");
+              videoControls.classList.add("display-control");
+            } else {
+              playpause.setAttribute("data-state", "pause");
+            }
+          } else if (type == "mute") {
+            // Mute button
+            mute.setAttribute("data-state", video.muted ? "mute" : "unmute");
           }
         }
-        if (UserSelectionEvent) {
-          var q_level = parseInt(this.getAttribute("data-value"));
-          hls.currentLevel = q_level;
-          this.classList.add("active");
-        }
-      }
 
-      for (var i = 0; i < elems.length; i++)
-        elems[i].addEventListener("mousedown", makeActive);
+        // Video Quality Controls
 
-      // hide dd if click elsewhere
-      window.onclick = function(event) {
-        if (!event.target.matches(".dropbtn")) {
-          var dropdowns = document.getElementsByClassName("dropdown-content");
-          var i;
-          for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains("show")) {
-              openDropdown.classList.remove("show");
+        function initVideoQualityOptions(hls) {
+          var qualityBtn = document.getElementById("quality-btn");
+          var quality = document.getElementById("quality");
+
+          qualityBtn.addEventListener("click", function(event) {
+            makeActive();
+            quality.classList.toggle("show");
+          });
+
+          //Create and append the options
+          var qualities = hls.levels;
+          for (var i = 0; i < qualities.length; i++) {
+            var q = document.createElement("a");
+            q.setAttribute("data-value", i);
+            q.setAttribute("class", "quality");
+            q.text = qualities[i].name + "p";
+            quality.appendChild(q);
+          }
+
+          // update dropdown selection
+          var elems = document.querySelectorAll("#quality a");
+
+          function makeActive(UserSelectionEvent) {
+            for (var i = 0; i < elems.length; i++) {
+              if (!UserSelectionEvent && i == hls.currentLevel) {
+                elems[i].classList.add("active");
+              } else {
+                elems[i].classList.remove("active");
+              }
+            }
+            if (UserSelectionEvent) {
+              var q_level = parseInt(this.getAttribute("data-value"));
+              hls.currentLevel = q_level;
+              this.classList.add("active");
             }
           }
+
+          for (var i = 0; i < elems.length; i++)
+            elems[i].addEventListener("mousedown", makeActive);
+
+          // hide dd if click elsewhere
+          window.onclick = function(event) {
+            if (!event.target.matches(".dropbtn")) {
+              var dropdowns = document.getElementsByClassName(
+                "dropdown-content"
+              );
+              var i;
+              for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains("show")) {
+                  openDropdown.classList.remove("show");
+                }
+              }
+            }
+          };
         }
-      };
+      } catch (err) {
+        this.setState({ error: { cannotPlay: true } });
+      }
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      this.setState({ testText: "not supported", showTestText: true });
+      video.src = url;
+      video.addEventListener("canplay", function() {
+        video.play();
+      });
     }
   }
 }

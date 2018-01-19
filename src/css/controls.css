@@ -79,7 +79,7 @@ video {
 .volume-container {
   position: absolute;
   width: 30px;
-  height: 195px;
+  height: 30px;
   left: 150px;
   bottom: 15px;
   z-index: 30;

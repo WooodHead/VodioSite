@@ -190,8 +190,8 @@ header#header {
 }
 
 .search-header-input {
-  width: 285px;
-  height: 35px;
+  width: calc(100% - 36px);
+  height: 36px;
   float: right;
   box-sizing: border-box;
   border: none;
@@ -202,7 +202,7 @@ header#header {
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
   text-align: right;
-  margin-right: 10px;
+  padding-right: 10px;
 }
 
 .search-container {

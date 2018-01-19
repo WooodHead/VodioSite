@@ -62,11 +62,11 @@ export default class MobileSearch extends React.Component {
       <div class="mobile-search">
         <div
           style={{
-            width: "100%",
+            width: "calc(100% - 10px)",
             display: "inline-flex",
-            paddingRight: "20px",
-            paddingLeft: "20px",
-            height: "35px"
+            height: "35px",
+            marginRight: "5px",
+            marginLeft: "5px"
           }}
         >
           <input
@@ -76,7 +76,7 @@ export default class MobileSearch extends React.Component {
             onChange={this.searchFunction.bind(this)}
             value={this.state.searchInputValue}
             style={{
-              width: "100%",
+              width: "calc(100% - 40px)",
               borderRadius: "17.5px",
               paddingRight: "10px",
               border: "1px solid rgba(0,0,0,0.1)",
@@ -88,12 +88,11 @@ export default class MobileSearch extends React.Component {
           />
           <img
             style={{
-              width: "35px",
-              height: "35px",
-              padding: "5px",
-              top: "0px",
-              left: "0px",
-              float: "left"
+              width: '35px',
+              height: '35px',
+              top: '0px',
+              left: '0px',
+              float: 'left'
             }}
             src={search}
             onClick={this.onClick.bind(this)}
