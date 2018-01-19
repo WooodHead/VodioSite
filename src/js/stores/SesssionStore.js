@@ -8,6 +8,9 @@ class SessionStore {
   @observable history = null;
   @observable showLoading = false;
 
+  @observable isMobile = false;
+  @observable isIosDevice = false;
+
   @observable movieIdForPurchase = -1;
 
   @observable title = "لیست";

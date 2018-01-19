@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import logo from "../../img/logo.svg";
-import "bootstrap/dist/css/bootstrap.css";
 import { MainUrl } from "../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import Search from "./search/Search";
