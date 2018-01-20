@@ -38,51 +38,6 @@ export default class MovieTeaser extends React.Component {
     var url =
       "http://s4.filmnet.co/m3u8handler.ashx?id=2016&key=4f4272c5-3d4f-4673-901a-f3d071ab6b13&__DeviceId=b54b4f9d-c33f-4edc-a0f8-5cd2acb54280&clienttype=3";
     this.addEventListeners(url);
-    // var bufferingIdx = -1;
-    // var events = {
-    //   url: url,
-    //   t0: performance.now(),
-    //   load: [],
-    //   buffer: [],
-    //   video: [],
-    //   level: [],
-    //   bitrate: []
-    // };
-    // if (Hls.isSupported()) {
-    //   var video = document.getElementById("video");
-    //   var hls = new Hls();
-    //   hls.loadSource(url);
-    //   hls.attachMedia(video);
-    //   hls.on(
-    //     Hls.Events.MEDIA_ATTACHED,
-    //     function() {
-    //       bufferingIdx = -1;
-    //       events.video.push({
-    //         time: performance.now() - events.t0,
-    //         type: "Media attached"
-    //       });
-    //     }.bind(this)
-    //   );
-    //   hls.on(Hls.Events.FRAG_PARSING_INIT_SEGMENT, function(event, data) {
-    //     var event = {
-    //       time: performance.now() - events.t0,
-    //       type: data.id + " init segment"
-    //     };
-    //     events.video.push(event);
-    //   });
-    //   hls.on(
-    //     Hls.Events.MANIFEST_PARSED,
-    //     function() {
-    //       video.play();
-    //       this.setState({ showLoading: false, showControls: true });
-    //     }.bind(this)
-    //   );
-    // } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    //   video.src = "https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8";
-    //   video.addEventListener("canplay", function() {
-    //     video.play();
-    //   });
-    // }
   }
 
   play() {
@@ -138,27 +93,31 @@ export default class MovieTeaser extends React.Component {
 
           {this.state.showControls && (
             <div id="video-controls" class="controls display-control">
-              {(Hls.isSupported() || !this.state.doesPlayed) && (
+              {Hls.isSupported() && (
                 <button
                   id="playpause"
                   type="button"
                   data-state="play"
                   onClick={this.play.bind(this)}
-                  style={{background:"red"}}
                 >
                   Play/Pause
                 </button>
               )}
               {Hls.isSupported() && (
                 <div>
-                  <p id="currentTime" class="current-time" style={{background:"green"}}>
+                  <p
+                    id="currentTime"
+                    class="current-time"
+                  >
                     {latinToPersian("00:00:00")}
                   </p>
-                  <p id="duration" class="duration" style={{background:"yellow"}}>
+                  <p
+                    id="duration"
+                    class="duration"
+                  >
                     / {latinToPersian("00:00:00")}
                   </p>
                   <button
-                  style={{background:"purple"}}
                     id="fullscreen"
                     class="fullscreen-button"
                     type="button"
@@ -167,22 +126,41 @@ export default class MovieTeaser extends React.Component {
                     Play/Pause
                   </button>
 
-                  <div id="volume-container" class="volume-container" style={{background:"blue"}}>
-                    <button id="mute" type="button" data-state="unmute" style={{background:"pink"}}>
+                  <div
+                    id="volume-container"
+                    class="volume-container"
+                  >
+                    <button
+                      id="mute"
+                      type="button"
+                      data-state="unmute"
+                    >
                       Mute/Unmute
                     </button>
 
-                    <div id="volume" class="volume vertical-heighest-first" style={{background:"orange"}}>
+                    <div
+                      id="volume"
+                      class="volume vertical-heighest-first"
+                    >
                       <div id="volume-mask" class="volume-mask" />
                       <input type="range" id="volume-bar" class="volume-bar" />
                     </div>
                   </div>
                   <div class="dropdown">
-                    <button id="quality-btn" style={{background:"brown"}} class="dropbtn btn-settings" />
+                    <button
+                      id="quality-btn"
+                      class="dropbtn btn-settings"
+                    />
                   </div>
-                  <div id="quality" class="dropdown-quality" style={{background:"aqua"}}/>
+                  <div
+                    id="quality"
+                    class="dropdown-quality"
+                  />
 
-                  <div class="seek-container" id="seek-container" style={{background:"blueviolet"}}>
+                  <div
+                    class="seek-container"
+                    id="seek-container"
+                  >
                     <input
                       type="range"
                       id="seek-bar"
@@ -194,7 +172,13 @@ export default class MovieTeaser extends React.Component {
               )}
             </div>
           )}
-          <video id="video" />
+          {Hls.isSupported() ? (
+            <video id="video" />
+          ) : (
+            <video id="video" controls autoplay>
+              <source src={this.state.url} type="application/x-mpegURL" />
+            </video>
+          )}
         </div>
       </div>
     );
@@ -219,7 +203,7 @@ export default class MovieTeaser extends React.Component {
       seekContainer = document.getElementById("seek-container");
 
     if (Hls.isSupported()) {
-      this.setState({ testText: "supported", showTestText: true });
+      this.setState({ testText: "supported", showTestText: false });
       try {
         var hls = new Hls();
         hls.loadSource(url);
@@ -304,7 +288,7 @@ export default class MovieTeaser extends React.Component {
           else video.pause();
         });
 
-        if (!isMobile) {
+        if (!this.props.session.isMobile) {
           volumeContainer.addEventListener("mouseover", function(e) {
             volume.style.display = "block";
             volumeContainer.style.height = "195px";
@@ -316,7 +300,7 @@ export default class MovieTeaser extends React.Component {
             volumeContainer.style.height = "30px";
           });
         }
-  
+
         mute.addEventListener(
           "click",
           function(e) {
@@ -571,8 +555,9 @@ export default class MovieTeaser extends React.Component {
         this.setState({ error: { cannotPlay: true } });
       }
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      this.setState({ testText: "not supported", showTestText: true });
+      this.setState({ showControls: false });
       video.src = url;
+      video.setAttribute("controls", "controls");
       video.addEventListener("canplay", function() {
         video.play();
       });

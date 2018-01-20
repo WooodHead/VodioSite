@@ -1,7 +1,7 @@
 import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
-import search from "../../../img/search.png";
+import search from "../../../img/search.svg";
 
 @inject("session")
 @observer

@@ -3307,7 +3307,7 @@ footer#footer {
   left: 20px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  background: url(../img/search.png) no-repeat center;
+  background: url(../img/search.svg) no-repeat center;
 }
 
 .mobile-search-icon:hover {
@@ -3838,7 +3838,7 @@ footer#footer {
   .header-search {
     margin-right: 2px;
   }
- 
+
   .icon-play-button {
     display: none;
   }
@@ -4667,7 +4667,7 @@ footer#footer {
 }
 .slick-dots li button:before {
   font-family: "slick";
-  font-size: 6px;
+  font-size: 1px;
   line-height: 20px;
 
   position: absolute;
@@ -4691,6 +4691,8 @@ footer#footer {
   background: #7d1d65;
   border: 3px solid;
   border-color: white;
+  width: 14px;
+  height: 14px;
   border-radius: 10px;
 }
 
@@ -4997,4 +4999,3 @@ footer#footer {
   height: 24px;
   fill: #24a59c;
 }
-

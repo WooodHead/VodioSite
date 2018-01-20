@@ -14,9 +14,9 @@ const app = document.getElementById("conroot");
 
 ReactDOM.render(
   <Provider session={sessionStore}>
-    <BrowserRouter>
+    <HashRouter>
       <Layout />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>,
   app
 );

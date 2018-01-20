@@ -1,7 +1,7 @@
 import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
-import exit from "../../../img/search.png";
+import exit from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
 @inject("session")
