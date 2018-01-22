@@ -147,6 +147,38 @@ export default class Login extends React.Component {
                 this.props.session.movieIdForPurchase = -1;
               window.location.replace(url);
             }
+
+            if(this.props.session.commentText != null){
+              $.ajax({
+                type: "POST",
+                headers: {
+                  token: this.props.session.session
+                },
+                url: MainUrl + "/setcomment.ashx",
+                data: JSON.stringify({
+                  name:
+                    $.trim(this.props.session.commentName) == ""
+                      ? "بی نام"
+                      : $.trim(this.state.this.props.sesssion.commentName),
+                  text: this.props.session.commentText,
+                  email: $.trim(this.props.session.commentEmail),
+                  movieId: this.props.movieId
+                }),
+                dataType: "json",
+                success: function(data, textStatus, jQxhr) {
+                  if (data.errorCode != 0) {
+                  } else {
+                  }
+                  this.props.onCommentSubmit();
+                }.bind(this),
+                error: function(jqXhr, textStatus, errorThrown) {
+                  console.log(errorThrown);
+                }
+              });
+              this.props.session.commentText = null;
+              this.props.session.commentName = null;
+              this.props.session.commentEmail = null;
+            }
             sessionStorage.setItem("session", data.data.token);
             sessionStorage.removeItem("otp");
             sessionStorage.removeItem("msisdn");
@@ -403,12 +435,12 @@ export default class Login extends React.Component {
                   style={{
                     color: "white",
                     position: "absolute",
-                    marginTop: "27px",
+                    marginTop: "23px",
                     left: "55px",
                     float: "left"
                   }}
                 >
-                  A Trop to the Moon
+                  A Trip to the Moon
                 </p>
               </div>
             </div>

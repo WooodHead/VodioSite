@@ -24,7 +24,6 @@ export default class MobileSearch extends React.Component {
   }
 
   onClick() {
-    console.log("asdf");
     $("#MobileSearchInput").focus();
     this.search();
   }

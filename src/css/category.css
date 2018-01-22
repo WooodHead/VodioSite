@@ -1,6 +1,8 @@
 .header-category {
   height: 45px;
-  float: left;
+  float: right;
+  margin-top: 28px;
+  margin-right: 20px;
 }
 .header-category-show {
   width: 120px;
@@ -21,7 +23,7 @@
   overflow: hidden;
   background: #fff;
   position: absolute;
-  left: 0;
+  right: 100px;
   z-index: 10000000000000001;
   box-shadow: rgba(0, 0, 0, 0.2) 0 15px 30px;
   border-radius: 5px;
@@ -128,9 +130,14 @@
   display: block;
   margin-right: 45px;
   font: 300 0.75em/45px "IRSans", Sans-serif;
-  color: #fb2b5b;
+  color: #eb0089;
 }
 
+@media all and (max-width: 520px) {
+  .header-category {
+    margin-top: 10px;
+  }
+}
 @media all and (max-width: 740px) {
   .header-category-drop-down {
     top: 0;

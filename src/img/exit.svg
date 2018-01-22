@@ -1,7 +1,22 @@
-<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg height="512px" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="512px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">
-<![CDATA[
-	.st0{display:inline;}
-	.st1{fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st2{display:none;}
-]]>
-</style><g class="st2" id="cross"><g class="st0"><line class="st1" x1="112.5" x2="401" y1="112.5" y2="401"/><line class="st1" x1="401" x2="112.5" y1="112.5" y2="401"/></g></g><g id="cross_copy"><path d="M268.064,256.75l138.593-138.593c3.124-3.124,3.124-8.189,0-11.313c-3.125-3.124-8.189-3.124-11.314,0L256.75,245.436   L118.157,106.843c-3.124-3.124-8.189-3.124-11.313,0c-3.125,3.124-3.125,8.189,0,11.313L245.436,256.75L106.843,395.343   c-3.125,3.125-3.125,8.189,0,11.314c1.562,1.562,3.609,2.343,5.657,2.343s4.095-0.781,5.657-2.343L256.75,268.064l138.593,138.593   c1.563,1.562,3.609,2.343,5.657,2.343s4.095-0.781,5.657-2.343c3.124-3.125,3.124-8.189,0-11.314L268.064,256.75z"/></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+</style>
+<g id="cross" class="st0">
+	<g class="st1">
+		<line class="st2" x1="112.5" y1="112.5" x2="401" y2="401"/>
+		<line class="st2" x1="401" y1="112.5" x2="112.5" y2="401"/>
+	</g>
+</g>
+<g id="cross_copy">
+	<path class="st3" d="M268.1,256.8l138.6-138.6c3.1-3.1,3.1-8.2,0-11.3c-3.1-3.1-8.2-3.1-11.3,0L256.8,245.4L118.2,106.8
+		c-3.1-3.1-8.2-3.1-11.3,0c-3.1,3.1-3.1,8.2,0,11.3l138.6,138.6L106.8,395.3c-3.1,3.1-3.1,8.2,0,11.3c1.6,1.6,3.6,2.3,5.7,2.3
+		s4.1-0.8,5.7-2.3l138.6-138.6l138.6,138.6c1.6,1.6,3.6,2.3,5.7,2.3s4.1-0.8,5.7-2.3c3.1-3.1,3.1-8.2,0-11.3L268.1,256.8z"/>
+</g>
+</svg>

@@ -18,10 +18,18 @@ export default class Header extends React.Component {
     };
   }
 
+  componentDidUpdate() {
+    $(".header-sign-out").click(function(event) {
+      $("#myDropdown").toggle(100);
+      event.stopPropagation();
+    });
+  }
+
   componentDidMount() {
     $(window).click(function() {
       if ($(window).width() < 1001) {
         $(".header-menu").hide(100);
+        $("#myDropdown").hide(100);
       }
     });
 
@@ -46,10 +54,6 @@ export default class Header extends React.Component {
     );
   }
 
-  myFunction() {
-    $("#myDropdown").toggle("show");
-  }
-
   signOutClicked() {
     sessionStorage.removeItem("session");
     $(".header-login").show();
@@ -61,6 +65,16 @@ export default class Header extends React.Component {
     $("#login-header-input-id").addClass("login-header-input-disabled");
     $(".login-header-submit").show();
     $(".loader-container").css("display", "none");
+  }
+
+  purchaseList() {
+    this.props.session.history.push("/purchase");
+    this.props.session.purchaseOffset = 0;
+    this.props.session.purchaseListUrl = MainUrl + "/userpurchases.ashx";
+    this.props.session.purchaseIsInitiating = true;
+    this.props.session.purchaseTitle = "خریدها";
+    this.props.session.fetchPurchaseList();
+    $("#myDropdown").hide(100);
   }
 
   render() {
@@ -75,8 +89,9 @@ export default class Header extends React.Component {
             />
           </Link>
           <span className="show-main-menu-btn icon-menu-1" />
+          <Category categories={this.state.categories} />
           <div className="">
-            <nav className="header-menu">
+            {/* <nav className="header-menu">
               <ul className="header-menu-ul">
                 <li>
                   <Link to={{ pathname: "/" }}>
@@ -91,30 +106,27 @@ export default class Header extends React.Component {
                   </a>
                 </li>
               </ul>
-            </nav>
+            </nav> */}
             <div style={{ display: "inline-flex", float: "left" }}>
               <Search />
               <div className="header-left-meta">
                 {this.props.session.session != null &&
                 this.props.session.session != "" ? (
-                  <div class="header-sign-out">
+                  <div class="header-sign-out-panel">
                     <div
                       class="dropdown"
                       id="sign-out"
                       class="header-sign-out"
-                      onClick={this.myFunction.bind(this)}
                     />
                     <div id="myDropdown" class="dropdown-content">
-                      <a href="#home">خریدها</a>
-                      <a href="#contact">پروفایل</a>
+                      <a onClick={this.purchaseList.bind(this)}>خریدها</a>
+                      {/* <a href="#contact">پروفایل</a> */}
                       <a onClick={this.signOutClicked.bind(this)}>خروج</a>
                     </div>
                   </div>
                 ) : (
                   <HeaderLogin />
                 )}
-
-                <Category categories={this.state.categories} />
               </div>
             </div>
           </div>

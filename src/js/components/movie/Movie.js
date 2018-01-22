@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import MovieTeaser from "./MovieTeaser";
+import Player from "./Player";
 import MovieComment from "./MovieComment";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
 import TopMovies from "../topmovies/TopMovies";
@@ -125,8 +125,12 @@ export default class Movie extends React.Component {
       error: function(request, textStatus, errorThrown) {}
     });
 
+
     $.ajax({
       type: "GET",
+      headers: {
+        token: this.props.session.session
+      },
       url: MainUrl + "/movie.ashx?movieId=1",
       success: function(data, textStatus, request) {
         this.setState({ movie: data.data });
@@ -162,8 +166,8 @@ export default class Movie extends React.Component {
     });
   }
 
-  download() {
-    
+  play() {
+    this.props.session.showPlayerFullscreen = true;
   }
 
   purchase() {
@@ -264,31 +268,32 @@ export default class Movie extends React.Component {
                       <span>
                         {latinToPersian(this.state.movie.rate.toString())}
                       </span>
-                      <p>امتیاز از </p>
+                      {/* <p>امتیاز از </p>
                       <p>&nbsp;</p>
                       <p>
                         {latinToPersian(this.state.movie.ratedUsers.toString())}
                       </p>
                       <p>&nbsp;</p>
-                      <p> کاربر </p>
+                      <p> کاربر </p> */}
+                      <p>امتیاز ودیو</p>
                     </div>
 
                     <div class="single-product-add-container">
                       {this.state.movie.bought == true ? (
                         <a
-                          onClick={this.download.bind(this)}
+                          onClick={this.play.bind(this)}
                           className="single-product-add"
                         >
                           <img
                             src={purchaseImage}
                             style={{
                               width: "20px",
-                              marginLeft: "15px",
-                              marginRight: "15px"
+                              marginRight: "15px",
+                              height: "45px"
                             }}
                           />
                           <strong class="single-product-add-strong">
-                            دانلود
+                            نمایش
                           </strong>
                         </a>
                       ) : (
@@ -300,7 +305,7 @@ export default class Movie extends React.Component {
                             src={purchaseImage}
                             style={{
                               width: "20px",
-                              marginLeft: "15px",
+                              marginTop: "10px",
                               marginRight: "15px"
                             }}
                           />
@@ -309,6 +314,9 @@ export default class Movie extends React.Component {
                               " تومان"}
                           </strong>
                         </a>
+                      )}
+                      {this.props.session.showPlayerFullscreen && (
+                        <Player movie={this.state.movie} />
                       )}
                       {!this.state.closeNotify && (
                         <ToastContainer
@@ -412,7 +420,7 @@ export default class Movie extends React.Component {
                     <MovieComment movieId={this.state.movie.id} />
                   )}
                   {this.state.movieDetailClicked && (
-                    <MovieTeaser movie={this.state.movie} />
+                    <Player movie={this.state.movie} isTrailer={true} />
                   )}
                 </div>
               </div>
@@ -441,7 +449,7 @@ var Genre = React.createClass({
         {this.props.genres.map((genre, l) => (
           <div className="inline-class" key={genre.id}>
             <Link
-              className="inline-class"
+              className="inline-class r-disable"
               to={{ pathname: "/agent/" + genre.id }}
             >
               {genre.name}
@@ -464,7 +472,7 @@ var Director = React.createClass({
         {this.props.directors.agents.map((director, l) => (
           <div className="inline-class" key={director.id}>
             <Link
-              className="inline-class"
+              className="inline-class r-disable"
               to={{ pathname: "/agent/" + director.id }}
             >
               {director.name}
@@ -487,7 +495,7 @@ var Actor = React.createClass({
         {this.props.actors.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class"
+              className="inline-class r-disable"
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -510,7 +518,7 @@ var Provider = React.createClass({
         {this.props.providers.agents.map((provider, l) => (
           <div className="inline-class" key={provider.id}>
             <Link
-              className="inline-class"
+              className="inline-class r-disable"
               to={{ pathname: "/agent/" + provider.id }}
             >
               {provider.name}
@@ -533,7 +541,7 @@ var Researcher = React.createClass({
         {this.props.researchers.agents.map((researcher, l) => (
           <div className="inline-class" key={researcher.id}>
             <Link
-              className="inline-class"
+              className="inline-class r-disable"
               to={{ pathname: "/agent/" + researcher.id }}
             >
               {researcher.name}

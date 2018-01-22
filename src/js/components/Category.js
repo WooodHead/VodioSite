@@ -35,21 +35,25 @@ export default class Category extends React.Component {
   }
   closeMainMenu() {
     $(".header-category-drop-down").hide();
-    $(".cover-page").fadeToggle(100);
   }
   toggleCategory() {
     $(".header-category-drop-down").slideToggle(100);
-    $(".cover-page").fadeToggle(100);
   }
 
   componentDidUpdate() {
     $(window).click(function() {
-      $("#category-header").hide(100);
+      var width = $(window).width();
+      if (width > 740) {
+        $("#category-header").hide(100);
+      }
     });
 
-    $("#category-header").click(function(event) {
-      event.stopPropagation();
-    });
+    $("#header-category-show").click(
+      function(event) {
+        this.toggleCategory();
+        event.stopPropagation();
+      }.bind(this)
+    );
 
     if (this.props.categories != null) {
       var width = $(window).width();
@@ -69,7 +73,6 @@ export default class Category extends React.Component {
           $("#" + "category" + category.id).click(
             function() {
               this.props.categories.forEach(element => {
-                console.log(element);
                 $("#" + "category12" + element.id).hide();
               });
               $("#" + "category12" + category.id).show();
@@ -86,11 +89,7 @@ export default class Category extends React.Component {
     }
     return (
       <div class="header-category">
-        <div
-          class="header-category-show"
-          id="header-category-show"
-          onClick={this.toggleCategory.bind(this)}
-        >
+        <div class="header-category-show" id="header-category-show">
           <span>دسته‌بندی‌ها</span>
         </div>
         <div id="category-header" class="header-category-drop-down">
@@ -177,7 +176,7 @@ class SubCategory extends React.Component {
     if (genre) {
       title = title + " - " + genre.name;
     }
-    title = this.props.session.title;
+    this.props.session.title = title;
     this.props.session.isInitiating = true;
     this.props.session.fetchList();
     this.props.onClose();

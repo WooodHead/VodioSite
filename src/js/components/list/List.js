@@ -21,16 +21,15 @@ export default class List extends React.Component {
 
   componentDidMount() {
     this.props.session.showFooter = false;
-    console.log(this.props.session.isInitiating);
     if (this.props.session.isInitiating == true) {
       this.props.session.isInitiating = false;
     } else {
       if (this.props.session.listUrl == "") {
         this.props.session.listUrl = MainUrl + "/movielist.ashx?";
+        this.props.session.title = "فیلم ها"
       }
       this.props.session.offset = 0;
       this.props.session.fetchList();
-      console.log(this.props.session);
     }
 
     window.onscroll = function() {
@@ -133,6 +132,7 @@ export default class List extends React.Component {
               </div>
             </div>
           )}
+          {this.props.session.listElementsCount == 0 ? <div>محتوایی جهت نمایش وجود ندارد.</div>:null}
         </div>
       </div>
     );

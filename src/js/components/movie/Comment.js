@@ -13,30 +13,41 @@ export default class Comment extends React.Component {
     if ($.trim(this.state.text) == "") {
       $("#text-validation").slideDown("100", "linear");
     } else {
-      $.ajax({
-        type: "POST",
-        headers: {
-          token: this.props.session.session
-        },
-        url: MainUrl + "/setcomment.ashx",
-        data: JSON.stringify({
-          name:
-            $.trim(this.state.name) == "" ? "بی نام" : $.trim(this.state.name),
-          text: this.state.text,
-          email: $.trim(this.state.email),
-          movieId: this.props.movieId
-        }),
-        dataType: "json",
-        success: function(data, textStatus, jQxhr) {
-          if (data.errorCode != 0) {
-          } else {
+      if (this.props.session.session != null) {
+        $.ajax({
+          type: "POST",
+          headers: {
+            token: this.props.session.session
+          },
+          url: MainUrl + "/setcomment.ashx",
+          data: JSON.stringify({
+            name:
+              $.trim(this.state.name) == ""
+                ? "بی نام"
+                : $.trim(this.state.name),
+            text: this.state.text,
+            email: $.trim(this.state.email),
+            movieId: this.props.movieId
+          }),
+          dataType: "json",
+          success: function(data, textStatus, jQxhr) {
+            if (data.errorCode != 0) {
+            } else {
+            }
+            this.props.session.commentMovieId = this.props.movieId;
+            this.props.session.fetchCommentList();
+          }.bind(this),
+          error: function(jqXhr, textStatus, errorThrown) {
+            console.log(errorThrown);
           }
-          this.props.onCommentSubmit();
-        }.bind(this),
-        error: function(jqXhr, textStatus, errorThrown) {
-          console.log(errorThrown);
-        }
-      });
+        });
+      } else {
+        this.props.session.commentMovieId = this.props.movieId;
+        this.props.session.commentText = this.state.text;
+        this.props.session.commentName = this.state.name;
+        this.props.session.commentEmail = this.state.email;
+        this.props.session.showLogin = true;
+      }
     }
   }
 
@@ -59,23 +70,7 @@ export default class Comment extends React.Component {
     return (
       <div id="review_form">
         <div id="respond" className="comment-respond">
-          <h3 id="reply-title" className="comment-reply-title">
-            دیدگاه خود را بیان کنید!
-          </h3>
           <div className="comment-form">
-            <span id="text-validation" className="validation-error">
-              لطفا نظر خود را وارد کنید
-            </span>
-            <textarea
-              className="comment-text-box"
-              id="comment"
-              name="comment"
-              cols="43"
-              rows="5"
-              placeholder="دیدگاه شما..."
-              onChange={this.textChange.bind(this)}
-            />
-
             <input
               className="name-email"
               id="author"
@@ -94,7 +89,16 @@ export default class Comment extends React.Component {
               type="text"
               onChange={this.emailChange.bind(this)}
             />
-            <br />
+            <textarea
+              className="comment-text-box"
+              id="comment"
+              name="comment"
+              cols="43"
+              rows="5"
+              placeholder="دیدگاه شما..."
+              onChange={this.textChange.bind(this)}
+            />
+
             <button
               type="submit"
               id="submit"
@@ -103,6 +107,9 @@ export default class Comment extends React.Component {
             >
               ارسال نظر
             </button>
+            <span id="text-validation" className="validation-error">
+              لطفا نظر خود را وارد کنید
+            </span>
           </div>
         </div>
       </div>

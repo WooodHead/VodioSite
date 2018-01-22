@@ -13,12 +13,18 @@ export default class Search extends React.Component {
   }
 
   componentDidMount() {
-    $("#searchContainer").on(
-      "focusout",
+    $(window).click(
       function() {
         this.setState({ searchResult: null, searchInputValue: "" });
       }.bind(this)
     );
+
+    $("#SearchDropdown").click(function(event) {
+      event.stopPropagation();
+    });
+    $("#searchInput").click(function(event) {
+      event.stopPropagation();
+    });
   }
 
   close() {

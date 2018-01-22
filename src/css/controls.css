@@ -124,7 +124,7 @@ video {
   position: absolute;
   z-index: 1;
   right: 15px;
-  overflow: auto;
+  overflow: hidden;
   background-color: black;
   width: 100px;
   bottom: 80px;
@@ -139,7 +139,7 @@ video {
 
   cursor: pointer;
   text-decoration: none;
-
+text-align: center;
   color: white;
 }
 .controls .dropdown-quality a:hover {
@@ -213,6 +213,16 @@ video {
   margin: 10px 0px 10px 0px;
   position: relative;
   right: calc(50% - 35vw);
+}
+
+.player-container-fullscreen {
+  background: black;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
 
 @media screen and (max-width: 1000px) {
@@ -441,4 +451,23 @@ video {
   left: calc(50% - 125px);
   border-radius: 5px;
   border: 1px solid white;
+}
+
+.closemodal {
+  width: 30px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+.closemodal:path {
+  fill:red;
+}
+.closemodal:hover {
+  border-radius: 40px;
+  background: rgba(0, 0, 0, 0.15);
+}
+.close-animatedModal{
+  width:50px;
+  height:50px;
+  z-index:20;
+  position:absolute;
 }

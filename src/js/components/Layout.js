@@ -16,6 +16,7 @@ import ContactUs from "./contact/ContactUs";
 import ErrorPage from "./error/ErrorPage";
 import Loading from "./loading/Loading";
 import MobileSearch from "./search/MobileSearch";
+import Purchase from "./purchase/Purchase";
 
 @inject("session")
 @withRouter
@@ -40,17 +41,19 @@ class Layout extends React.Component {
       navigator.userAgent.match(/iPad/i) ||
       navigator.userAgent.match(/iPod/i)
     ) {
-      console.log("is ios");
       this.props.session.isIosDevice = true;
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.props.session.session =
       sessionStorage.getItem("session") != null
         ? sessionStorage.getItem("session")
         : null;
     this.props.session.history = this.props.history;
+  }
+
+  componentDidMount() {
     this.fixedHeader();
   }
 
@@ -102,6 +105,7 @@ class Layout extends React.Component {
             <Route path="/search/:keyword" component={SearchList} />
             <Route path="/vodio" component={Vodio} />
             <Route path="/ContactUs" component={ContactUs} />
+            <Route path="/purchase" component={Purchase} />
             <Route path="/error" component={ErrorPage} />
           </Switch>
         </div>

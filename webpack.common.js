@@ -7,11 +7,6 @@ module.exports = {
   entry: {
     app: "./src/index.js"
   },
-  resolve: {
-    alias: {
-      webworkify: "webworkify-webpack-dropin"
-    }
-  },
   module: {
     loaders: [
       {

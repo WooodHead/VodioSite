@@ -3,136 +3,64 @@ import Comment from "./Comment";
 import { inject, observer } from "mobx-react";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
 var moment = require("moment-jalaali");
-import {MainUrl} from '../../util/RequestHandler'
+import { MainUrl } from "../../util/RequestHandler";
 
 @inject("session")
 @observer
 export default class MovieComment extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { comments: null, commentCount: 0 };
   }
 
   showLogin() {
     this.props.session.showLogin = true;
   }
 
-  getComments() {
-    $.ajax({
-      type: "Get",
-      url: MainUrl+"/comments.ashx?movieId=" + this.props.movieId,
-      success: function(data, textStatus, jQxhr) {
-        if (data.errorCode != 0) {
-        } else {
-          if (data.data != null) {
-            data.data.forEach(element => {
-              var date = new Date(element.millisecond);
-
-              var m = moment(
-                date.getUTCFullYear() +
-                  "/" +
-                  (date.getUTCMonth() + 1) +
-                  "/" +
-                  date.getUTCDate(),
-                "YYYY/M/D"
-              );
-
-              var month = "";
-              switch (m.jMonth()) {
-                case 0:
-                  month = "فروردین";
-                  break;
-                case 1:
-                  month = "اردیبهشت";
-                  break;
-                case 2:
-                  month = "خرداد";
-                  break;
-                case 3:
-                  month = "تیر";
-                  break;
-                case 4:
-                  month = "مرداد";
-                  break;
-                case 5:
-                  month = "شهریور";
-                  break;
-                case 6:
-                  month = "مهر";
-                  break;
-                case 7:
-                  month = "آبان";
-                  break;
-                case 8:
-                  month = "آذر";
-                  break;
-                case 9:
-                  month = "دی";
-                  break;
-                case 10:
-                  month = "بهمن";
-                  break;
-                case 11:
-                  month = "اسفند";
-                  break;
-                default:
-                  break;
-              }
-
-              element.millisecond = latinToPersian(
-                m.jDate() + " " + month + " " + m.jYear()
-              );
-            });
-            this.setState({ comments: data.data, commentCount: data.count });
-          }
-        }
-      }.bind(this),
-      error: function(jqXhr, textStatus, errorThrown) {
-        console.log(errorThrown);
-      }
-    });
-  }
-
   componentDidMount() {
-    this.getComments();
+    this.props.session.commentMovieId = this.props.movieId;
+    this.props.session.fetchCommentList();
   }
 
   onCommentSubmit() {
-    this.getComments();
+    this.props.session.fetchCommentList();
   }
 
   render() {
     return (
       <div className="single-product-dec-content">
-        {this.props.session.session == null ? (
+        {/* {this.props.session.session == null ? (
           <div className="register-panel">
             ثبت نظر فقط برای اعضا می باشد.
             <a className=" register-button" onClick={this.showLogin.bind(this)}>
               <strong> عضویت</strong>
             </a>
           </div>
-        ) : (
-          <Comment
-            movieId={this.props.movieId}
-            onCommentSubmit={this.onCommentSubmit.bind(this)}
-          />
-        )}
-        {this.state.commentCount != 0 && (
+        ) : ( */}
+        <Comment
+          movieId={this.props.movieId}
+          onCommentSubmit={this.onCommentSubmit.bind(this)}
+        />
+        {/* )} */}
+        {this.props.session.commentListCount != 0 && (
           <div id="comments">
             <h2>
-              {latinToPersian(this.state.commentCount.toString())} دیدگاه ثبت
-              شده است
+              {latinToPersian(this.props.session.commentListCount.toString())}{" "}
+              دیدگاه ثبت شده است
             </h2>
             <div className="commentlist">
               <div
                 className="comment even thread-even depth-1"
                 id="li-comment-21"
               >
-                {this.state.comments.map(comment => (
+                {this.props.session.commentList.map(comment => (
                   <div
                     key={comment.id}
                     id="comment-21"
                     className="comment_container"
+                    style={{
+                      width: "100%",
+                      display: "inline-flex"
+                    }}
                   >
                     <img
                       alt=""
@@ -141,9 +69,19 @@ export default class MovieComment extends React.Component {
                       width="60"
                       height="60"
                     />
-                    <div className="comment-text">
+                    <div
+                      className="comment-text"
+                      style={{
+                        width: "calc(100% - 80px)",
+                        float: "left",
+                        borderBottom: "#caa7c1 1px solid",
+                        paddingRight: "10px",
+                        paddingBottom: "10px",
+                        paddingTop: "0px"
+                      }}
+                    >
                       <p className="meta">
-                        <strong>{comment.name}</strong> <span> / </span>
+                        <strong>{comment.name}</strong> <span>    </span>
                         <span className="comment-date">
                           {comment.millisecond}{" "}
                         </span>
