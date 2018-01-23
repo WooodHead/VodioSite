@@ -13,16 +13,16 @@ export default class Footer extends React.Component {
             <strong className="footer-title">لینک‌ها</strong>
             <ul>
               <li>
-              <Link to={{ pathname: "/" }}>صفحه اصلی</Link>
+                <Link to={{ pathname: "/" }}>صفحه اصلی</Link>
               </li>
               <li>
-              <Link to={{ pathname: "/vodio" }}>ودیو چیست؟</Link>
+                <Link to={{ pathname: "/vodio" }}>ودیو چیست؟</Link>
               </li>
               <li>
-              <Link to={{ pathname: "/ContactUs" }}>تماس با ما</Link>
+                <Link to={{ pathname: "/ContactUs" }}>تماس با ما</Link>
               </li>
               <li>
-                <a href="#">پرسش های متداول</a>
+                <Link to={{ pathname: "/faq" }}>پرسش های متداول</Link>
               </li>
             </ul>
           </div>
