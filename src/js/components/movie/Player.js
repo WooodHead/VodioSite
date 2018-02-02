@@ -104,7 +104,9 @@ export default class Player extends React.Component {
         }
       >
         <div id="player" class="fullscreen">
-          {this.props.isTrailer ? null : (
+          {this.props.isTrailer ? (
+            null || !Hls.isSupported()
+          ) : (
             <div className="close-animatedModal">
               <img
                 src={exit}
@@ -124,62 +126,67 @@ export default class Player extends React.Component {
           )}
           {this.state.showLoading && <Loading />}
 
-          {this.state.showControls && Hls.isSupported() && (
-            <div id="video-controls" class="controls display-control">
-              {Hls.isSupported() && (
-                <button
-                  id="playpause"
-                  type="button"
-                  data-state="play"
-                  onClick={this.play.bind(this)}
-                >
-                  Play/Pause
-                </button>
-              )}
-              {Hls.isSupported() && (
-                <div>
-                  <p id="currentTime" class="current-time">
-                    {latinToPersian("00:00:00")}
-                  </p>
-                  <p id="duration" class="duration">
-                    / {latinToPersian("00:00:00")}
-                  </p>
+          {this.state.showControls &&
+            Hls.isSupported() && (
+              <div id="video-controls" class="controls display-control">
+                {Hls.isSupported() && (
                   <button
-                    id="fullscreen"
-                    class="fullscreen-button"
+                    id="playpause"
                     type="button"
-                    onClick={this.fullScreen.bind(this)}
+                    data-state="play"
+                    onClick={this.play.bind(this)}
                   >
                     Play/Pause
                   </button>
-
-                  <div id="volume-container" class="volume-container">
-                    <button id="mute" type="button" data-state="unmute">
-                      Mute/Unmute
+                )}
+                {Hls.isSupported() && (
+                  <div>
+                    <p id="currentTime" class="current-time">
+                      {latinToPersian("00:00:00")}
+                    </p>
+                    <p id="duration" class="duration">
+                      / {latinToPersian("00:00:00")}
+                    </p>
+                    <button
+                      id="fullscreen"
+                      class="fullscreen-button"
+                      type="button"
+                      onClick={this.fullScreen.bind(this)}
+                    >
+                      Play/Pause
                     </button>
 
-                    <div id="volume" class="volume vertical-heighest-first">
-                      <div id="volume-mask" class="volume-mask" />
-                      <input type="range" id="volume-bar" class="volume-bar" />
+                    <div id="volume-container" class="volume-container">
+                      <button id="mute" type="button" data-state="unmute">
+                        Mute/Unmute
+                      </button>
+
+                      <div id="volume" class="volume vertical-heighest-first">
+                        <div id="volume-mask" class="volume-mask" />
+                        <input
+                          type="range"
+                          id="volume-bar"
+                          class="volume-bar"
+                        />
+                      </div>
+                    </div>
+                    <div class="dropdown">
+                      <button id="quality-btn" class="dropbtn btn-settings" />
+                    </div>
+                    <div id="quality" class="dropdown-quality" />
+
+                    <div class="seek-container" id="seek-container">
+                      <input
+                        type="range"
+                        id="seek-bar"
+                        min="0"
+                        class="seek-bar"
+                      />
                     </div>
                   </div>
-                  <div class="dropdown">
-                    <button id="quality-btn" class="dropbtn btn-settings" />
-                  </div>
-                  <div id="quality" class="dropdown-quality" />
-
-                  <div class="seek-container" id="seek-container">
-                    <input
-                      type="range"
-                      id="seek-bar"
-                      min="0"
-                      class="seek-bar"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
           {Hls.isSupported() ? (
             <video id="video" />
           ) : (

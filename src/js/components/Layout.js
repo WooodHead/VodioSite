@@ -48,8 +48,8 @@ class Layout extends React.Component {
 
   componentWillMount() {
     this.props.session.session =
-      sessionStorage.getItem("session") != null
-        ? sessionStorage.getItem("session")
+    localStorage.getItem("session") != null
+        ? localStorage.getItem("session")
         : null;
     this.props.session.history = this.props.history;
   }
@@ -71,7 +71,7 @@ class Layout extends React.Component {
         if ($w.width() > 520) {
           mainHolder.css({ margin: "100px auto 0" });
         } else {
-          mainHolder.css({ margin: "150px auto 0" });
+          mainHolder.css({ margin: "65px auto 0" });
         }
         nav.css({
           position: "fixed",

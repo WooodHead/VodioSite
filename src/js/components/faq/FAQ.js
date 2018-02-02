@@ -1,6 +1,9 @@
 import React from "react";
 
 export default class FAQ extends React.Component {
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
   render() {
     return (
       <div class="content-container max-width faq">
@@ -54,7 +57,7 @@ export default class FAQ extends React.Component {
           />
           <br />
           <textarea
-           class="faq-question-text"
+            class="faq-question-text"
             cols="43"
             rows="5"
             placeholder="سوال خود را بنویسید"

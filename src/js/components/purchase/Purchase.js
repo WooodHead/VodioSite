@@ -19,6 +19,12 @@ export default class Purchase extends React.Component {
     };
   }
 
+  componentWillMount() {
+    if(this.props.session.session == null){
+      this.props.session.history.push("/");
+    }
+  }
+
   componentDidMount() {
     this.props.session.showFooter = false;
     if (this.props.session.purchaseIsInitiating == true) {
@@ -144,7 +150,7 @@ export default class Purchase extends React.Component {
                 marginTop: "100px"
               }}
             >
-              محتوایی جهت نمایش وجود ندارد.
+              متاسفانه شما خریدی انجام نداده‌اید!
             </div>
           ) : null}
         </div>

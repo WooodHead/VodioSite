@@ -2,8 +2,9 @@ import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
+import { Link } from "react-router-dom";
 
-@inject("session")
+@inject("session", "search")
 @observer
 export default class MobileSearch extends React.Component {
   constructor(props) {
@@ -46,6 +47,7 @@ export default class MobileSearch extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
+      this.props.search.fetchSearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
       this.setState({ searchResult: null, searchInputValue: "" });
     } else {
@@ -87,11 +89,11 @@ export default class MobileSearch extends React.Component {
           />
           <img
             style={{
-              width: '35px',
-              height: '35px',
-              top: '0px',
-              left: '0px',
-              float: 'left'
+              width: "35px",
+              height: "35px",
+              top: "0px",
+              left: "0px",
+              float: "left"
             }}
             src={search}
             onClick={this.onClick.bind(this)}
@@ -107,20 +109,23 @@ export default class MobileSearch extends React.Component {
                 <ul>
                   {this.state.searchResult.map((search, l) => (
                     <li key={l} class="mobile-search-result-li">
-                      <div>
-                        <span>
-                          <span>{search.title}</span>
-                          {search.director != null ? (
-                            <span>{"کارگردان : " + search.director}</span>
-                          ) : null}
-                        </span>
-                        <img
-                          src={
-                            "http://localhost:58583//image.ashx?file=" +
-                            search.thumbnail.url
-                          }
-                        />
-                      </div>
+                      <Link to={{ pathname: "/movie/" + search.id }}>
+                        <div style={{ display: "inline-block" }}>
+                          <span>
+                            <span>{search.title}</span>
+                            {search.director != null ? (
+                              <span>{"کارگردان : " + search.director}</span>
+                            ) : null}
+                          </span>
+                          <img
+                            src={
+                              MainUrl +
+                              "/image.ashx?file=" +
+                              search.thumbnail.url
+                            }
+                          />
+                        </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>

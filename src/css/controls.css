@@ -470,4 +470,5 @@ text-align: center;
   height:50px;
   z-index:20;
   position:absolute;
+  cursor: pointer;
 }

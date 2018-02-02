@@ -27,6 +27,7 @@ export default class Category extends React.Component {
       this.props.session.offset = 0;
       var url = this.makeUrl(category, genre);
       this.props.session.listUrl = url;
+      console.log("asdf " + url);
       this.props.session.isInitiating = true;
       this.props.session.title = category.name;
       this.props.session.fetchList();

@@ -9,6 +9,7 @@ import { MainUrl } from "../../util/RequestHandler";
 import exit from "../../../img/exit.svg";
 import timerLogo from "../../../img/Timer.svg";
 import pointerLogo from "../../../img/pointer.png";
+import editIcon from "../../../img/edit.svg";
 
 @inject("session")
 @observer
@@ -17,7 +18,7 @@ export default class Login extends React.Component {
     super(props);
     this.state = {
       mobileNumber: null,
-      otpCode: null,
+      otpCode: "",
       showLoading: false,
       countDown: 60,
       showCountDown: false,
@@ -25,7 +26,9 @@ export default class Login extends React.Component {
       interval: null,
       retry: 0,
       vCaptcha: false,
-      errorMessage: ""
+      errorMessage: "",
+      showMobileNumber: false,
+      wrongCodeMessage: ""
     };
   }
 
@@ -52,7 +55,7 @@ export default class Login extends React.Component {
       this.setState({ errorMessage: "شماره صحیح نمی باشد" });
       $("#error-message").show(100);
     } else {
-      sessionStorage.setItem("msisdn", persianToLatin(this.state.mobileNumber));
+      localStorage.setItem("msisdn", persianToLatin(this.state.mobileNumber));
       var url =
         MainUrl +
         "/login.ashx?msisdn=" +
@@ -69,7 +72,8 @@ export default class Login extends React.Component {
           } else if (data.data != null && data.data.otpSent == true) {
             $(".login").slideToggle("40");
             $(".register").slideToggle("80");
-            sessionStorage.setItem("otp", "1");
+            this.setState({ showMobileNumber: true });
+            localStorage.setItem("otp", "1");
             this.setState({ retry: 1 });
             this.setState({ showLoading: false });
             this.setState({ showCountDown: true });
@@ -131,8 +135,11 @@ export default class Login extends React.Component {
           persianToLatin(this.state.otpCode),
         success: function(data, textStatus, request) {
           this.setState({ showLoading: false });
+          console.log(data);
           if (data.errorCode != 0) {
-            this.setState({ showLoading: false, errorMessage: data.msg });
+            this.setState({ showLoading: false });
+            this.setState({ wrongCodeMessage: data.msg });
+            $(".wrong-code").show(100);
           } else if (data.data != null && data.data.canLogin == true) {
             this.props.session.session = data.data.token;
             this.props.session.showLogin = false;
@@ -144,11 +151,11 @@ export default class Login extends React.Component {
                 this.props.session.movieIdForPurchase +
                 "&token=" +
                 this.props.session.session;
-                this.props.session.movieIdForPurchase = -1;
+              this.props.session.movieIdForPurchase = -1;
               window.location.replace(url);
             }
 
-            if(this.props.session.commentText != null){
+            if (this.props.session.commentText != null) {
               $.ajax({
                 type: "POST",
                 headers: {
@@ -179,9 +186,10 @@ export default class Login extends React.Component {
               this.props.session.commentName = null;
               this.props.session.commentEmail = null;
             }
-            sessionStorage.setItem("session", data.data.token);
-            sessionStorage.removeItem("otp");
-            sessionStorage.removeItem("msisdn");
+            localStorage.setItem("session", data.data.token);
+            localStorage.removeItem("otp");
+            localStorage.removeItem("msisdn");
+            window.location.reload();
           }
         }.bind(this),
         error: function(request, textStatus, errorThrown) {
@@ -191,15 +199,6 @@ export default class Login extends React.Component {
           });
         }.bind(this)
       });
-    }
-  }
-
-  otpCodeChanged(e) {
-    $("#error-message").hide(100);
-    if ($.isNumeric(persianToLatin(e.target.value))) {
-      this.setState({ otpCode: latinToPersian(e.target.value) });
-    } else if (e.target.value == "") {
-      this.setState({ otpCode: "" });
     }
   }
 
@@ -277,16 +276,51 @@ export default class Login extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ mobileNumber: sessionStorage.getItem("msisdn") });
-    if (sessionStorage.getItem("otp") == "1") {
+    $("#mobile-input").on(
+      "keyup",
+      function(e) {
+        if (e.keyCode == 13) {
+          this.sendMobileNumber();
+        }
+      }.bind(this)
+    );
+
+    $("#codeNumber").on(
+      "keydown",
+      function(e) {
+        if (e.keyCode == 13) {
+          this.sendOtpCode();
+        } else {
+          $(".wrong-code").hide(100);
+          $("#error-message").hide(100);
+          if (
+            ((e.keyCode >= 48 && e.keyCode <= 57) ||
+              (e.keyCode >= 96 && e.keyCode <= 105)) &&
+            this.state.otpCode.length < 4
+          ) {
+            this.setState({
+              otpCode: latinToPersian(this.state.otpCode + e.key)
+            });
+          } else if (e.keyCode == 8) {
+            var otpcode = this.state.otpCode.slice(0, -1);
+            this.setState({ otpCode: otpcode });
+          }
+        }
+      }.bind(this)
+    );
+
+    this.setState({ mobileNumber: localStorage.getItem("msisdn") });
+    if (localStorage.getItem("otp") == "1") {
       $(".login").slideToggle();
       $(".register").slideToggle();
+      $("#codeNumber").focus();
 
       this.setState({
         showLoading: false,
         countDown: 60,
         countDownText: latinToPersian("00:60"),
-        retry: 1
+        retry: 1,
+        showMobileNumber: true
       });
       this.setState({ showCountDown: true });
       var x = setInterval(
@@ -314,6 +348,12 @@ export default class Login extends React.Component {
     this.setState({ interval: x });
   }
 
+  editClicked() {
+    $(".login").slideToggle();
+    $(".register").slideToggle();
+    this.setState({ showMobileNumber: false });
+  }
+
   render() {
     return (
       <div className="foodmoodbg" onClick={this.closeLogin.bind(this)}>
@@ -321,6 +361,32 @@ export default class Login extends React.Component {
         <div className="container">
           <div className="foodmoodcontent">
             <div className="foodmoodform">
+              {this.state.showMobileNumber && (
+                <div
+                  class="mobile-number"
+                  onClick={this.editClicked.bind(this)}
+                >
+                  <img
+                    style={{
+                      width: "10px",
+                      float: "right",
+                      height: "18px",
+                      marginLeft: "5px"
+                    }}
+                    src={editIcon}
+                  />
+                  <span
+                    style={{
+                      left: "0",
+                      top: "0",
+                      height: "15px",
+                      float: "left"
+                    }}
+                  >
+                    {latinToPersian(this.state.mobileNumber)}
+                  </span>
+                </div>
+              )}
               <div className="close-animatedModal">
                 <img
                   src={exit}
@@ -331,14 +397,7 @@ export default class Login extends React.Component {
               <div className="foodmoodlogo">
                 <img src={vodioLogo} />
               </div>
-              <div
-                id="error-message"
-                style={{
-                  textAlign: "center",
-                  color: "red",
-                  display: "none"
-                }}
-              >
+              <div id="error-message" class="wrong-code">
                 {this.state.errorMessage}
               </div>
               <div className="login">
@@ -348,36 +407,36 @@ export default class Login extends React.Component {
                   name="name"
                   value={this.state.mobileNumber}
                   onChange={this.mobileNumberChanged.bind(this)}
-                  placeholder="شماره همراه"
+                  placeholder="شماره موبایل"
                 />
 
                 <p style={{ textAlign: "center", color: "white" }}>
-                  برای عضویت در نت فیلم شماره همراه خود را وارد کنید.
+                  برای عضویت در ودیو شماره موبایل خود را وارد کنید.
                 </p>
                 <button
                   className="submitfoodmood"
                   onClick={this.sendMobileNumber.bind(this)}
                 >
-                  ارسال شماره همراه
+                  ارسال
                 </button>
               </div>
               <div className="register">
+                <div class="wrong-code">{this.state.wrongCodeMessage}</div>
                 <input
                   id="codeNumber"
                   type="text"
                   name="name"
                   value={this.state.otpCode}
-                  onChange={this.otpCodeChanged.bind(this)}
                   placeholder="کد فعال سازی"
                 />
                 <p style={{ textAlign: "center", color: "white" }}>
-                  کد فعال سازی برای شما ارسال سد.
+                  کد فعال سازی برای شما ارسال شد.
                 </p>
                 <button
                   className="submitfoodmood"
                   onClick={this.sendOtpCode.bind(this)}
                 >
-                  ارسال کد فعال سازی
+                  ورود
                 </button>
                 <div
                   style={{

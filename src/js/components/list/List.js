@@ -20,13 +20,14 @@ export default class List extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.session.listUrl);
     this.props.session.showFooter = false;
     if (this.props.session.isInitiating == true) {
       this.props.session.isInitiating = false;
     } else {
       if (this.props.session.listUrl == "") {
         this.props.session.listUrl = MainUrl + "/movielist.ashx?";
-        this.props.session.title = "فیلم ها"
+        this.props.session.title = "فیلم ها";
       }
       this.props.session.offset = 0;
       this.props.session.fetchList();
@@ -132,7 +133,9 @@ export default class List extends React.Component {
               </div>
             </div>
           )}
-          {this.props.session.listElementsCount == 0 ? <div>محتوایی جهت نمایش وجود ندارد.</div>:null}
+          {this.props.session.listElementsCount == 0 ? (
+            <div>محتوایی جهت نمایش وجود ندارد.</div>
+          ) : null}
         </div>
       </div>
     );

@@ -32,25 +32,3 @@ $(document).ready(function() {
     $(".header-menu").slideToggle(100);
   });
 });
-
-$(function() {
-  $(".float-top-header").click(function() {
-    if (
-      location.pathname.replace(/^\//, "") ==
-        this.pathname.replace(/^\//, "") &&
-      location.hostname == this.hostname
-    ) {
-      var target = $(this.hash);
-      target = target.length ? target : $("[name=" + this.hash.slice(1) + "]");
-      if (target.length) {
-        $("html, body").animate(
-          {
-            scrollTop: 0
-          },
-          1000
-        );
-        return false;
-      }
-    }
-  });
-});

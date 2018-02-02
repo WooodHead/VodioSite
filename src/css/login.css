@@ -25,8 +25,9 @@
   background: #7a2364;
 }
 .foodmoodform {
+  position: relative;
   width: 45%;
-  float:right;
+  float: right;
 }
 .closemodal {
   width: 30px;
@@ -34,7 +35,7 @@
   margin-right: 20px;
 }
 .closemodal:path {
-  fill:red;
+  fill: red;
 }
 .closemodal:hover {
   border-radius: 40px;
@@ -95,6 +96,7 @@
   margin-bottom: 40px;
 }
 .foodmoodform input {
+  direction: ltr;
   display: block;
   width: 100%;
   max-width: 295px;
@@ -127,8 +129,8 @@
   border-radius: 3px;
   padding: 10px;
   cursor: pointer;
-  margin: 5% auto;
-  margin-bottom:0px;
+  margin: 0 auto;
+  margin-bottom: 0px;
   font-family: "IRSans";
 }
 .foodmoodpicture {
@@ -175,7 +177,7 @@
     height: auto;
     display: none;
   }
-  .vodio-caption{
+  .vodio-caption {
     display: none;
   }
 }
@@ -210,32 +212,50 @@
 
 input::-webkit-input-placeholder {
   color: #caa7c1 !important;
-  }
-   
-  input:-moz-placeholder { /* Firefox 18- */
-  color: #caa7c1 !important;  
-  }
-   
-  input::-moz-placeholder {  /* Firefox 19+ */
-  color: #caa7c1 !important;  
-  }
-   
-  input:-ms-input-placeholder {  
-  color: #caa7c1 !important;  
-  }
+}
 
-  .vodio-caption{
-    width: 55%;
-    height: 70px;
-    position: absolute;
-    bottom: 0;
-  }
-  .pointer {
-    float: left;
-    background: url(../img/pointer.png) no-repeat;
-    margin-top: 27px;
-    width: 15px;
-    background-size: contain;
-    margin-left:27px;
-  }
-  
+input:-moz-placeholder {
+  /* Firefox 18- */
+  color: #caa7c1 !important;
+}
+
+input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #caa7c1 !important;
+}
+
+input:-ms-input-placeholder {
+  color: #caa7c1 !important;
+}
+
+.vodio-caption {
+  width: 55%;
+  height: 70px;
+  position: absolute;
+  bottom: 0;
+}
+.pointer {
+  float: left;
+  background: url(../img/pointer.png) no-repeat;
+  margin-top: 27px;
+  width: 15px;
+  background-size: contain;
+  margin-left: 27px;
+}
+
+.wrong-code {
+  display: none;
+  text-align: center;
+  font-size: 13px;
+  color: #24a59c;
+}
+
+.mobile-number {
+  width: fit-content;
+  position: absolute;
+  left: 20px;
+  top: 25px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}

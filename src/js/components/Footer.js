@@ -2,13 +2,21 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 export default class Footer extends React.Component {
+  componentDidMount() {
+    $(function() {
+      $(".float-top-header").click(function() {
+        $("html, body").animate({ scrollTop: 0 }, 1000);
+      });
+    });
+  }
+
   render() {
     return (
       <footer id="footer">
-        <a href="#body" id="#top-float" className="float-top-header">
+        <a id="#top-float" className="float-top-header">
           <span className="icon-angle-up" />
         </a>
-        <div className="footer-content max-width">
+        <div className="footer-content">
           <div className="footer-links">
             <strong className="footer-title">لینک‌ها</strong>
             <ul>
@@ -50,7 +58,7 @@ export default class Footer extends React.Component {
           </div>
           <div className="footer-url-finder-download">
             <strong className="footer-title">
-              © تمام حقوق این سایت متعلق به ودیو می باشد.
+              © تمام حقوق این سایت متعلق به ودیو می‌باشد.
             </strong>
             <div className="footer-url-finder-download-content">
               تمامي كالاها و خدمات اين سایت، حسب مورد، داراي مجوزهاي لازم از

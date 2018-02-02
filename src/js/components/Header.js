@@ -55,7 +55,7 @@ export default class Header extends React.Component {
   }
 
   signOutClicked() {
-    sessionStorage.removeItem("session");
+    localStorage.removeItem("session");
     $(".header-login").show();
     $("#myDropdown").hide();
     $("#sign-out").removeClass("header-sign-out");
@@ -70,7 +70,7 @@ export default class Header extends React.Component {
   purchaseList() {
     this.props.session.history.push("/purchase");
     this.props.session.purchaseOffset = 0;
-    this.props.session.purchaseListUrl = MainUrl + "/userpurchases.ashx";
+    this.props.session.purchaseListUrl = MainUrl + "/userpurchases.ashx?";
     this.props.session.purchaseIsInitiating = true;
     this.props.session.purchaseTitle = "خریدها";
     this.props.session.fetchPurchaseList();
@@ -83,7 +83,7 @@ export default class Header extends React.Component {
         <div className="header-inner max-width">
           <Link to={{ pathname: "/" }} className="logo" title="وودیو">
             <img
-              style={{ width: "70px", height: "40px", marginTop: "10px" }}
+              style={{ width: "70px", height: "40px", marginTop: "15px" }}
               src={logo}
               alt="وودیو"
             />

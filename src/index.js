@@ -10,11 +10,17 @@ import "slick-carousel";
 import Layout from "./js/components/Layout";
 
 import sessionStore from "./js/stores/SesssionStore";
+import searchStore from "./js/stores/SearchStore";
+
+const store = {
+  session: sessionStore,
+  search: searchStore
+};
 
 const app = document.getElementById("conroot");
 
 ReactDOM.render(
-  <Provider session={sessionStore}>
+  <Provider {...store}>
     <HashRouter>
       <Layout />
     </HashRouter>

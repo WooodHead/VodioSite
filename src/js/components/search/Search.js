@@ -4,12 +4,12 @@ import { inject, observer } from "mobx-react";
 import exit from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session")
+@inject("session", "search")
 @observer
 export default class Search extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { searchResult: null, searchInputValue: "" };
+    this.state = { searchResult: null, searchInputValue: "", sarachIndex: 0 };
   }
 
   componentDidMount() {
@@ -24,6 +24,72 @@ export default class Search extends React.Component {
     });
     $("#searchInput").click(function(event) {
       event.stopPropagation();
+    });
+
+    $("#searchInput").on(
+      "keyup",
+      function(e) {
+        if (e.keyCode == 13) {
+          this.onClick();
+        }
+      }.bind(this)
+    );
+  }
+
+  componentDidUpdate() {}
+
+  searchSelectionAndHover() {
+    $(".search-result-item").on(
+      "mouseover",
+      function(e) {
+        var $listItems = $(".search-result-item");
+        $listItems.removeClass("selected");
+        if (e.target.id != undefined && e.target.id != "") {
+          $("#" + e.target.id).addClass("selected");
+        }
+      }.bind(this)
+    );
+
+    var listItems = document.getElementsByClassName("search-result-item");
+    $("#searchInput").on("keydown", function(e) {
+      var key = e.keyCode,
+        selected,
+        current,
+        index = -1;
+
+      for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].classList.contains("selected")) {
+          selected = listItems[i];
+          index = i;
+        }
+      }
+
+      if (key != 40 && key != 38 && key != 13) return;
+      if (selected != undefined && selected != null)
+        $("#" + selected.id).removeClass("selected");
+
+      if (key == 13) {
+        if (selected != undefined && selected != null) {
+          selected.click();
+        }
+        e.stopPropagation();
+        return;
+      } else if (key == 40) {
+        // Down key
+        if (index == listItems.length - 1) {
+          current = listItems[0];
+        } else {
+          current = listItems[index + 1];
+        }
+      } else if (key == 38) {
+        // Up key
+        if (index == 0) {
+          current = listItems[listItems.length - 1];
+        } else {
+          current = listItems[index - 1];
+        }
+      }
+      $("#" + current.id).addClass("selected");
     });
   }
 
@@ -49,6 +115,9 @@ export default class Search extends React.Component {
         url: MainUrl + "/search.ashx?keyword=" + e.target.value,
         success: function(data, textStatus, request) {
           this.setState({ searchResult: data.data });
+          $(".search-result-item").off("mouseover");
+          $("#searchInput").off("keydown");
+          this.searchSelectionAndHover();
         }.bind(this),
         error: function(request, textStatus, errorThrown) {}
       });
@@ -59,8 +128,13 @@ export default class Search extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
+      this.props.search.fetchSearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
-      this.setState({ searchResult: null, searchInputValue: "" });
+      this.setState({
+        searchResult: null,
+        searchInputValue: "",
+        searchIndex: 0
+      });
     } else {
       $(".search-container").addClass("no-input-shake");
       setTimeout(function() {
@@ -106,25 +180,27 @@ export default class Search extends React.Component {
               {this.state.searchResult.length == 0 ? (
                 <div />
               ) : (
-                <ul style={{ width: "100%" }}>
+                <ul id="search-result" style={{ width: "100%" }}>
                   {this.state.searchResult.map((search, l) => (
-                    <li key={l} class="search-result-li">
-                      <Link to={{ pathname: "/movie/" + search.id }}>
-                        <div>
-                          <span>
-                            <span>{search.title}</span>
-                            {search.director != null ? (
-                              <span>{"کارگردان : " + search.director}</span>
-                            ) : null}
-                          </span>
-                          <img
-                            src={
-                              "http://localhost:58583//image.ashx?file=" +
-                              search.thumbnail.url
-                            }
-                          />
-                        </div>
-                      </Link>
+                    <li key={"li" + l} id={"li" + l} class="search-result-li">
+                      <Link
+                        id={"link" + l}
+                        to={{ pathname: "/movie/" + search.id }}
+                        class="search-result-item"
+                      />
+                      <div>
+                        <span>
+                          <span>{search.title}</span>
+                          {search.director != null ? (
+                            <span>{"کارگردان : " + search.director}</span>
+                          ) : null}
+                        </span>
+                        <img
+                          src={
+                            MainUrl + "/image.ashx?file=" + search.thumbnail.url
+                          }
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>

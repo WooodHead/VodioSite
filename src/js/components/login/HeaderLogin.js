@@ -22,11 +22,11 @@ export default class HeaderLogin extends React.Component {
   }
 
   componentDidMount() {
-    if (sessionStorage.getItem("login") == "CODE_SENT") {
+    if (localStorage.getItem("login") == "CODE_SENT") {
       this.setState({
         textLoginInputValue: "",
         textLoginPlaceholderInputValue: "کد فعال سازی ...",
-        msisdn: sessionStorage.getItem("msisdn")
+        msisdn: localStorage.getItem("msisdn")
       });
     }
   }
@@ -60,7 +60,7 @@ export default class HeaderLogin extends React.Component {
       $("#login-header-input-id").removeClass("login-header-input");
       $(".login-header-submit").hide();
       $(".loader-container").css("display", "block");
-      if (sessionStorage.getItem("login") == "CODE_SENT") {
+      if (localStorage.getItem("login") == "CODE_SENT") {
         $.ajax({
           type: "GET",
           url:
@@ -72,7 +72,7 @@ export default class HeaderLogin extends React.Component {
           success: function(data, textStatus, request) {
             this.setState({ login: data });
             this.setState({ closeNotify: true });
-            sessionStorage.setItem("session", data.data.token);
+            localStorage.setItem("session", data.data.token);
             this.props.session.session = data.data.token;
             $("#sign-out").addClass("header-sign-out");
             $(".header-login-drop").hide(200);
@@ -84,8 +84,8 @@ export default class HeaderLogin extends React.Component {
             });
 
             $(".login-cover-page").hide();
-            sessionStorage.removeItem("login");
-            sessionStorage.removeItem("msisdn");
+            localStorage.removeItem("login");
+            localStorage.removeItem("msisdn");
           }.bind(this),
           error: function(request, textStatus, errorThrown) {}
         });
@@ -106,8 +106,8 @@ export default class HeaderLogin extends React.Component {
             });
             $(".login-header-submit").show();
             $(".loader-container").css("display", "none");
-            sessionStorage.setItem("msisdn", this.state.msisdn);
-            sessionStorage.setItem("login", "CODE_SENT");
+            localStorage.setItem("msisdn", this.state.msisdn);
+            localStorage.setItem("login", "CODE_SENT");
           }.bind(this),
           error: function(request, textStatus, errorThrown) {}
         });
@@ -116,7 +116,7 @@ export default class HeaderLogin extends React.Component {
   }
 
   onLoginFieldChange(e) {
-    if (sessionStorage.getItem("login") == "CODE_SENT") {
+    if (localStorage.getItem("login") == "CODE_SENT") {
       this.setState({ code: e.target.value });
     } else {
       this.setState({ msisdn: e.target.value });
@@ -125,8 +125,8 @@ export default class HeaderLogin extends React.Component {
   }
 
   signOutClicked() {
-    sessionStorage.removeItem("session");
-    sessionStorage.removeItem("msisdn");
+    localStorage.removeItem("session");
+    localStorage.removeItem("msisdn");
     $(".header-login").show();
     $("#myDropdown").hide();
     $("#sign-out").removeClass("header-sign-out");

@@ -11,6 +11,11 @@ import hdImage from "../../../img/hd.svg";
 import teaserImage from "../../../img/teaser.svg";
 import commentImage from "../../../img/Comment.svg";
 import purchaseImage from "../../../img/Buy.svg";
+import downloadImage from "../../../img/download.svg";
+import Image720 from "../../../img/quality/720p.svg";
+import Image1080 from "../../../img/quality/1080.svg";
+import Image480 from "../../../img/quality/480.svg";
+import Image360 from "../../../img/quality/360.svg";
 
 @inject("session")
 @observer
@@ -22,7 +27,7 @@ export default class Movie extends React.Component {
       movie: null,
       movieId: id,
       durationString: "",
-      movieDetailClicked: true,
+      movieDetailClicked: false,
       commentClicked: false,
       relatedMovies: null,
       director: null,
@@ -71,22 +76,19 @@ export default class Movie extends React.Component {
   }
 
   onMovieDetailClick() {
-    if (this.state.commentClicked) {
-      this.setState({ movieDetailClicked: true, commentClicked: false });
-      $("#tab-detail").addClass("current");
-      $("#tab-comment").removeClass("current");
-    }
+    this.setState({ movieDetailClicked: true, commentClicked: false });
+    $("#tab-detail").addClass("current");
+    $("#tab-comment").removeClass("current");
   }
 
   onCommentClick() {
-    if (this.state.movieDetailClicked) {
-      this.setState({ movieDetailClicked: false, commentClicked: true });
-      $("#tab-detail").removeClass("current");
-      $("#tab-comment").addClass("current");
-    }
+    this.setState({ movieDetailClicked: false, commentClicked: true });
+    $("#tab-detail").removeClass("current");
+    $("#tab-comment").addClass("current");
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0);
     if (this.props.match.params.status) {
       if (this.props.match.params.status == "success") {
         this.notify(true);
@@ -124,7 +126,6 @@ export default class Movie extends React.Component {
       }.bind(this),
       error: function(request, textStatus, errorThrown) {}
     });
-
 
     $.ajax({
       type: "GET",
@@ -168,6 +169,10 @@ export default class Movie extends React.Component {
 
   play() {
     this.props.session.showPlayerFullscreen = true;
+  }
+
+  download() {
+    $(".download-background").show();
   }
 
   purchase() {
@@ -232,7 +237,7 @@ export default class Movie extends React.Component {
                         "/image.ashx?file=" +
                         this.state.movie.thumbnail.url
                       }
-                      alt="movie name"
+                      alt={this.state.movie.title}
                     />
                   </div>
                   <div class="movie-main-content-info">
@@ -278,24 +283,48 @@ export default class Movie extends React.Component {
                       <p>امتیاز ودیو</p>
                     </div>
 
-                    <div class="single-product-add-container">
-                      {this.state.movie.bought == true ? (
-                        <a
-                          onClick={this.play.bind(this)}
-                          className="single-product-add"
-                        >
-                          <img
-                            src={purchaseImage}
-                            style={{
-                              width: "20px",
-                              marginRight: "15px",
-                              height: "45px"
-                            }}
-                          />
-                          <strong class="single-product-add-strong">
-                            نمایش
-                          </strong>
-                        </a>
+                    <div class="button-container">
+                      {this.props.session.session != null &&
+                      this.state.movie.bought == true ? (
+                        <div style={{ width: "160px" }}>
+                          <a
+                            onClick={this.play.bind(this)}
+                            className="purchase-button-container"
+                          >
+                            <img
+                              src={purchaseImage}
+                              style={{
+                                width: "20px",
+                                marginRight: "15px",
+                                height: "45px"
+                              }}
+                            />
+                            <strong class="single-product-add-strong">
+                              نمایش
+                            </strong>
+                          </a>
+                          <a
+                            onClick={this.download.bind(this)}
+                            className="download-button-container"
+                          >
+                            <img
+                              src={downloadImage}
+                              style={{
+                                width: "20px",
+                                marginRight: "15px",
+                                height: "45px"
+                              }}
+                            />
+                            <strong class="single-product-add-strong">
+                              دانلود
+                            </strong>
+                          </a>
+                          {this.state.movie.downloadQualities ? (
+                            <Download
+                              qualities={this.state.movie.downloadQualities}
+                            />
+                          ) : null}
+                        </div>
                       ) : (
                         <a
                           onClick={this.purchase.bind(this)}
@@ -305,8 +334,8 @@ export default class Movie extends React.Component {
                             src={purchaseImage}
                             style={{
                               width: "20px",
-                              marginTop: "10px",
-                              marginRight: "15px"
+                              marginRight: "15px",
+                              height: "45px"
                             }}
                           />
                           <strong class="single-product-add-strong">
@@ -368,11 +397,10 @@ export default class Movie extends React.Component {
                   </div>
                 </div>
               </div>
-
               <div className="single-product-dec">
                 <div className="single-product-dec-header">
                   <ul>
-                    <li className="current" id="tab-detail">
+                    <li id="tab-detail">
                       <a
                         style={{ display: "inline-block" }}
                         onClick={this.onMovieDetailClick.bind(this)}
@@ -555,3 +583,174 @@ var Researcher = React.createClass({
     );
   }
 });
+
+@inject("session")
+@observer
+class Download extends React.Component {
+  closeDownload() {
+    $(".download-background").hide();
+  }
+
+  componentDidMount() {
+    var height = 60;
+    var qualities = this.props.qualities.split(",");
+    qualities.forEach(element => {
+      switch (element) {
+        case "360":
+          height += 55;
+          break;
+        case "720":
+          height += 55;
+          break;
+        case "1080":
+          height += 55;
+          break;
+        case "480":
+          height += 55;
+          break;
+
+        default:
+          break;
+      }
+    });
+    $("#download-panel").css("top", "calc(50% - " + height / 2 + "px");
+  }
+
+  render() {
+    var qualities = this.props.qualities.split(",");
+    var q480 = false;
+    var q1080 = false;
+    var q720 = false;
+    var q360 = false;
+    qualities.forEach(element => {
+      switch (element) {
+        case "500":
+          q360 = true;
+          break;
+        case "900":
+          q720 = true;
+          break;
+        case "1500":
+          q1080 = true;
+          break;
+        case "2200":
+          q480 = true;
+          break;
+
+        default:
+          break;
+      }
+    });
+    return (
+      <div class="download-background" onClick={this.closeDownload}>
+        <div class="download-panel" id="download-panel">
+          <div
+            style={{
+              textAlign: "center",
+              height: "30px",
+              color: "#7d1d65"
+            }}
+          >
+            کیفیت مورد نظر خود را انتخاب کنید :
+          </div>
+          {q1080 && (
+            <a
+              className="download-button-container-item"
+              href={
+                MainUrl +
+                "/DownloadTokenHandler.ashx?q=2200&token=" +
+                this.props.session.session +
+                "&movieId=1"
+              }
+              target="_blank"
+            >
+              <img
+                src={Image1080}
+                style={{
+                  width: "30px",
+                  marginRight: "15px",
+                  height: "45px"
+                }}
+              />
+              <strong class="single-product-add-strong">
+                {latinToPersian("1080p")}
+              </strong>
+            </a>
+          )}
+          {q720 && (
+            <a
+              className="download-button-container-item"
+              href={
+                MainUrl +
+                "/DownloadTokenHandler.ashx?q=1500&token=" +
+                this.props.session.session +
+                "&movieId=1"
+              }
+              target="_blank"
+            >
+              <img
+                src={Image720}
+                style={{
+                  width: "30px",
+                  marginRight: "15px",
+                  height: "45px"
+                }}
+              />
+              <strong class="single-product-add-strong">
+                {latinToPersian("720p")}
+              </strong>
+            </a>
+          )}
+          {q480 && (
+            <a
+              className="download-button-container-item"
+              href={
+                MainUrl +
+                "/DownloadTokenHandler.ashx?q=900&token=" +
+                this.props.session.session +
+                "&movieId=1"
+              }
+              target="_blank"
+            >
+              <img
+                src={Image480}
+                style={{
+                  width: "30px",
+                  marginRight: "15px",
+                  height: "45px"
+                }}
+              />
+              <strong class="single-product-add-strong">
+                {latinToPersian("480p")}
+              </strong>
+            </a>
+          )}
+          {q360 && (
+            <a
+              className="download-button-container-item"
+              href={
+                MainUrl +
+                "/DownloadTokenHandler.ashx?q=500&token=" +
+                this.props.session.session +
+                "&movieId=1"
+              }
+              target="_blank"
+            >
+              <img
+                src={Image360}
+                style={{
+                  width: "30px",
+                  marginRight: "15px",
+                  height: "45px"
+                }}
+              />
+              <strong class="single-product-add-strong">
+                {latinToPersian("360p")}
+              </strong>
+            </a>
+          )}
+        </div>
+      </div>
+    );
+  }
+}

@@ -15,7 +15,8 @@ export default class Banners extends React.Component {
       slidesToScroll: 1,
       arrows: false,
       rtl: true,
-      dots: true
+      dots: true,
+      adaptiveHeight: true
     });
   }
 
@@ -37,7 +38,6 @@ export default class Banners extends React.Component {
     this.props.session.history.push("/list");
     this.props.session.offset = 0;
     var url = this.makeUrl(categoryId, genreId);
-    console.log(url);
     this.props.session.listUrl = url;
     this.props.session.isInitiating = true;
     this.props.session.title = title;
@@ -50,7 +50,7 @@ export default class Banners extends React.Component {
       if (banner.urlToClick != null) {
         components.push(
           <a
-            key={l}
+            key={l + new Date($.now())}
             style={{ cursor: "pointer" }}
             onClick={() => {
               window.location.replace(banner.urlToClick);
@@ -64,7 +64,10 @@ export default class Banners extends React.Component {
         );
       } else if (banner.movieId != null && banner.movieId > 0) {
         components.push(
-          <Link key={l} to={{ pathname: "/movie/" + banner.movieId }}>
+          <Link
+            key={l + new Date($.now())}
+            to={{ pathname: "/movie/" + banner.movieId }}
+          >
             <img
               style={{ width: "100%" }}
               src={MainUrl + "/image.ashx?file=" + banner.url}
@@ -75,7 +78,7 @@ export default class Banners extends React.Component {
         components.push(
           <a
             style={{ cursor: "pointer" }}
-            key={l}
+            key={l + new Date($.now())}
             onClick={this.listClick.bind(
               this,
               banner.genreId,
@@ -91,7 +94,10 @@ export default class Banners extends React.Component {
         );
       }
     });
-
-    return <div class="banners">{components}</div>;
+    return (
+      <div>
+        <div class="banners">{components}</div>
+      </div>
+    );
   }
 }

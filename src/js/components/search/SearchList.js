@@ -3,54 +3,26 @@ import "../../../css/infinite.css";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
+import "jquery-visible";
 
-@inject("session")
+@inject("session", "search")
 @observer
 export default class SearchList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      elements: null,
-      isLoading: false,
-      count: 0,
-      firstLoad: true
-    };
   }
 
   componentDidMount() {
     this.props.session.showFooter = false;
-    var url =
-      MainUrl + "/Search.ashx?keyword=" + this.props.match.params.keyword;
-    $.ajax({
-      type: "GET",
-      url: url,
-      success: function(data, textStatus, request) {
-        this.setState({ elements: data.data, firstLoad: false });
-      }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
-    });
 
     window.onscroll = function() {
-      if (!this.state.firstLoad) {
-        var d = document.documentElement;
-        var height = d.scrollTop + $(window).height() - 90;
-        var offset = $(".movie-list").innerHeight();
-
-        if (offset < height && !this.state.isLoading) {
-          this.setState({ isLoading: true });
-          $.ajax({
-            type: "GET",
-            url: MainUrl + "/Search.ashx?keyword=" + url,
-            success: function(data, textStatus, request) {
-              this.setState({
-                isLoading: false
-              });
-              var joint = this.state.elements.concat(data.data);
-              this.setState({ elements: joint });
-            }.bind(this),
-            error: function(request, textStatus, errorThrown) {}
-          });
-        }
+      if (
+        this.props.search.elements != null &&
+        this.props.search.elements.length != this.props.search.count &&
+        $("#" + this.props.search.lastElementId).visible() &&
+        this.props.search.isLoading == false
+      ) {
+        this.props.search.fetchNextSearchList();
       }
     }.bind(this);
   }
@@ -61,8 +33,8 @@ export default class SearchList extends React.Component {
 
   render() {
     var childElements = null;
-    if (this.state.elements != null) {
-      childElements = this.state.elements.map(
+    if (this.props.search.elements != null) {
+      childElements = this.props.search.elements.map(
         function(element, l) {
           if (element != null) {
             var width = $(".row-header").width();
@@ -78,7 +50,7 @@ export default class SearchList extends React.Component {
               width = width * 50 / 100;
             }
             return (
-              <div class="box movie-list-item" key={l}>
+              <div id={"element" + l} class="box movie-list-item" key={l}>
                 <Link
                   to={{ pathname: "/movie/" + element.id }}
                   class="movie-list-item-link"
@@ -115,14 +87,13 @@ export default class SearchList extends React.Component {
           <h5 class="top-moviez-slide-title">نتایج جستجو</h5>
         </div>
         <div class="list-content-header" style={{ width: "100%" }}>
-          {this.state.elements != null ? (
-            childElements
-          ) : (
+          {this.props.search.elements != null && childElements}
+          {this.props.search.count == 0 && (
             <div style={{ width: "100%", textAlign: "center" }}>
               نتیجه ای یافت نشد.
             </div>
           )}
-          {this.state.isLoading && (
+          {this.props.search.isLoading && (
             <div class="box ">
               <div class="cssload-thecube-container-list">
                 <div class="cssload-thecube-list">
