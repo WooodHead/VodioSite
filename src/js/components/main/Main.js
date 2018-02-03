@@ -13,6 +13,13 @@ export default class Main extends React.Component {
       result: null
     };
   }
+  componentWillMount(){
+    $('body').css({'overflow-y':'scroll'});
+  }
+
+  componentWillUpdate(){
+    $('body').css({'overflow-y':'inherit'});
+  }
 
   componentDidMount() {
     this.props.session.showLoading = true;
