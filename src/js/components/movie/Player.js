@@ -535,15 +535,15 @@ export default class Player extends React.Component {
           function makeActive(UserSelectionEvent) {
             for (var i = 0; i < elems.length; i++) {
               if (!UserSelectionEvent && i == hls.currentLevel) {
-                elems[i].classList.add("active");
+                elems[i].classList.add("active-c");
               } else {
-                elems[i].classList.remove("active");
+                elems[i].classList.remove("active-c");
               }
             }
             if (UserSelectionEvent) {
               var q_level = parseInt(this.getAttribute("data-value"));
               hls.currentLevel = q_level;
-              this.classList.add("active");
+              this.classList.add("active-c");
             }
           }
 

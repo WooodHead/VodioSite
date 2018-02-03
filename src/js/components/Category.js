@@ -70,7 +70,9 @@ export default class Category extends React.Component {
           )
         );
       } else {
-        this.props.categories.map(category =>
+        var firstCategoryId = -1;
+        this.props.categories.forEach(category => {
+          firstCategoryId == -1 ? (firstCategoryId = category.id) : 0;
           $("#" + "category" + category.id).click(
             function() {
               this.props.categories.forEach(element => {
@@ -78,8 +80,10 @@ export default class Category extends React.Component {
               });
               $("#" + "category12" + category.id).show();
             }.bind(this)
-          )
-        );
+          );
+        });
+        if (firstCategoryId != -1)
+          $("#" + "category12" + firstCategoryId).show();
       }
     }
   }

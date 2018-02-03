@@ -14,7 +14,9 @@
     "prop-types": "^15.6.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
+    "react-owl-carousel": "^2.2.0",
     "react-router-dom": "^4.2.2",
+    "react-slick": "^0.17.1",
     "react-toastify": "^3.2.1",
     "slick-carousel": "^1.8.1"
   },
@@ -34,6 +36,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.6",
     "html-webpack-plugin": "^2.30.1",
+    "image-webpack-loader": "^4.0.0",
     "preload-webpack-plugin": "^2.1.1",
     "purify-css": "^1.2.5",
     "purifycss-webpack": "^0.7.0",

@@ -2,24 +2,14 @@ import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+import Slider from "react-slick";
+import OwlCarousel from "react-owl-carousel";
+
+let dragging = false;
 
 @inject("session")
 @observer
 export default class Banners extends React.Component {
-  componentDidMount() {
-    $(".banners").slick({
-      infinite: true,
-      speed: 300,
-      autoPlay: true,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      arrows: false,
-      rtl: true,
-      dots: true,
-      adaptiveHeight: true
-    });
-  }
-
   makeUrl(category, genre) {
     var url = MainUrl + "/movielist.ashx";
     if (category != null || genre != null) {
@@ -35,13 +25,21 @@ export default class Banners extends React.Component {
   }
 
   listClick(genreId, categoryId, title) {
-    this.props.session.history.push("/list");
-    this.props.session.offset = 0;
-    var url = this.makeUrl(categoryId, genreId);
-    this.props.session.listUrl = url;
-    this.props.session.isInitiating = true;
-    this.props.session.title = title;
-    this.props.session.fetchList();
+    if (!dragging) {
+      this.props.session.history.push("/list");
+      this.props.session.offset = 0;
+      var url = this.makeUrl(categoryId, genreId);
+      this.props.session.listUrl = url;
+      this.props.session.isInitiating = true;
+      this.props.session.title = title;
+      this.props.session.fetchList();
+    }
+  }
+
+  movieClicked(movieId) {
+    if (!dragging) {
+      this.props.session.history.push("/movie" + movieId);
+    }
   }
 
   render() {
@@ -50,10 +48,10 @@ export default class Banners extends React.Component {
       if (banner.urlToClick != null) {
         components.push(
           <a
-            key={l + new Date($.now())}
+            key={l}
             style={{ cursor: "pointer" }}
             onClick={() => {
-              window.location.replace(banner.urlToClick);
+              if (!dragging) window.location.replace(banner.urlToClick);
             }}
           >
             <img
@@ -64,21 +62,18 @@ export default class Banners extends React.Component {
         );
       } else if (banner.movieId != null && banner.movieId > 0) {
         components.push(
-          <Link
-            key={l + new Date($.now())}
-            to={{ pathname: "/movie/" + banner.movieId }}
-          >
+          <a key={l} onClick={this.movieClicked.bind(this, banner.movieId)}>
             <img
               style={{ width: "100%" }}
               src={MainUrl + "/image.ashx?file=" + banner.url}
             />
-          </Link>
+          </a>
         );
       } else if (banner.genreId != null || banner.categoryId != null) {
         components.push(
           <a
             style={{ cursor: "pointer" }}
-            key={l + new Date($.now())}
+            key={l}
             onClick={this.listClick.bind(
               this,
               banner.genreId,
@@ -94,10 +89,16 @@ export default class Banners extends React.Component {
         );
       }
     });
+   
     return (
-      <div>
-        <div class="banners">{components}</div>
-      </div>
+      <OwlCarousel
+        className="owl-theme"
+        loop
+        items={1}
+        style={{ direction: "ltr" }}
+      >
+        {components}
+      </OwlCarousel>
     );
   }
 }

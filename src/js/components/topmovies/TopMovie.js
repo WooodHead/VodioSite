@@ -57,7 +57,6 @@ export default class TopMovie extends React.Component {
                 MainUrl + "/image.ashx?file=" + this.props.movie.thumbnail.url
               }
               className="top-moviez-post-image"
-              alt="Game Of Thrones"
             />
             <div className="top-moviez-post-top-layer">
               <div className="top-moviez-post-add">

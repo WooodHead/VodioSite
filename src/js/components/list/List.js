@@ -20,6 +20,7 @@ export default class List extends React.Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0);
     console.log(this.props.session.listUrl);
     this.props.session.showFooter = false;
     if (this.props.session.isInitiating == true) {

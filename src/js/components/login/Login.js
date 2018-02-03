@@ -137,9 +137,17 @@ export default class Login extends React.Component {
           this.setState({ showLoading: false });
           console.log(data);
           if (data.errorCode != 0) {
-            this.setState({ showLoading: false });
-            this.setState({ wrongCodeMessage: data.msg });
-            $(".wrong-code").show(100);
+            if (data.errorCode == 1004) {
+              this.setState({
+                wrongCodeMessage:
+                  "شما بیش از حد تلاش کردید.لطفا دوباره درخواست کد کنید."
+              });
+              $(".wrong-code").show(100);
+            } else {
+              this.setState({ showLoading: false });
+              this.setState({ wrongCodeMessage: data.msg });
+              $(".wrong-code").show(100);
+            }
           } else if (data.data != null && data.data.canLogin == true) {
             this.props.session.session = data.data.token;
             this.props.session.showLogin = false;
