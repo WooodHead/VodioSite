@@ -2,7 +2,6 @@ import React from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import Slider from "react-slick";
 import OwlCarousel from "react-owl-carousel";
 
 let dragging = false;
@@ -89,13 +88,15 @@ export default class Banners extends React.Component {
         );
       }
     });
-   
+
     return (
       <OwlCarousel
         className="owl-theme"
         loop
         items={1}
-        style={{ direction: "ltr" }}
+        style={{
+          direction: "ltr"
+        }}
       >
         {components}
       </OwlCarousel>

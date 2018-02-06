@@ -4804,7 +4804,3 @@ footer#footer {
 .selected {
   background: rgba(0, 0, 0, 0.2);
 }
-
-.slick-slider {
-  direction:ltr !important;
-}

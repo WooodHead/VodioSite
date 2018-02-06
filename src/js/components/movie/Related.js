@@ -2,46 +2,13 @@ import React, { Component } from 'react';
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
 export default class Test extends React.Component {
   componentDidMount() {
-    $(".related-items").slick({
-      infinite: false,
-      speed: 300,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      arrows: false,
-      rtl: true,
-      adaptiveHeigth: true,
-      responsive: [
-        {
-          breakpoint: 1241,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3
-          }
-        },
-        {
-          breakpoint: 741,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2
-          }
-        },
-        {
-          breakpoint: 521,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1
-          }
-        }
-      ]
-    });
+   
   }
 
   next() {
-    $(".related-items").slick("slickNext");
   }
 
   prev() {
-    $(".related-items").slick("slickPrev");
   }
 
   render() {

@@ -42,9 +42,13 @@ export default class TopMovies extends React.Component {
         </div>
         <OwlCarousel
           className="owl-theme"
-          loop
-          items={7}
-          style={{ direction: "ltr" }}
+          {...options}
+          style={{
+            direction: "ltr",
+            marginRight: "15px",
+            marginLeft: "15px",
+            width: "calc(100% - 30px)"
+          }}
         >
           {this.props.movies.map(movie => (
             <TopMovie key={movie.id} movie={movie} />

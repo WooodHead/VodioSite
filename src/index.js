@@ -1,6 +1,5 @@
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+
 import "./css/release.css";
 import "./css/style.css";
 import React from "react";
@@ -22,9 +21,9 @@ const app = document.getElementById("conroot");
 
 ReactDOM.render(
   <Provider {...store}>
-    <HashRouter>
+    <BrowserRouter>
       <Layout />
-    </HashRouter>
+    </BrowserRouter>
   </Provider>,
   app
 );
