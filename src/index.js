@@ -1,5 +1,3 @@
-
-
 import "./css/release.css";
 import "./css/style.css";
 import React from "react";
@@ -11,10 +9,13 @@ import Layout from "./js/components/Layout";
 
 import sessionStore from "./js/stores/SesssionStore";
 import searchStore from "./js/stores/SearchStore";
+import MovieStore from "./js/stores/MovieStore";
 
+var movieStore = new MovieStore(sessionStore);
 const store = {
   session: sessionStore,
-  search: searchStore
+  search: searchStore,
+  movieStore: movieStore
 };
 
 const app = document.getElementById("conroot");

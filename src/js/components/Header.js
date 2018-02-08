@@ -43,6 +43,7 @@ export default class Header extends React.Component {
           type: "GET",
           url: MainUrl + "/category.ashx",
           success: function(data, textStatus, request) {
+            console.log(data.data);
             this.setState({
               categories: data.data
             });

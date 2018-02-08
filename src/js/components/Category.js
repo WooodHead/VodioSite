@@ -90,7 +90,12 @@ export default class Category extends React.Component {
 
   render() {
     if (this.props.categories != null) {
+      var width = $(window).width();
+      if (width > 740) {
       $("#category-header").width(100 * this.props.categories.length);
+      }else{
+        $("#category-header").width(220);
+      }
     }
     return (
       <div class="header-category">

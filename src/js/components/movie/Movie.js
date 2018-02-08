@@ -17,24 +17,15 @@ import Image1080 from "../../../img/quality/1080.svg";
 import Image480 from "../../../img/quality/480.svg";
 import Image360 from "../../../img/quality/360.svg";
 
-@inject("session")
+@inject("session", "movieStore")
 @observer
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
-    const { id } = this.props.match.params;
     this.state = {
-      movie: null,
-      movieId: id,
       durationString: "",
       movieDetailClicked: false,
       commentClicked: false,
-      relatedMovies: null,
-      director: null,
-      researcher: null,
-      actors: null,
-      provider: null,
-      loadPage: false,
       toastId: null
     };
   }
@@ -96,59 +87,11 @@ export default class Movie extends React.Component {
         this.notify(false);
       }
     }
-    const { id } = this.props.match.params;
-    $.ajax({
-      type: "GET",
-      url: MainUrl + "/role.ashx?movieId=1",
-      success: function(data, textStatus, request) {
-        var directorTemp;
-        var ActorTemp;
-        var providerTemp;
-        var ResearcherTemp;
-        $.each(data.data, function(index, role) {
-          if (role.name == "کارگردان") {
-            directorTemp = role;
-          } else if (role.name == "بازیگر") {
-            ActorTemp = role;
-          } else if (role.name == "تهیه کننده") {
-            providerTemp = role;
-          } else if (role.name == "پژوهشگر") {
-            ResearcherTemp = role;
-          }
-        });
-        this.setState({
-          director: directorTemp,
-          researcher: ResearcherTemp,
-          provider: providerTemp,
-          actors: ActorTemp,
-          loadPage: true
-        });
-      }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
-    });
 
-    $.ajax({
-      type: "GET",
-      headers: {
-        token: this.props.session.session
-      },
-      url: MainUrl + "/movie.ashx?movieId=1",
-      success: function(data, textStatus, request) {
-        this.setState({ movie: data.data });
-        this.setState({
-          durationString: convertMillisecondToString(this.state.movie.duration)
-        });
-        $.ajax({
-          type: "GET",
-          url: MainUrl + "/related.ashx?movieId=" + this.state.movie.id,
-          success: function(data, textStatus, request) {
-            this.setState({ relatedMovies: data.data });
-          }.bind(this),
-          error: function(request, textStatus, errorThrown) {}
-        });
-      }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
-    });
+    if(this.props.movieStore.movieId == -1){
+      this.props.movieStore.movieId= this.props.match.params.id;
+      this.props.movieStore.fetchMovie();
+    }
 
     $(document).ready(function() {
       $("#season-header-01-01").click(function() {
@@ -219,7 +162,9 @@ export default class Movie extends React.Component {
   }
 
   render() {
-    if (this.state.movie) {
+    if (this.props.movieStore.movie) {
+      var width = $(".movie-main-content-poster").width();
+      var height = Math.round(width * 16 / 11);
       const videoStyle = { width: "100%", height: "400px", background: "red" };
       const posterStyle = { width: "80%" };
       const hdStyle = { width: "100%" };
@@ -235,43 +180,51 @@ export default class Movie extends React.Component {
                       src={
                         MainUrl +
                         "/image.ashx?file=" +
-                        this.state.movie.thumbnail.url
+                        this.props.movieStore.movie.thumbnail.url +
+                        "&width=" +
+                        width +
+                        "&height=" +
+                        height
                       }
-                      alt={this.state.movie.title}
+                      alt={this.props.movieStore.movie.title}
                     />
                   </div>
                   <div class="movie-main-content-info">
                     <h1 className="single-product-title">
                       <img class="hd-image" src={hdImage} alt="hd" />
                       <span style={{ paddingRight: "10px" }}>
-                        {this.state.movie.title}
+                        {this.props.movieStore.movie.title}
                       </span>
                     </h1>
                     <div className="single-product-header-meta">
                       <span style={{ fontSize: "12px" }}>
-                        {latinToPersian(this.state.durationString)}{" "}
+                        {latinToPersian(this.props.movieStore.durationString)}{" "}
                       </span>
                       <span style={{ display: "inline-flex" }}>
-                        {this.state.movie.categories.map(category => (
-                          <p
-                            className="single-product-category"
-                            key={category.id}
-                          >
-                            <Link
-                              to={{
-                                pathname: "/List",
-                                query: { name: category.name }
-                              }}
+                        {this.props.movieStore.movie.categories.map(
+                          category => (
+                            <p
+                              className="single-product-category"
+                              key={category.id}
                             >
-                              {category.name}
-                            </Link>
-                          </p>
-                        ))}
+                              <Link
+                                to={{
+                                  pathname: "/List",
+                                  query: { name: category.name }
+                                }}
+                              >
+                                {category.name}
+                              </Link>
+                            </p>
+                          )
+                        )}
                       </span>
                     </div>
                     <div className="single-product-score">
                       <span>
-                        {latinToPersian(this.state.movie.rate.toString())}
+                        {latinToPersian(
+                          this.props.movieStore.movie.rate.toString()
+                        )}
                       </span>
                       {/* <p>امتیاز از </p>
                       <p>&nbsp;</p>
@@ -285,7 +238,7 @@ export default class Movie extends React.Component {
 
                     <div class="button-container">
                       {this.props.session.session != null &&
-                      this.state.movie.bought == true ? (
+                      this.props.movieStore.movie.bought == true ? (
                         <div style={{ width: "160px" }}>
                           <a
                             onClick={this.play.bind(this)}
@@ -319,9 +272,11 @@ export default class Movie extends React.Component {
                               دانلود
                             </strong>
                           </a>
-                          {this.state.movie.downloadQualities ? (
+                          {this.props.movieStore.movie.downloadQualities ? (
                             <Download
-                              qualities={this.state.movie.downloadQualities}
+                              qualities={
+                                this.props.movieStore.movie.downloadQualities
+                              }
                             />
                           ) : null}
                         </div>
@@ -339,13 +294,14 @@ export default class Movie extends React.Component {
                             }}
                           />
                           <strong class="single-product-add-strong">
-                            {latinToPersian(this.state.movie.price.toString()) +
-                              " تومان"}
+                            {latinToPersian(
+                              this.props.movieStore.movie.price.toString()
+                            ) + " تومان"}
                           </strong>
                         </a>
                       )}
                       {this.props.session.showPlayerFullscreen && (
-                        <Player movie={this.state.movie} />
+                        <Player movie={this.props.movieStore.movie} />
                       )}
                       {!this.state.closeNotify && (
                         <ToastContainer
@@ -359,24 +315,26 @@ export default class Movie extends React.Component {
                   </div>
                   <div class="movie-main-content-detail">
                     <div className="single-product-dec-content-text">
-                      {this.state.movie.genres != null ? (
-                        <Genre genres={this.state.movie.genres} />
+                      {this.props.movieStore.movie.genres != null ? (
+                        <Genre genres={this.props.movieStore.movie.genres} />
                       ) : null}
 
-                      {this.state.director != null ? (
-                        <Director directors={this.state.director} />
+                      {this.props.movieStore.director != null ? (
+                        <Director directors={this.props.movieStore.director} />
                       ) : null}
 
-                      {this.state.actors != null ? (
-                        <Actor actors={this.state.actors} />
+                      {this.props.movieStore.actors != null ? (
+                        <Actor actors={this.props.movieStore.actors} />
                       ) : null}
 
-                      {this.state.provider != null ? (
-                        <Provider providers={this.state.provider} />
+                      {this.props.movieStore.provider != null ? (
+                        <Provider providers={this.props.movieStore.provider} />
                       ) : null}
 
-                      {this.state.researcher != null ? (
-                        <Researcher researchers={this.state.researcher} />
+                      {this.props.movieStore.researcher != null ? (
+                        <Researcher
+                          researchers={this.props.movieStore.researcher}
+                        />
                       ) : null}
                     </div>
                   </div>
@@ -391,7 +349,7 @@ export default class Movie extends React.Component {
                           textJustify: "inter-word"
                         }}
                       >
-                        {this.state.movie.description}
+                        {this.props.movieStore.movie.description}
                       </p>
                     </div>
                   </div>
@@ -445,16 +403,19 @@ export default class Movie extends React.Component {
                 </div>
                 <div>
                   {this.state.commentClicked && (
-                    <MovieComment movieId={this.state.movie.id} />
+                    <MovieComment movieId={this.props.movieStore.movie.id} />
                   )}
                   {this.state.movieDetailClicked && (
-                    <Player movie={this.state.movie} isTrailer={true} />
+                    <Player
+                      movie={this.props.movieStore.movie}
+                      isTrailer={true}
+                    />
                   )}
                 </div>
               </div>
-              {this.state.relatedMovies != null ? (
+              {this.props.movieStore.relatedMovies != null ? (
                 <TopMovies
-                  movies={this.state.relatedMovies}
+                  movies={this.props.movieStore.relatedMovies}
                   title="فیلم های مشابه"
                   id={1}
                 />

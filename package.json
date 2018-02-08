@@ -17,8 +17,7 @@
     "react-owl-carousel": "^2.2.0",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.17.1",
-    "react-toastify": "^3.2.1",
-    "slick-carousel": "^1.8.1"
+    "react-toastify": "^3.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",

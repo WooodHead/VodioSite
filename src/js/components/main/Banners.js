@@ -6,7 +6,7 @@ import OwlCarousel from "react-owl-carousel";
 
 let dragging = false;
 
-@inject("session")
+@inject("session","movieStore")
 @observer
 export default class Banners extends React.Component {
   makeUrl(category, genre) {
@@ -37,7 +37,9 @@ export default class Banners extends React.Component {
 
   movieClicked(movieId) {
     if (!dragging) {
-      this.props.session.history.push("/movie" + movieId);
+      this.props.movieStore.movieId = movieId;
+      this.props.movieStore.fetchMovie();
+      this.props.session.history.push("/movie/" + movieId);
     }
   }
 

@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search")
+@inject("session", "search","movieStore")
 @observer
 export default class MobileSearch extends React.Component {
   constructor(props) {
@@ -58,6 +58,12 @@ export default class MobileSearch extends React.Component {
     }
   }
 
+  movieClicked(movieId) {
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+    this.props.session.history.push("/movie/" + movieId);
+  }
+
   render() {
     return (
       <div class="mobile-search">
@@ -109,7 +115,7 @@ export default class MobileSearch extends React.Component {
                 <ul>
                   {this.state.searchResult.map((search, l) => (
                     <li key={l} class="mobile-search-result-li">
-                      <Link to={{ pathname: "/movie/" + search.id }}>
+                      <a onClick={this.movieClicked.bind(this, search.id)}>
                         <div style={{ display: "inline-block" }}>
                           <span>
                             <span>{search.title}</span>
@@ -125,7 +131,7 @@ export default class MobileSearch extends React.Component {
                             }
                           />
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   ))}
                 </ul>

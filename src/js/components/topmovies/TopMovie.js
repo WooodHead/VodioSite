@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { latinToPersian, convertMillisecondToString } from "../../util/util";
-import {MainUrl} from "../../util/RequestHandler";
+import { MainUrl } from "../../util/RequestHandler";
+import { inject, observer } from "mobx-react";
 
+@inject("movieStore", "session")
+@observer
 export default class TopMovie extends React.Component {
   constructor(props) {
     super(props);
@@ -44,17 +47,30 @@ export default class TopMovie extends React.Component {
     }
   }
 
+  movieClicked(movieId) {
+    console.log(this.props.movie);
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+    this.props.session.history.push("/movie/" + movieId);
+  }
+
   render() {
     return (
       <div className="top-moviez-inner">
         <div className="top-moviez-post">
-          <Link
-            to={{ pathname: "/movie/" + this.props.movie.id }}
+          <a
+            onClick={this.movieClicked.bind(this, this.props.movie.id)}
             className="top-moviez-post-inner"
           >
             <img
               src={
-                MainUrl + "/image.ashx?file=" + this.props.movie.thumbnail.url
+                MainUrl +
+                "/image.ashx?file=" +
+                this.props.movie.thumbnail.url +
+                "&height=" +
+                this.props.height +
+                "&width=" +
+                this.props.width
               }
               className="top-moviez-post-image"
             />
@@ -85,7 +101,7 @@ export default class TopMovie extends React.Component {
                 </ul>
               </div>
             </div>
-          </Link>
+          </a>
         </div>
       </div>
     );

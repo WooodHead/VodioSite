@@ -31,6 +31,12 @@ export default class SearchList extends React.Component {
     this.props.session.showFooter = true;
   }
 
+  movieClicked(movieId) {
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+    this.props.session.history.push("/movie/" + movieId);
+  }
+
   render() {
     var childElements = null;
     if (this.props.search.elements != null) {
@@ -52,7 +58,7 @@ export default class SearchList extends React.Component {
             return (
               <div id={"element" + l} class="box movie-list-item" key={l}>
                 <Link
-                  to={{ pathname: "/movie/" + element.id }}
+                  onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >
                   <span class="movie-list-item-cover">

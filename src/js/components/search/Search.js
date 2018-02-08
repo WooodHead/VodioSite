@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import exit from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search")
+@inject("session", "search","movieStore")
 @observer
 export default class Search extends React.Component {
   constructor(props) {
@@ -152,6 +152,11 @@ export default class Search extends React.Component {
     //   $("#searchInput").width(285);
     // }
   }
+  movieClicked(movieId) {
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+    this.props.session.history.push("/movie/" + movieId);
+  }
 
   render() {
     return (
@@ -183,9 +188,9 @@ export default class Search extends React.Component {
                 <ul id="search-result" style={{ width: "100%" }}>
                   {this.state.searchResult.map((search, l) => (
                     <li key={"li" + l} id={"li" + l} class="search-result-li">
-                      <Link
+                      <a
                         id={"link" + l}
-                        to={{ pathname: "/movie/" + search.id }}
+                        onClick={this.movieClicked.bind(this, search.id)}
                         class="search-result-item"
                       />
                       <div>

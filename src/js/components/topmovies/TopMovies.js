@@ -32,6 +32,16 @@ export default class TopMovies extends React.Component {
         }
       }
     };
+    var windowWidth = $(window).width();
+    var width = 0;
+    if (windowWidth > 1400) {
+      width = Math.round(windowWidth / 7);
+    } else if (windowWidth > 1000) {
+      width = Math.round(windowWidth / 5);
+    } else {
+      width = Math.round(windowWidth / 3);
+    }
+    var height = Math.round(width * 16 / 11);
     return (
       <div class="slide-overlay">
         <div class="top-moviez-slide-title-background">
@@ -41,6 +51,7 @@ export default class TopMovies extends React.Component {
           <div class="slide-next" onClick={this.nextClicked.bind(this)} />
         </div>
         <OwlCarousel
+          ref={inst => (this.slider = inst)}
           className="owl-theme"
           {...options}
           style={{
@@ -51,7 +62,12 @@ export default class TopMovies extends React.Component {
           }}
         >
           {this.props.movies.map(movie => (
-            <TopMovie key={movie.id} movie={movie} />
+            <TopMovie
+              width={width}
+              height={height}
+              key={movie.id}
+              movie={movie}
+            />
           ))}
         </OwlCarousel>
         <div class="slide-prev-container">
