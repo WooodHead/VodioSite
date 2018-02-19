@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { latinToPersian } from "../util/util";
 
 export default class Footer extends React.Component {
   componentDidMount() {
@@ -37,9 +38,9 @@ export default class Footer extends React.Component {
           <div className="footer-contact">
             <strong className="footer-title">تماس‌با‌ما</strong>
             <div className="footer-contact-content">
-              <p>خ یوسف اباد، بالاتر از میدان فرهنگ، پ 283، واحد 6</p>
-              <p>تلفن: ۳۲۲۲۰۰۰۰ ۰۷۶</p>
-              <p>ایمیل: Info@yourmail.com</p>
+              <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
+              <p>{latinToPersian("تلفن: 02126141571")}</p>
+              <p>ایمیل: Info@vodio.com</p>
               <div className="footer-contact-content-socail">
                 <a href="#" className="telegram">
                   <span className="icon-paper-plane-empty" />

@@ -22,9 +22,9 @@ const app = document.getElementById("conroot");
 
 ReactDOM.render(
   <Provider {...store}>
-    <BrowserRouter>
+    <HashRouter>
       <Layout />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>,
   app
 );

@@ -21,7 +21,6 @@ export default class List extends React.Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    console.log(this.props.session.listUrl);
     this.props.session.showFooter = false;
     if (this.props.session.isInitiating == true) {
       this.props.session.isInitiating = false;
@@ -56,7 +55,6 @@ export default class List extends React.Component {
   movieClicked(movieId) {
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.session.history.push("/movie/" + movieId);
   }
 
   render() {
@@ -77,10 +75,11 @@ export default class List extends React.Component {
             width = width * 50 / 100;
           }
           width = Math.round(width);
-          var height = Math.round(width / 10 * 16);
+          var height = Math.round(width / 11 * 16);
           return (
             <div class="box movie-list-item" key={l}>
-              <a
+              <Link
+                to={{ pathname: "/movie/" + element.id }}
                 class="movie-list-item-link"
                 onClick={this.movieClicked.bind(this, element.id)}
               >
@@ -104,7 +103,7 @@ export default class List extends React.Component {
                   </span>
                   <span class="movie-list-item-title-english" />
                 </h2>
-              </a>
+              </Link>
             </div>
           );
         }.bind(this)

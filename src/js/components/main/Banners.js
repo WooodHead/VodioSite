@@ -6,7 +6,7 @@ import OwlCarousel from "react-owl-carousel";
 
 let dragging = false;
 
-@inject("session","movieStore")
+@inject("session", "movieStore")
 @observer
 export default class Banners extends React.Component {
   makeUrl(category, genre) {
@@ -25,7 +25,6 @@ export default class Banners extends React.Component {
 
   listClick(genreId, categoryId, title) {
     if (!dragging) {
-      this.props.session.history.push("/list");
       this.props.session.offset = 0;
       var url = this.makeUrl(categoryId, genreId);
       this.props.session.listUrl = url;
@@ -39,7 +38,6 @@ export default class Banners extends React.Component {
     if (!dragging) {
       this.props.movieStore.movieId = movieId;
       this.props.movieStore.fetchMovie();
-      this.props.session.history.push("/movie/" + movieId);
     }
   }
 
@@ -63,16 +61,20 @@ export default class Banners extends React.Component {
         );
       } else if (banner.movieId != null && banner.movieId > 0) {
         components.push(
-          <a key={l} onClick={this.movieClicked.bind(this, banner.movieId)}>
+          <Link
+            key={l}
+            onClick={this.movieClicked.bind(this, banner.movieId)}
+            to={{ pathname: "/movie/" + banner.movieId }}
+          >
             <img
               style={{ width: "100%" }}
               src={MainUrl + "/image.ashx?file=" + banner.url}
             />
-          </a>
+          </Link>
         );
       } else if (banner.genreId != null || banner.categoryId != null) {
         components.push(
-          <a
+          <Link
             style={{ cursor: "pointer" }}
             key={l}
             onClick={this.listClick.bind(
@@ -81,12 +83,13 @@ export default class Banners extends React.Component {
               banner.categoryId,
               banner.listName
             )}
+            to={{ pathname: "/List" }}
           >
             <img
               style={{ width: "100%" }}
               src={MainUrl + "/image.ashx?file=" + banner.url}
             />
-          </a>
+          </Link>
         );
       }
     });

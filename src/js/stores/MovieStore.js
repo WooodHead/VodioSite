@@ -71,10 +71,16 @@ class MovieStore {
       success: function(data, textStatus, request) {
         this.movie = data.data;
         this.durationString = convertMillisecondToString(this.movie.duration);
+        console.log(data);
         this.fetchRoles();
         this.fetchRelated();
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
+      error: function(request, textStatus, errorThrown) {
+        if (request.status == 403) {
+          this.sessionStore.session = null;
+          this.fetchMovie();
+        }
+      }.bind(this)
     });
   }
 }

@@ -135,7 +135,6 @@ export default class Login extends React.Component {
           persianToLatin(this.state.otpCode),
         success: function(data, textStatus, request) {
           this.setState({ showLoading: false });
-          console.log(data);
           if (data.errorCode != 0) {
             if (data.errorCode == 1004) {
               this.setState({

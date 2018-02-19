@@ -43,7 +43,6 @@ export default class Header extends React.Component {
           type: "GET",
           url: MainUrl + "/category.ashx",
           success: function(data, textStatus, request) {
-            console.log(data.data);
             this.setState({
               categories: data.data
             });
@@ -76,6 +75,10 @@ export default class Header extends React.Component {
     this.props.session.purchaseTitle = "خریدها";
     this.props.session.fetchPurchaseList();
     $("#myDropdown").hide(100);
+  }
+
+  factorList() {
+    this.props.session.history.push("/factors");
   }
 
   render() {
@@ -121,6 +124,7 @@ export default class Header extends React.Component {
                     />
                     <div id="myDropdown" class="dropdown-content">
                       <a onClick={this.purchaseList.bind(this)}>خریدها</a>
+                      <a onClick={this.factorList.bind(this)}>فاکتورها</a>
                       {/* <a href="#contact">پروفایل</a> */}
                       <a onClick={this.signOutClicked.bind(this)}>خروج</a>
                     </div>

@@ -62,8 +62,8 @@ header#header {
 }
 .header-left-meta {
   float: left;
-  height: 45px;
-  margin-top: 27px;
+  height: 35px;
+  margin-top: 35px;
   border-right: solid 1px #eee;
   padding-right: 20px;
 }
@@ -71,16 +71,16 @@ header#header {
 .header-login-win,
 .header-search,
 .header-login {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   float: left;
   margin-right: 10px;
 }
 .header-login-win,
 .header-bg-show,
 .header-search-show {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0, 0, 0.68, -0.07);
@@ -147,7 +147,6 @@ header#header {
 }
 .header-login-win {
   background: url(../img/login.svg) no-repeat;
-  background-size: 30px;
   background-position: center;
 }
 .header-search-show {
@@ -385,7 +384,7 @@ header#header {
   transition: all 0.1s ease-in;
 }
 .top-moviez-post-top-layer:hover {
-  background: rgba(251, 43, 91, 0.8);
+  background: rgba(235, 0, 139, 0.7);
   color: #fff;
 }
 .top-moviez-post-top-layer:hover .top-moviez-post-add {
@@ -2817,6 +2816,7 @@ header#header {
   left: 0px;
   border-radius: 5px;
   font-size: 11px;
+  z-index:2;
 }
 
 .dropdown-content a {
@@ -3824,7 +3824,7 @@ header#header {
 .movie-list-item-cover {
   z-index: 2;
   width: 100%;
-  padding-top: 150%;
+  padding-top: 146%;
   background-color: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   background-repeat: no-repeat;
@@ -4492,6 +4492,7 @@ footer#footer {
 .footer-contact {
   width: 25%;
   float: right;
+  margin-left:5%;
 }
 .footer-contact-content,
 .footer-url-finder-download-content,
@@ -4582,7 +4583,7 @@ footer#footer {
   font: 500 0.8em/50px "IRSans", Sans-serif;
 }
 .footer-news-letter {
-  width: 30%;
+  width: 25%;
   float: left;
   overflow: hidden;
 }
@@ -4701,6 +4702,7 @@ footer#footer {
   }
   .footer-contact {
     width: 70%;
+    margin-left:0;
   }
   .footer-url-finder-download {
     width: 100%;

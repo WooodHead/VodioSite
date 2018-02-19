@@ -13,6 +13,7 @@ export default class Comment extends React.Component {
     if ($.trim(this.state.text) == "") {
       $("#text-validation").slideDown("100", "linear");
     } else {
+      console.log(this.props.session.session);
       if (this.props.session.session != null) {
         $.ajax({
           type: "POST",
@@ -37,9 +38,11 @@ export default class Comment extends React.Component {
             this.props.session.commentMovieId = this.props.movieId;
             this.props.session.fetchCommentList();
           }.bind(this),
-          error: function(jqXhr, textStatus, errorThrown) {
-            console.log(errorThrown);
-          }
+          error: function(request, textStatus, errorThrown) {
+            if (request.status == 403) {
+              this.props.session.session = null;
+            }
+          }.bind(this)
         });
       } else {
         this.props.session.commentMovieId = this.props.movieId;

@@ -88,8 +88,8 @@ export default class Movie extends React.Component {
       }
     }
 
-    if(this.props.movieStore.movieId == -1){
-      this.props.movieStore.movieId= this.props.match.params.id;
+    if (this.props.movieStore.movieId == -1) {
+      this.props.movieStore.movieId = this.props.match.params.id;
       this.props.movieStore.fetchMovie();
     }
 
@@ -127,7 +127,7 @@ export default class Movie extends React.Component {
       var url =
         MainUrl +
         "/NextpayPurchaseHandler.ashx?movieId=" +
-        this.state.movie.id +
+        this.props.movieStore.movie.id +
         "&token=" +
         this.props.session.session;
       window.location.replace(url);
@@ -157,7 +157,7 @@ export default class Movie extends React.Component {
       // });
     } else {
       this.props.session.showLogin = true;
-      this.props.session.movieIdForPurchase = this.state.movie.id;
+      this.props.session.movieIdForPurchase = this.props.movieStore.movie.id;
     }
   }
 
@@ -256,22 +256,24 @@ export default class Movie extends React.Component {
                               نمایش
                             </strong>
                           </a>
-                          <a
-                            onClick={this.download.bind(this)}
-                            className="download-button-container"
-                          >
-                            <img
-                              src={downloadImage}
-                              style={{
-                                width: "20px",
-                                marginRight: "15px",
-                                height: "45px"
-                              }}
-                            />
-                            <strong class="single-product-add-strong">
-                              دانلود
-                            </strong>
-                          </a>
+                          {this.props.movieStore.movieId != null && (
+                            <a
+                              onClick={this.download.bind(this)}
+                              className="download-button-container"
+                            >
+                              <img
+                                src={downloadImage}
+                                style={{
+                                  width: "20px",
+                                  marginRight: "15px",
+                                  height: "45px"
+                                }}
+                              />
+                              <strong class="single-product-add-strong">
+                                دانلود
+                              </strong>
+                            </a>
+                          )}
                           {this.props.movieStore.movie.downloadQualities ? (
                             <Download
                               qualities={
@@ -545,7 +547,7 @@ var Researcher = React.createClass({
   }
 });
 
-@inject("session")
+@inject("session","movieStore")
 @observer
 class Download extends React.Component {
   closeDownload() {
@@ -589,13 +591,15 @@ class Download extends React.Component {
           q360 = true;
           break;
         case "900":
-          q720 = true;
+          q480 = true;
           break;
         case "1500":
-          q1080 = true;
+          q720 = true;
+
           break;
         case "2200":
-          q480 = true;
+          q1080 = true;
+
           break;
 
         default:
@@ -621,7 +625,8 @@ class Download extends React.Component {
                 MainUrl +
                 "/DownloadTokenHandler.ashx?q=2200&token=" +
                 this.props.session.session +
-                "&movieId=1"
+                "&movieId=" +
+                this.props.movieStore.movieId
               }
               target="_blank"
             >
@@ -645,7 +650,8 @@ class Download extends React.Component {
                 MainUrl +
                 "/DownloadTokenHandler.ashx?q=1500&token=" +
                 this.props.session.session +
-                "&movieId=1"
+                "&movieId=" +
+                this.props.movieStore.movieId
               }
               target="_blank"
             >
@@ -669,7 +675,8 @@ class Download extends React.Component {
                 MainUrl +
                 "/DownloadTokenHandler.ashx?q=900&token=" +
                 this.props.session.session +
-                "&movieId=1"
+                "&movieId=" +
+                this.props.movieStore.movieId
               }
               target="_blank"
             >
@@ -693,7 +700,8 @@ class Download extends React.Component {
                 MainUrl +
                 "/DownloadTokenHandler.ashx?q=500&token=" +
                 this.props.session.session +
-                "&movieId=1"
+                "&movieId=" +
+                this.props.movieStore.movieId
               }
               target="_blank"
             >

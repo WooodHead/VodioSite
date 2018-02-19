@@ -18,6 +18,7 @@ import Loading from "./loading/Loading";
 import MobileSearch from "./search/MobileSearch";
 import Purchase from "./purchase/Purchase";
 import FAQ from "./faq/FAQ";
+import Factors from "./purchase/Factors";
 
 @inject("session")
 @withRouter
@@ -48,7 +49,7 @@ class Layout extends React.Component {
 
   componentWillMount() {
     this.props.session.session =
-    localStorage.getItem("session") != null
+      localStorage.getItem("session") != null
         ? localStorage.getItem("session")
         : null;
     this.props.session.history = this.props.history;
@@ -109,6 +110,7 @@ class Layout extends React.Component {
             <Route path="/purchase" component={Purchase} />
             <Route path="/error" component={ErrorPage} />
             <Route path="/faq" component={FAQ} />
+            <Route path="/factors" component={Factors} />
           </Switch>
         </div>
         {this.props.session.showFooter && <Footer />}

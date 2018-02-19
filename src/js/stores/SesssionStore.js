@@ -148,6 +148,9 @@ class SessionStore {
     }
     $.ajax({
       type: "GET",
+      headers: {
+        token: this.session
+      },
       url:
         this.purchaseListUrl +
         "offset=" +
@@ -162,7 +165,11 @@ class SessionStore {
         this.purchaseIsLoading = false;
       }.bind(this),
       error: function(request, textStatus, errorThrown) {
-      }
+        if (request.status == 403) {
+          this.session = null;
+          this.history.push("/");
+        }
+      }.bind(this)
     });
   }
 }

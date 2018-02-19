@@ -27,7 +27,6 @@ export default class Category extends React.Component {
       this.props.session.offset = 0;
       var url = this.makeUrl(category, genre);
       this.props.session.listUrl = url;
-      console.log("asdf " + url);
       this.props.session.isInitiating = true;
       this.props.session.title = category.name;
       this.props.session.fetchList();
@@ -113,7 +112,7 @@ export default class Category extends React.Component {
               <ul
                 style={{
                   width: "100%",
-                  height: "200px"
+                  height: "230px"
                 }}
               >
                 {this.props.categories.map(category => (

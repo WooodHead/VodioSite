@@ -48,17 +48,16 @@ export default class TopMovie extends React.Component {
   }
 
   movieClicked(movieId) {
-    console.log(this.props.movie);
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.session.history.push("/movie/" + movieId);
   }
 
   render() {
     return (
       <div className="top-moviez-inner">
         <div className="top-moviez-post">
-          <a
+          <Link
+            to={{pathname:"/movie/"+this.props.movie.id}}
             onClick={this.movieClicked.bind(this, this.props.movie.id)}
             className="top-moviez-post-inner"
           >
@@ -101,7 +100,7 @@ export default class TopMovie extends React.Component {
                 </ul>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     );

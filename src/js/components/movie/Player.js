@@ -12,6 +12,50 @@ import { latinToPersian, persianToLatin } from "../../util/util";
 import { inject, observer } from "mobx-react";
 import exit from "../../../img/exit.svg";
 
+var TimeUpdate = function TimeUpdate() {
+  var video = document.getElementById("video"),
+    seekBar = document.getElementById("seek-bar");
+
+  if (!seekBar.getAttribute("max")) seekBar.setAttribute("max", video.duration);
+  seekBar.value = video.currentTime;
+  var val = video.currentTime / video.duration;
+  seekBar.style.backgroundImage =
+    "-webkit-gradient(linear, left top, right top, " +
+    "color-stop(" +
+    val +
+    ", #7d1d65), " +
+    "color-stop(" +
+    val +
+    ", transparent)" +
+    ")";
+
+  var durationHour = parseInt(video.duration / 3600);
+  var durationMinute = parseInt((video.duration - durationHour * 3600) / 60);
+  var durationSecond =
+    parseInt(video.duration) - durationHour * 3600 - durationMinute * 60;
+
+  var currentHour = parseInt(video.currentTime / 3600);
+  var currentMinute = parseInt((video.currentTime - currentHour * 3600) / 60);
+  var currentSecond =
+    parseInt(video.currentTime) - currentHour * 3600 - currentMinute * 60;
+
+  currentTime.innerHTML = latinToPersian(
+    ("0" + currentHour).slice(-2) +
+      ":" +
+      ("0" + currentMinute).slice(-2) +
+      ":" +
+      ("0" + currentSecond).slice(-2)
+  );
+  duration.innerHTML = latinToPersian(
+    "/ " +
+      ("0" + durationHour).slice(-2) +
+      ":" +
+      ("0" + durationMinute).slice(-2) +
+      ":" +
+      ("0" + durationSecond).slice(-2)
+  );
+};
+
 @inject("session")
 @observer
 export default class Player extends React.Component {
@@ -54,6 +98,7 @@ export default class Player extends React.Component {
   }
 
   close() {
+    video.removeEventListener("timeupdate", TimeUpdate);
     document.body.style.overflowY = "auto";
     this.props.session.showPlayerFullscreen = false;
   }
@@ -350,59 +395,6 @@ export default class Player extends React.Component {
           false
         );
 
-        function TimeUpdate() {
-          var video = document.getElementById("video"),
-            seekBar = document.getElementById("seek-bar");
-
-          if (!seekBar.getAttribute("max"))
-            seekBar.setAttribute("max", video.duration);
-          seekBar.value = video.currentTime;
-          var val = video.currentTime / video.duration;
-          seekBar.style.backgroundImage =
-            "-webkit-gradient(linear, left top, right top, " +
-            "color-stop(" +
-            val +
-            ", #7d1d65), " +
-            "color-stop(" +
-            val +
-            ", transparent)" +
-            ")";
-
-          var durationHour = parseInt(video.duration / 3600);
-          var durationMinute = parseInt(
-            (video.duration - durationHour * 3600) / 60
-          );
-          var durationSecond =
-            parseInt(video.duration) -
-            durationHour * 3600 -
-            durationMinute * 60;
-
-          var currentHour = parseInt(video.currentTime / 3600);
-          var currentMinute = parseInt(
-            (video.currentTime - currentHour * 3600) / 60
-          );
-          var currentSecond =
-            parseInt(video.currentTime) -
-            currentHour * 3600 -
-            currentMinute * 60;
-
-          currentTime.innerHTML = latinToPersian(
-            ("0" + currentHour).slice(-2) +
-              ":" +
-              ("0" + currentMinute).slice(-2) +
-              ":" +
-              ("0" + currentSecond).slice(-2)
-          );
-          duration.innerHTML = latinToPersian(
-            "/ " +
-              ("0" + durationHour).slice(-2) +
-              ":" +
-              ("0" + durationMinute).slice(-2) +
-              ":" +
-              ("0" + durationSecond).slice(-2)
-          );
-        }
-
         seekBar.addEventListener(
           "mousedown",
           function() {
@@ -525,7 +517,7 @@ export default class Player extends React.Component {
             var q = document.createElement("a");
             q.setAttribute("data-value", i);
             q.setAttribute("class", "quality");
-            q.text = qualities[i].attrs.NAME;
+            q.text = qualities[i].attrs.RESOLUTION.split("x")[1];
             quality.appendChild(q);
           }
 

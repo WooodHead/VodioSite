@@ -36,11 +36,10 @@ export default class MovieComment extends React.Component {
             </a>
           </div>
         ) : ( */}
-        <Comment
-          movieId={this.props.movieId}
-          onCommentSubmit={this.onCommentSubmit.bind(this)}
-        />
-        {/* )} */}
+
+        {this.props.session.commentListCount == 0 && (
+          <div style={{ color: "gray" }}>اولین دیدگاه را شما ثبت کنید</div>
+        )}
         {this.props.session.commentListCount != 0 && (
           <div id="comments">
             <h2>
@@ -81,7 +80,7 @@ export default class MovieComment extends React.Component {
                       }}
                     >
                       <p className="meta">
-                        <strong>{comment.name}</strong> <span>    </span>
+                        <strong>{comment.name}</strong> <span> </span>
                         <span className="comment-date">
                           {comment.millisecond}{" "}
                         </span>
@@ -96,6 +95,10 @@ export default class MovieComment extends React.Component {
             </div>
           </div>
         )}
+        <Comment
+          movieId={this.props.movieId}
+          onCommentSubmit={this.onCommentSubmit.bind(this)}
+        />
       </div>
     );
   }

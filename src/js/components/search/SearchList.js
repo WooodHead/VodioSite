@@ -34,7 +34,6 @@ export default class SearchList extends React.Component {
   movieClicked(movieId) {
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.session.history.push("/movie/" + movieId);
   }
 
   render() {
@@ -58,6 +57,7 @@ export default class SearchList extends React.Component {
             return (
               <div id={"element" + l} class="box movie-list-item" key={l}>
                 <Link
+                  to={{ pathname: "/movie/" + this.props.movie.id }}
                   onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >

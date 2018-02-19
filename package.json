@@ -15,8 +15,9 @@
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-owl-carousel": "^2.2.0",
+    "react-owl-carousel2": "^0.3.0",
     "react-router-dom": "^4.2.2",
-    "react-slick": "^0.17.1",
+    "react-super-responsive-table": "^4.1.11",
     "react-toastify": "^3.2.1"
   },
   "devDependencies": {
