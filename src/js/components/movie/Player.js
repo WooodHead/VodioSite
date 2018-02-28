@@ -173,7 +173,7 @@ export default class Player extends React.Component {
 
           {this.state.showControls &&
             Hls.isSupported() && (
-              <div id="video-controls" class="controls display-control">
+              <div id="video-controls" class="controls display-control" >
                 {Hls.isSupported() && (
                   <button
                     id="playpause"

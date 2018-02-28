@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { MainUrl } from "../util/RequestHandler";
 import { instanceOf } from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Switch, Route, withRouter } from "react-router-dom";
@@ -19,6 +19,7 @@ import MobileSearch from "./search/MobileSearch";
 import Purchase from "./purchase/Purchase";
 import FAQ from "./faq/FAQ";
 import Factors from "./purchase/Factors";
+import { latinToPersian, persianToLatin } from "../util/util";
 
 @inject("session")
 @withRouter
@@ -57,40 +58,81 @@ class Layout extends React.Component {
 
   componentDidMount() {
     this.fixedHeader();
+    var mainHeight =
+      $(window).height() - $("#footer").height() - $("#header").height() - 210;
+    $(".main-holder").css("min-height", mainHeight);
+
+    if (localStorage.getItem("session") && localStorage.getItem("msisdn")) {
+      $.ajax({
+        type: "GET",
+        headers: {
+          token: localStorage.getItem("session")
+        },
+        url:
+          MainUrl +
+          "/login.ashx?msisdn=" +
+          persianToLatin(localStorage.getItem("msisdn")),
+        success: function(data, textStatus, request) {
+          if (data.data.token != null) {
+            localStorage.setItem("session", data.data.token);
+            this.props.session.session = data.data.token;
+          } else {
+            localStorage.removeItem("session");
+            localStorage.removeItem("msisdn");
+            this.props.session.session = null;
+          }
+        }.bind(this),
+        error: function(request, textStatus, errorThrown) {
+          localStorage.removeItem("session");
+          localStorage.removeItem("msisdn");
+          this.props.session.session = null;
+        }.bind(this)
+      });
+    } else {
+      localStorage.removeItem("session");
+      localStorage.removeItem("msisdn");
+      this.props.session.session = null;
+    }
   }
 
   fixedHeader() {
-    var nav = $("#header");
-    var mainHolder = $(".main-holder");
-    var navHomeY = nav.offset().top;
-    var isFixed = false;
-    var $w = $(window);
-    $w.scroll(function() {
-      var scrollTop = $w.scrollTop();
-      var shouldBeFixed = scrollTop > navHomeY;
-      if (shouldBeFixed && !isFixed) {
-        if ($w.width() > 520) {
-          mainHolder.css({ margin: "100px auto 0" });
-        } else {
-          mainHolder.css({ margin: "65px auto 0" });
+    var mainHeight =
+      $(window).height() - $("#footer").height() - $("#header").height() - 210;
+      
+    if ($(".main-holder").height() > mainHeight) {
+      var nav = $("#header");
+      var mainHolder = $(".main-holder");
+      var navHomeY = nav.offset().top;
+      var isFixed = false;
+      var $w = $(window);
+      
+      $w.scroll(function() {
+        var scrollTop = $w.scrollTop();
+        var shouldBeFixed = scrollTop > navHomeY;
+        if (shouldBeFixed && !isFixed) {
+          if ($w.width() > 520) {
+            mainHolder.css({ margin: "100px auto 0" });
+          } else {
+            mainHolder.css({ margin: "65px auto 0" });
+          }
+          nav.css({
+            position: "fixed",
+            background: "rgba(255,255,255,1)",
+            boxShadow: "0 20px 30px rgba(0,0,0,.1)",
+            top: 0,
+            left: nav.offset().left,
+            width: nav.width()
+          });
+          isFixed = true;
+        } else if (!shouldBeFixed && isFixed) {
+          nav.css({
+            position: "absolute",
+            boxShadow: "none"
+          });
+          isFixed = false;
         }
-        nav.css({
-          position: "fixed",
-          background: "rgba(255,255,255,1)",
-          boxShadow: "0 20px 30px rgba(0,0,0,.1)",
-          top: 0,
-          left: nav.offset().left,
-          width: nav.width()
-        });
-        isFixed = true;
-      } else if (!shouldBeFixed && isFixed) {
-        nav.css({
-          position: "absolute",
-          boxShadow: "none"
-        });
-        isFixed = false;
-      }
-    });
+      });
+    }
   }
 
   render() {
@@ -121,4 +163,4 @@ class Layout extends React.Component {
   }
 }
 
-export default Layout;
+export default withRouter(Layout);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Comment from "./Comment";
 import { inject, observer } from "mobx-react";
-import { latinToPersian, convertMillisecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString } from "../../util/util";
 var moment = require("moment-jalaali");
 import { MainUrl } from "../../util/RequestHandler";
 

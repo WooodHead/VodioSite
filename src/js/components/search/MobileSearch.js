@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search","movieStore")
+@inject("session", "search", "movieStore")
 @observer
 export default class MobileSearch extends React.Component {
   constructor(props) {
@@ -65,6 +65,8 @@ export default class MobileSearch extends React.Component {
   }
 
   render() {
+    var width = Math.floor($(".mobile-search-result").width() * 0.3);
+    var height = Math.floor(width * 16 / 11);
     return (
       <div class="mobile-search">
         <div
@@ -73,7 +75,8 @@ export default class MobileSearch extends React.Component {
             display: "inline-flex",
             height: "35px",
             marginRight: "5px",
-            marginLeft: "5px"
+            marginLeft: "5px",
+            direction:"rtl"
           }}
         >
           <input
@@ -90,7 +93,8 @@ export default class MobileSearch extends React.Component {
               fontSize: "12px",
               fontFamily: "IRSans",
               background: "#f0f0f0",
-              color: "#eb0089"
+              color: "#eb0089",
+              direction: "rtl"
             }}
           />
           <img
@@ -127,7 +131,11 @@ export default class MobileSearch extends React.Component {
                             src={
                               MainUrl +
                               "/image.ashx?file=" +
-                              search.thumbnail.url
+                              search.thumbnail.url +
+                              "&width=" +
+                              width +
+                              "&height=" +
+                              height
                             }
                           />
                         </div>

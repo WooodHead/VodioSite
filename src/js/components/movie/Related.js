@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { latinToPersian, convertMillisecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString } from "../../util/util";
 export default class Test extends React.Component {
   componentDidMount() {
    
@@ -34,7 +34,7 @@ export default class Test extends React.Component {
                   </span>{" "}
                   -{" "}
                   <span>
-                    {latinToPersian(convertMillisecondToString(movie.duration))}
+                    {latinToPersian(convertSecondToString(movie.duration))}
                   </span>{" "}
                   -{" "}
                   <span className="green">

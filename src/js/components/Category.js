@@ -39,7 +39,6 @@ export default class Category extends React.Component {
   toggleCategory() {
     $(".header-category-drop-down").slideToggle(100);
   }
-
   componentDidUpdate() {
     $(window).click(function() {
       var width = $(window).width();
@@ -122,6 +121,7 @@ export default class Category extends React.Component {
                     className="header-category-drop-down-main-menu-item"
                   >
                     <a
+                    class="category-item"
                       id={category.id}
                       onClick={this.onCategoryClicked.bind(
                         this,

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { latinToPersian, convertMillisecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString } from "../../util/util";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
@@ -14,13 +14,14 @@ export default class TopMovie extends React.Component {
       director: null,
       researcher: null,
       provider: null,
-      actors: null
+      actors: null,
+      elementId: makeid()
     };
   }
 
   componentDidMount() {
     this.setState({
-      durationString: convertMillisecondToString(this.props.movie.duration)
+      durationString: convertSecondToString(this.props.movie.duration)
     });
     var directorTemp;
     var ActorTemp;
@@ -45,6 +46,45 @@ export default class TopMovie extends React.Component {
         actors: ActorTemp
       });
     }
+
+    $(".top-moviez-inner" + this.state.elementId).hover(
+      function() {
+        $(".top-moviez-post-overlay" + this.state.elementId).css(
+          "visibility",
+          "visible"
+        );
+        $(".top-moviez-post-overlay" + this.state.elementId).css(
+          "opacity",
+          "1"
+        );
+        $(".top-moviez-post-title" + this.state.elementId).css(
+          "top",
+          "calc(45% - 20px)"
+        );
+        $(".top-moviez-post-director" + this.state.elementId).css(
+          "top",
+          "calc(50% - 20px)"
+        );
+      }.bind(this),
+      function() {
+        $(".top-moviez-post-overlay" + this.state.elementId).css(
+          "opacity",
+          "0"
+        );
+        $(".top-moviez-post-overlay" + this.state.elementId).css(
+          "visibility",
+          "hidden"
+        );
+        $(".top-moviez-post-title" + this.state.elementId).css(
+          "top",
+          "calc(60% - 20px)"
+        );
+        $(".top-moviez-post-director" + this.state.elementId).css(
+          "top",
+          "calc(75% - 20px)"
+        );
+      }.bind(this)
+    );
   }
 
   movieClicked(movieId) {
@@ -53,34 +93,88 @@ export default class TopMovie extends React.Component {
   }
 
   render() {
+    var style = {
+      width: "100%",
+      height: "100%",
+      position: "absolute",
+      zIndex: "2",
+      opacity: "0",
+      transition: "visibility 0.5s, opacity 0.5s linear",
+      visibility: "hidden",
+      background: "white"
+    };
+
+    var titleStyle = {
+      position: "relative",
+      top: "calc(60% - 20px)",
+      color: "black",
+      height: "40px",
+      width: "100%",
+      textAlign: "center",
+      fontSize: "20px",
+      transition: "top 0.3s linear",
+      fontFamily: "IRSansBold",
+      lineHeight: "1.8"
+    };
+
+    var directorStyle = {
+      position: "relative",
+      top: "calc(75% - 20px)",
+      color: "black",
+      height: "40px",
+      width: "100%",
+      textAlign: "center",
+      fontSize: "14px",
+      transition: "top 0.3s linear"
+    };
+
     return (
-      <div className="top-moviez-inner">
-        <div className="top-moviez-post">
-          <Link
-            to={{pathname:"/movie/"+this.props.movie.id}}
-            onClick={this.movieClicked.bind(this, this.props.movie.id)}
-            className="top-moviez-post-inner"
+      <div className={"top-moviez-inner" + this.state.elementId}>
+        <Link
+          to={{ pathname: "/movie/" + this.props.movie.id }}
+          onClick={this.movieClicked.bind(this, this.props.movie.id)}
+          className="top-moviez-post-inner"
+        >
+          <div
+            class={"top-moviez-post-overlay" + this.state.elementId}
+            style={style}
           >
-            <img
-              src={
-                MainUrl +
-                "/image.ashx?file=" +
-                this.props.movie.thumbnail.url +
-                "&height=" +
-                this.props.height +
-                "&width=" +
-                this.props.width
-              }
-              className="top-moviez-post-image"
-            />
-            <div className="top-moviez-post-top-layer">
+            <div
+              class={"top-moviez-post-title" + this.state.elementId}
+              style={titleStyle}
+            >
+              {latinToPersian(this.props.movie.title)}
+            </div>
+            {this.props.movie.directors && (
+              <div
+                class={"top-moviez-post-director" + this.state.elementId}
+                style={directorStyle}
+              >
+                {this.props.movie.directors[0].name}
+              </div>
+            )}
+          </div>
+
+          <img
+            src={
+              MainUrl +
+              "/image.ashx?file=" +
+              this.props.movie.thumbnail.url +
+              "&height=" +
+              this.props.height +
+              "&width=" +
+              this.props.width
+            }
+            className="top-moviez-post-image"
+          />
+          {/* <div className="top-moviez-post-top-layer">
               <div className="top-moviez-post-add">
                 <ul className="top-moviez-post-top-ul">
                   <li>{this.props.movie.title}</li>
                   <li>{latinToPersian(this.state.durationString)}</li>
                   {this.props.movie.rate != 0 && (
                     <li>
-                      {latinToPersian(this.props.movie.rate.toString())}
+                      {latinToPersian(this.props.movie.editorialRate.toString())}
                       &nbsp; امتیاز از &nbsp;
                       {latinToPersian(this.props.movie.ratedUsers.toString())}
                       &nbsp;کاربر&nbsp;
@@ -99,12 +193,22 @@ export default class TopMovie extends React.Component {
                   ) : null}
                 </ul>
               </div>
-            </div>
-          </Link>
-        </div>
+            </div> */}
+        </Link>
       </div>
     );
   }
+}
+
+function makeid() {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
 
 var Genre = React.createClass({

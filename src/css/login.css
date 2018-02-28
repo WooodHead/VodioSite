@@ -215,21 +215,21 @@
 }
 
 input::-webkit-input-placeholder {
-  color: #caa7c1 !important;
+  color: #9b989ac7 !important;
 }
 
 input:-moz-placeholder {
   /* Firefox 18- */
-  color: #caa7c1 !important;
+  color: #9b989ac7 !important;
 }
 
 input::-moz-placeholder {
   /* Firefox 19+ */
-  color: #caa7c1 !important;
+  color: #9b989ac7 !important;
 }
 
 input:-ms-input-placeholder {
-  color: #caa7c1 !important;
+  color: #9b989ac7 !important;
 }
 
 .vodio-caption {

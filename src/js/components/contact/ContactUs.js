@@ -3,13 +3,18 @@ import React from "react";
 export default class ContactUs extends React.Component {
   componentDidMount() {
     window.scrollTo(0, 0);
+
+    $(".content-holder").css("background", "#dedede");
+  }
+  componentWillUnmount() {
+    $(".content-holder").css("background", "white");
   }
   render() {
     return (
-      <div class="contact-us-container">
+      <div class="vodio-container">
         <p
           style={{
-            margin: "30px",
+            margin: "30px 0px 30px 30px",
             fontSize: "14px"
           }}
         >

@@ -18,14 +18,21 @@ export default class Header extends React.Component {
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    $(window).click(
+      function() {
+        $("#myDropdown").hide(100);
+      }.bind(this)
+    );
+
+    $(".header-sign-out").click(function(event) {
+      event.stopPropagation();
+    });
+
     $(".header-sign-out").click(function(event) {
       $("#myDropdown").toggle(100);
       event.stopPropagation();
     });
-  }
-
-  componentDidMount() {
     $(window).click(function() {
       if ($(window).width() < 1001) {
         $(".header-menu").hide(100);
@@ -83,7 +90,7 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <header id="header">
+      <header id="header" style={{ background: "white" }}>
         <div className="header-inner max-width">
           <Link to={{ pathname: "/" }} className="logo" title="وودیو">
             <img
@@ -111,7 +118,13 @@ export default class Header extends React.Component {
                 </li>
               </ul>
             </nav> */}
-            <div style={{ display: "inline-flex", float: "left" }}>
+            <div
+              style={{
+                display: "inline-flex",
+                float: "left",
+                direction: "rtl"
+              }}
+            >
               <Search />
               <div className="header-left-meta">
                 {this.props.session.session != null &&

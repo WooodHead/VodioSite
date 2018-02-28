@@ -1,7 +1,7 @@
 import { action, observable } from "mobx";
 import { MainUrl } from "../util/RequestHandler";
 var moment = require("moment-jalaali");
-import { latinToPersian, convertMillisecondToString } from "../util/util";
+import { latinToPersian, convertSecondToString } from "../util/util";
 
 class MovieStore {
   @observable movie = false;
@@ -43,8 +43,12 @@ class MovieStore {
         this.researcher = ResearcherTemp;
         this.provider = providerTemp;
         this.actors = ActorTemp;
+
+        this.sessionStore.showLoading = false;
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
+      error: function(request, textStatus, errorThrown) {
+        this.sessionStore.showLoading = false;
+      }
     });
   }
 
@@ -62,6 +66,7 @@ class MovieStore {
 
   @action
   fetchMovie() {
+    this.sessionStore.showLoading = true;
     $.ajax({
       type: "GET",
       headers: {
@@ -70,10 +75,10 @@ class MovieStore {
       url: MainUrl + "/movie.ashx?movieId=" + this.movieId,
       success: function(data, textStatus, request) {
         this.movie = data.data;
-        this.durationString = convertMillisecondToString(this.movie.duration);
-        console.log(data);
+        this.durationString = convertSecondToString(this.movie.duration);
         this.fetchRoles();
         this.fetchRelated();
+        window.scrollTo(0, 0);
       }.bind(this),
       error: function(request, textStatus, errorThrown) {
         if (request.status == 403) {

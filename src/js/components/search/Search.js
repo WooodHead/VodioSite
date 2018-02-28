@@ -144,6 +144,7 @@ export default class Search extends React.Component {
   }
 
   onClick() {
+
     $("#searchInput").focus();
     // if ($("#searchInput").width() >= 280) {
     this.search();

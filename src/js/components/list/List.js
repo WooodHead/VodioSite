@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
 import ListIcon from "../../../img/List.svg";
+import { latinToPersian, convertSecondToString } from "../../util/util";
 
 @inject("session", "movieStore")
 @observer
@@ -99,7 +100,7 @@ export default class List extends React.Component {
                 </span>
                 <h2 class="movie-list-item-title">
                   <span class="movie-list-item-title-persian">
-                    {element.title}
+                    {latinToPersian(element.title)}
                   </span>
                   <span class="movie-list-item-title-english" />
                 </h2>

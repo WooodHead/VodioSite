@@ -43,6 +43,7 @@ export default class Banners extends React.Component {
 
   render() {
     var components = [];
+    var width = $(window).width();
     this.props.bundle.banners.forEach((banner, l) => {
       if (banner.urlToClick != null) {
         components.push(
@@ -55,7 +56,9 @@ export default class Banners extends React.Component {
           >
             <img
               style={{ width: "100%" }}
-              src={MainUrl + "/image.ashx?file=" + banner.url}
+              src={
+                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+              }
             />
           </a>
         );
@@ -68,7 +71,9 @@ export default class Banners extends React.Component {
           >
             <img
               style={{ width: "100%" }}
-              src={MainUrl + "/image.ashx?file=" + banner.url}
+              src={
+                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+              }
             />
           </Link>
         );
@@ -87,7 +92,9 @@ export default class Banners extends React.Component {
           >
             <img
               style={{ width: "100%" }}
-              src={MainUrl + "/image.ashx?file=" + banner.url}
+              src={
+                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+              }
             />
           </Link>
         );
@@ -95,16 +102,9 @@ export default class Banners extends React.Component {
     });
 
     return (
-      <OwlCarousel
-        className="owl-theme"
-        loop
-        items={1}
-        style={{
-          direction: "ltr"
-        }}
-      >
-        {components}
-      </OwlCarousel>
+        <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1}>
+          {components}
+        </OwlCarousel>
     );
   }
 }

@@ -11,6 +11,7 @@
   background: url(../img/header-meta-icons.png) no-repeat 70px -135px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0, 0, 0.68, -0.07);
+  direction:rtl;
 }
 .header-category-show:hover {
   background-color: #e2e2e2;
@@ -34,6 +35,7 @@
   width: 100%;
   position: relative;
   padding-bottom: 20px;
+  direction:rtl;
 }
 .header-category-drop-down-main-menu .header-category-drop-down-main-menu-item {
   display: block;
@@ -47,15 +49,24 @@
   .header-category-drop-down-main-menu-item:hover {
   border-color: #fb2b5b;
 }
-.header-category-drop-down-main-menu
   .header-category-drop-down-main-menu-item
   a {
   display: block;
   width: 100%;
   height: 85px;
-  color: #b3b3b3;
   cursor: pointer;
 }
+
+.category-item {
+    display: block;
+    width: 100%;
+    height: 85px;
+    color: black;
+    cursor: pointer;
+    background: #edeaea;
+}
+
+
 .header-category-drop-down-main-menu
   .header-category-drop-down-main-menu-item:hover
   a {

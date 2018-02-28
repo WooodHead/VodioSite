@@ -26,7 +26,7 @@ export default class Purchase extends React.Component {
   }
 
   componentDidMount() {
-    this.props.session.showFooter = false;
+    // this.props.session.showFooter = false;
     if (this.props.session.purchaseIsInitiating == true) {
       this.props.session.purchaseIsInitiating = false;
     } else {
@@ -58,7 +58,7 @@ export default class Purchase extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.session.showFooter = true;
+    // this.props.session.showFooter = true;
   }
 
   render() {

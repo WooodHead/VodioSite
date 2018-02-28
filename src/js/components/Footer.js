@@ -3,12 +3,34 @@ import { Link } from "react-router-dom";
 import { latinToPersian } from "../util/util";
 
 export default class Footer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      email: ""
+    };
+  }
+
   componentDidMount() {
     $(function() {
       $(".float-top-header").click(function() {
         $("html, body").animate({ scrollTop: 0 }, 1000);
       });
     });
+  }
+
+  submitEmail() {
+    if ($.trim(this.state.email) == "") {
+      $.ajax({
+        type: "GET",
+        url: MainUrl + "/saveemail.ashx?email=" + this.state.email,
+        success: function(data, textStatus, request) {
+
+        }.bind(this),
+        error: function(request, textStatus, errorThrown) {}.bind(this)
+      });
+    }else{
+      
+    }
   }
 
   render() {
@@ -42,16 +64,19 @@ export default class Footer extends React.Component {
               <p>{latinToPersian("تلفن: 02126141571")}</p>
               <p>ایمیل: Info@vodio.com</p>
               <div className="footer-contact-content-socail">
-                <a href="#" className="telegram">
+                <a href="https://t.me/vodiochannel" className="telegram">
                   <span className="icon-paper-plane-empty" />
                 </a>
-                <a href="#" className="instagram">
+                <a href="http://instagram.com/vodio.ir" className="instagram">
                   <span className="icon-instagram-1" />
                 </a>
-                <a href="#" className="twitter">
+                <a href="http://twitter.com/vodio_ir" className="twitter">
                   <span className="icon-twitter" />
                 </a>
-                <a href="#" className="facebook">
+                <a
+                  href="https://www.facebook.com/vodio.ir/"
+                  className="facebook"
+                >
                   <span className="icon-facebook" />
                 </a>
               </div>
@@ -79,7 +104,10 @@ export default class Footer extends React.Component {
                   className="text-input"
                   placeholder="ایمیل..."
                 />
-                <button type="submit" className="submit">
+                <button
+                  className="submit"
+                  onClick={this.submitEmail.bind(this)}
+                >
                   <span className="icon-paper-plane-empty" />
                 </button>
               </div>

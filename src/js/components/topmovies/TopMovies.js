@@ -14,21 +14,30 @@ export default class TopMovies extends React.Component {
 
   render() {
     var options = {
-      loop: true,
+      rtl: true,
+      loop: false,
       dots: false,
       margin: 10,
       responsive: {
         600: {
-          items: 3,
-          slideBy: 3
+          items: 4,
+          slideBy: 4
         },
         1000: {
           items: 5,
           slideBy: 5
         },
+        1200: {
+          items: 6,
+          slideBy: 6
+        },
         1400: {
           items: 7,
           slideBy: 7
+        },
+        1700: {
+          items: 8,
+          slideBy: 8
         }
       }
     };
@@ -41,6 +50,7 @@ export default class TopMovies extends React.Component {
     } else {
       width = Math.round(windowWidth / 3);
     }
+    width = Math.round(width * 1.2);
     var height = Math.round(width * 16 / 11);
     return (
       <div class="slide-overlay">
@@ -55,7 +65,6 @@ export default class TopMovies extends React.Component {
           className="owl-theme"
           {...options}
           style={{
-            direction: "ltr",
             marginRight: "15px",
             marginLeft: "15px",
             width: "calc(100% - 30px)"

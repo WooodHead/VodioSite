@@ -17,7 +17,7 @@ export default class Main extends React.Component {
     $('body').css({'overflow-y':'scroll'});
   }
 
-  componentWillUpdate(){
+  componentWillUnmount(){
     $('body').css({'overflow-y':'inherit'});
   }
 

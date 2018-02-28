@@ -195,7 +195,6 @@ export default class Login extends React.Component {
             }
             localStorage.setItem("session", data.data.token);
             localStorage.removeItem("otp");
-            localStorage.removeItem("msisdn");
             window.location.reload();
           }
         }.bind(this),

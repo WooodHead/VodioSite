@@ -1,7 +1,7 @@
 import { action, observable } from "mobx";
 import { MainUrl } from "../util/RequestHandler";
 var moment = require("moment-jalaali");
-import { latinToPersian, convertMillisecondToString } from "../util/util";
+import { latinToPersian, convertSecondToString } from "../util/util";
 
 class SessionStore {
   @observable session = null;

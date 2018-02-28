@@ -14,7 +14,6 @@ export default class SearchList extends React.Component {
 
   componentDidMount() {
     this.props.session.showFooter = false;
-
     window.onscroll = function() {
       if (
         this.props.search.elements != null &&
@@ -25,6 +24,10 @@ export default class SearchList extends React.Component {
         this.props.search.fetchNextSearchList();
       }
     }.bind(this);
+    if (this.props.search.keyword == null) {
+      console.log(this.props.match.params.keyword);
+      this.props.search.fetchSearchList(this.props.match.params.keyword);
+    }
   }
 
   componentWillUnmount() {
@@ -42,7 +45,7 @@ export default class SearchList extends React.Component {
       childElements = this.props.search.elements.map(
         function(element, l) {
           if (element != null) {
-            var width = $(".row-header").width();
+            var width = $(window).width();
             if (width > 1400) {
               width = width * 12.5 / 100;
             } else if (width > 1200) {
@@ -54,10 +57,12 @@ export default class SearchList extends React.Component {
             } else if (width > 400) {
               width = width * 50 / 100;
             }
+            width = Math.round(width);
+            var height = Math.round(width / 11 * 16);
             return (
               <div id={"element" + l} class="box movie-list-item" key={l}>
                 <Link
-                  to={{ pathname: "/movie/" + this.props.movie.id }}
+                  to={{ pathname: "/movie/" + element.id }}
                   onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >
@@ -69,7 +74,9 @@ export default class SearchList extends React.Component {
                         "/image.ashx?file=" +
                         element.thumbnail.url +
                         "&width=" +
-                        width
+                        width +
+                        "&height=" +
+                        height
                       }
                     />
                   </span>
