@@ -13,7 +13,7 @@ export default class Comment extends React.Component {
     if ($.trim(this.state.text) == "") {
       $("#text-validation").slideDown("100", "linear");
     } else {
-      console.log(this.props.session.session);
+      this.props.gaStore.addEvent("Movie", "click", "sendComment", this.props.movieId);
       if (this.props.session.session != null) {
         $.ajax({
           type: "POST",
@@ -31,14 +31,15 @@ export default class Comment extends React.Component {
             movieId: this.props.movieId
           }),
           dataType: "json",
-          success: function(data, textStatus, jQxhr) {
+          success: function (data, textStatus, jQxhr) {
             if (data.errorCode != 0) {
             } else {
             }
+            this.props.gaStore.addEvent("Movie", "complete", "sendComment", this.props.movieId);
             this.props.session.commentMovieId = this.props.movieId;
             this.props.session.fetchCommentList();
           }.bind(this),
-          error: function(request, textStatus, errorThrown) {
+          error: function (request, textStatus, errorThrown) {
             if (request.status == 403) {
               this.props.session.session = null;
             }

@@ -2,8 +2,9 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../util/RequestHandler";
 import "../../css/category.css";
+import categoryImage from '../../img/category.svg';
 
-@inject("session")
+@inject("session", "gaStore")
 @observer
 export default class Category extends React.Component {
   makeUrl(category, genre) {
@@ -22,8 +23,10 @@ export default class Category extends React.Component {
 
   onCategoryClicked(category, genre) {
     var width = $(window).width();
-    if (width > 740) {
-      this.props.session.history.push("/list");
+    if (width > 750) {
+      this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", category.id);
+      this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
+      this.props.session.history.push("/list/" + (category.id + 1) + "/0");
       this.props.session.offset = 0;
       var url = this.makeUrl(category, genre);
       this.props.session.listUrl = url;
@@ -36,19 +39,23 @@ export default class Category extends React.Component {
   closeMainMenu() {
     $(".header-category-drop-down").hide();
   }
+
   toggleCategory() {
+    if ($(".header-category-drop-down").css("display") == "none") {
+      this.props.gaStore.addEvent("Home", "click", "categoryMenu", null);
+    }
     $(".header-category-drop-down").slideToggle(100);
   }
   componentDidUpdate() {
-    $(window).click(function() {
+    $(window).click(function () {
       var width = $(window).width();
-      if (width > 740) {
+      if (width > 750) {
         $("#category-header").hide(100);
       }
     });
 
     $("#header-category-show").click(
-      function(event) {
+      function (event) {
         this.toggleCategory();
         event.stopPropagation();
       }.bind(this)
@@ -56,13 +63,13 @@ export default class Category extends React.Component {
 
     if (this.props.categories != null) {
       var width = $(window).width();
-      if (width > 740) {
+      if (width > 750) {
         this.props.categories.map(category =>
           $("#" + "category" + category.id).hover(
-            function() {
+            function () {
               $("#" + "category12" + category.id).show();
             },
-            function() {
+            function () {
               $("#" + "category12" + category.id).hide();
             }
           )
@@ -72,7 +79,7 @@ export default class Category extends React.Component {
         this.props.categories.forEach(category => {
           firstCategoryId == -1 ? (firstCategoryId = category.id) : 0;
           $("#" + "category" + category.id).click(
-            function() {
+            function () {
               this.props.categories.forEach(element => {
                 $("#" + "category12" + element.id).hide();
               });
@@ -89,15 +96,19 @@ export default class Category extends React.Component {
   render() {
     if (this.props.categories != null) {
       var width = $(window).width();
-      if (width > 740) {
-      $("#category-header").width(100 * this.props.categories.length);
-      }else{
+      if (width > 750) {
+        $("#category-header").width(100 * this.props.categories.length);
+      } else {
         $("#category-header").width(220);
       }
     }
     return (
       <div class="header-category">
         <div class="header-category-show" id="header-category-show">
+          <img style={{
+            width: '20px',
+            marginRight: '20px'
+          }} src={categoryImage} />
           <span>دسته‌بندی‌ها</span>
         </div>
         <div id="category-header" class="header-category-drop-down">
@@ -121,7 +132,7 @@ export default class Category extends React.Component {
                     className="header-category-drop-down-main-menu-item"
                   >
                     <a
-                    class="category-item"
+                      class="category-item"
                       id={category.id}
                       onClick={this.onCategoryClicked.bind(
                         this,
@@ -129,7 +140,15 @@ export default class Category extends React.Component {
                         null
                       )}
                     >
-                      <span className="icon-play-button hcdmmi-icon" />
+                      <img src={MainUrl +
+                        "/image.ashx?file=" +
+                        category.url} style={{
+                          width: '40px',
+                          height: '30px',
+                          marginRight: 'calc(50% - 20px)',
+                          marginTop: '15px',
+                          objectFit: 'contain'
+                        }} />
                       <strong>{category.name}</strong>
                     </a>
                     <SubCategory
@@ -141,17 +160,17 @@ export default class Category extends React.Component {
                 ))}
               </ul>
             ) : (
-              <div
-                className="loader-container"
-                style={{
-                  display: "block",
-                  marginLeft: "44%",
-                  marginTop: "110px"
-                }}
-              >
-                <div className="loader" />
-              </div>
-            )}
+                <div
+                  className="loader-container"
+                  style={{
+                    display: "block",
+                    marginLeft: "44%",
+                    marginTop: "110px"
+                  }}
+                >
+                  <div className="loader" />
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -177,7 +196,9 @@ class SubCategory extends React.Component {
   }
 
   onGenreClicked(category, genre) {
-    this.props.session.history.push("/list");
+    this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", category.id + " - " + gemre.id);
+    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/" + (genre.id + 1);
+    this.props.session.history.push("/list/" + (category.id + 1) + "/" + (genre.id + 1));
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
     this.props.session.listUrl = url;

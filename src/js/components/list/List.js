@@ -27,14 +27,41 @@ export default class List extends React.Component {
       this.props.session.isInitiating = false;
     } else {
       if (this.props.session.listUrl == "") {
+        var categoryId = this.props.match.params.categoryId - 1;
+        var genreId = this.props.match.params.genreId - 1;
         this.props.session.listUrl = MainUrl + "/movielist.ashx?";
-        this.props.session.title = "فیلم ها";
+        if (categoryId >= 0) {
+          this.props.session.listUrl += "categoryId=" + categoryId;
+        }
+        if (genreId >= 0) {
+          if (categoryId >= 0) {
+            this.props.session.listUrl += "&";
+          }
+          this.props.session.listUrl += "genreId=" + genreId;
+        }
+        $.ajax({
+          type: "GET",
+          url: MainUrl + "/category.ashx",
+          success: function (data, textStatus, request) {
+            data.data.forEach(category => {
+              if (category.id == categoryId) {
+                this.props.session.title = category.name;
+                category.genres.forEach(genre => {
+                  if (genre.id == genreId) {
+                    this.props.session.title += " - " + genre.name;
+                  }
+                });
+              }
+            });
+          }.bind(this),
+          error: function (request, textStatus, errorThrown) { }
+        });
       }
       this.props.session.offset = 0;
       this.props.session.fetchList();
     }
 
-    window.onscroll = function() {
+    window.onscroll = function () {
       if (!this.props.session.isInitiating) {
         var d = document.documentElement;
         var height = d.scrollTop + $(window).height() - 90;
@@ -48,8 +75,8 @@ export default class List extends React.Component {
       }
     }.bind(this);
   }
-
-  componentWillUnmount() {
+  componentWillUnmount(){
+    document.title = "ودیو مرجع فیلم مستقل";
     this.props.session.showFooter = true;
   }
 
@@ -61,8 +88,9 @@ export default class List extends React.Component {
   render() {
     var childElements = null;
     if (this.props.session.listElements) {
+      document.title = "ودیو - " + this.props.session.title;
       childElements = this.props.session.listElements.map(
-        function(element, l) {
+        function (element, l) {
           var width = $(".row-header").width();
           if (width > 1400) {
             width = width * 12.5 / 100;
@@ -128,10 +156,10 @@ export default class List extends React.Component {
           {this.props.session.listElements ? (
             childElements
           ) : (
-            <div
-              style={{ width: "100px", height: "100px", background: "red" }}
-            />
-          )}
+              <div
+                style={{ width: "100px", height: "100px", background: "red" }}
+              />
+            )}
           {this.props.session.isLoading && (
             <div class="box ">
               <div class="cssload-thecube-container-list">
@@ -145,7 +173,7 @@ export default class List extends React.Component {
             </div>
           )}
           {this.props.session.listElementsCount == 0 ? (
-            <div>محتوایی جهت نمایش وجود ندارد.</div>
+            <div style={{ textAlign: "center" }}>محتوایی جهت نمایش وجود ندارد.</div>
           ) : null}
         </div>
       </div>

@@ -12,6 +12,15 @@ export default class TopMovies extends React.Component {
     this.slider.prev();
   }
 
+
+  componentDidMount() {
+    var width = $(window).width();
+    if (width < 750) {
+      $(".slide-next-container").css("display", "none");
+      $(".slide-prev-container").css("display", "none");
+    }
+  }
+
   render() {
     var options = {
       rtl: true,
@@ -50,12 +59,17 @@ export default class TopMovies extends React.Component {
     } else {
       width = Math.round(windowWidth / 3);
     }
-    width = Math.round(width * 1.2);
+    width = Math.round(width * window.devicePixelRatio);
     var height = Math.round(width * 16 / 11);
+    var margin = this.props.margin ? this.props.margin + "px" : "0px";
     return (
-      <div class="slide-overlay">
-        <div class="top-moviez-slide-title-background">
+      <div class="slide-overlay" style={{ marginRight: margin, marginLeft: margin }}>
+        <div style={{
+          position: 'relative',
+          height: '30px'
+        }}>
           <h5 class="top-moviez-slide-title">{this.props.title}</h5>
+          <div class="top-moviez-slide-title-background"></div>
         </div>
         <div class="slide-next-container">
           <div class="slide-next" onClick={this.nextClicked.bind(this)} />
@@ -65,13 +79,15 @@ export default class TopMovies extends React.Component {
           className="owl-theme"
           {...options}
           style={{
-            marginRight: "15px",
-            marginLeft: "15px",
-            width: "calc(100% - 30px)"
+            width: "100%"
           }}
         >
           {this.props.movies.map(movie => (
             <TopMovie
+              analyticsId={this.props.analyticsId}
+              analyticsLabel={this.props.analyticsLabel}
+              analyticsAction={this.props.analyticsAction}
+              analyticsCategory={this.props.analyticsCategory}
               width={width}
               height={height}
               key={movie.id}

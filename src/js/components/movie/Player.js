@@ -41,22 +41,22 @@ var TimeUpdate = function TimeUpdate() {
 
   currentTime.innerHTML = latinToPersian(
     ("0" + currentHour).slice(-2) +
-      ":" +
-      ("0" + currentMinute).slice(-2) +
-      ":" +
-      ("0" + currentSecond).slice(-2)
+    ":" +
+    ("0" + currentMinute).slice(-2) +
+    ":" +
+    ("0" + currentSecond).slice(-2)
   );
   duration.innerHTML = latinToPersian(
     "/ " +
-      ("0" + durationHour).slice(-2) +
-      ":" +
-      ("0" + durationMinute).slice(-2) +
-      ":" +
-      ("0" + durationSecond).slice(-2)
+    ("0" + durationHour).slice(-2) +
+    ":" +
+    ("0" + durationMinute).slice(-2) +
+    ":" +
+    ("0" + durationSecond).slice(-2)
   );
 };
 
-@inject("session")
+@inject("session", "gaStore")
 @observer
 export default class Player extends React.Component {
   constructor(props) {
@@ -73,8 +73,16 @@ export default class Player extends React.Component {
       },
       doesPlayed: false,
       testText: "",
-      showTestText: false
+      showTestText: false,
+      gaStoreCategory: ""
     };
+  }
+
+  componentWillUnmount() {
+    var video = document.getElementById("video");
+    video.removeEventListener("timeupdate", TimeUpdate);
+    var parts = video.duration / 8;
+    this.props.gaStore.addEvent(this.state.gaStoreCategory, "exit", this.props.movie.id.toString(), Math.ceil(video.currentTime / parts).toString());
   }
 
   componentDidMount() {
@@ -84,6 +92,7 @@ export default class Player extends React.Component {
           "http://media.vodio.ir/StreamTokenHandler.ashx?movieId=" +
           this.props.movie.id +
           "&trailer=1"
+        , gaStoreCategory: "player - trailer"
       });
     } else {
       document.body.style.overflowY = "hidden";
@@ -93,11 +102,13 @@ export default class Player extends React.Component {
           this.props.session.session +
           "&movieId=" +
           this.props.movie.id
+        , gaStoreCategory: "player - film"
       });
     }
   }
 
   close() {
+    var video = document.getElementById("video");
     video.removeEventListener("timeupdate", TimeUpdate);
     document.body.style.overflowY = "auto";
     this.props.session.showPlayerFullscreen = false;
@@ -125,6 +136,8 @@ export default class Player extends React.Component {
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
       }
+      this.props.gaStore.addEvent(this.state.gaStoreCategory, "exitFullscreen", this.props.movie.id.toString(), null);
+
     } else {
       var element = document.getElementById("player");
       if (element.requestFullscreen) {
@@ -136,6 +149,7 @@ export default class Player extends React.Component {
       } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
       }
+      this.props.gaStore.addEvent(this.state.gaStoreCategory, "enterFullscreen", this.props.movie.id.toString(), null);
     }
   }
 
@@ -152,14 +166,14 @@ export default class Player extends React.Component {
           {this.props.isTrailer ? (
             null || !Hls.isSupported()
           ) : (
-            <div className="close-animatedModal">
-              <img
-                src={exit}
-                class="closemodal"
-                onClick={this.close.bind(this)}
-              />
-            </div>
-          )}
+              <div className="close-animatedModal">
+                <img
+                  src={exit}
+                  class="closemodal"
+                  onClick={this.close.bind(this)}
+                />
+              </div>
+            )}
           {this.state.showTestText && (
             <div class="error-cannot-play">{this.state.testText}</div>
           )}
@@ -235,10 +249,10 @@ export default class Player extends React.Component {
           {Hls.isSupported() ? (
             <video id="video" />
           ) : (
-            <video id="video" controls autoplay>
-              <source src={this.state.url} type="application/x-mpegURL" />
-            </video>
-          )}
+              <video id="video" controls autoplay>
+                <source src={this.state.url} type="application/x-mpegURL" />
+              </video>
+            )}
         </div>
       </div>
     );
@@ -268,23 +282,23 @@ export default class Player extends React.Component {
         var hls = new Hls();
         hls.loadSource(url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
           video.play();
-          initVideoQualityOptions(hls);
-        });
+          this.initVideoQualityOptions(hls);
+        }.bind(this));
 
         // HLS video init
         // Hide controls in case of no mouse or touch activity for 10 seconds
 
         // Display controls on mouseover
-        player.addEventListener("mouseover", function() {
+        player.addEventListener("mouseover", function () {
           videoControls.classList.add("display-control");
         });
 
         // Hide controls on mouse out of video
         var isOnPlayer = false;
 
-        player.addEventListener("mouseenter", function() {
+        player.addEventListener("mouseenter", function () {
           isOnPlayer = true;
         });
         // Make mouse out function for nested children
@@ -304,7 +318,7 @@ export default class Player extends React.Component {
 
         // Hide controls if no mouse movement for 12 seconds
         var timer = setTimeout(hideControls, 12000);
-        document.addEventListener("mousemove", function() {
+        document.addEventListener("mousemove", function () {
           if (isOnPlayer) {
             videoControls.classList.add("display-control");
           }
@@ -343,19 +357,25 @@ export default class Player extends React.Component {
         seekBar.value = 0;
         video.controls = false;
 
-        playpause.addEventListener("click", function(e) {
-          if (video.paused || video.ended) video.play();
-          else video.pause();
-        });
+        playpause.addEventListener("click", function (e) {
+          if (video.paused || video.ended) {
+            video.play();
+            this.props.gaStore.addEvent(this.state.gaStoreCategory, "play", this.props.movie.id.toString(), null);
+          }
+          else {
+            video.pause();
+            this.props.gaStore.addEvent(this.state.gaStoreCategory, "pause", this.props.movie.id.toString(), null);
+          }
+        }.bind(this));
 
         if (!this.props.session.isMobile) {
-          volumeContainer.addEventListener("mouseover", function(e) {
+          volumeContainer.addEventListener("mouseover", function (e) {
             volume.style.display = "block";
             volumeContainer.style.height = "195px";
             volumeMask.style.width =
               volumeBar.value / 100 * volumeBar.offsetWidth + "px";
           });
-          volumeContainer.addEventListener("mouseout", function(e) {
+          volumeContainer.addEventListener("mouseout", function (e) {
             volume.style.display = "none";
             volumeContainer.style.height = "30px";
           });
@@ -363,14 +383,16 @@ export default class Player extends React.Component {
 
         mute.addEventListener(
           "click",
-          function(e) {
+          function (e) {
             video.muted = !video.muted;
             changeButtonState("mute");
             if (mute.getAttribute("data-state") == "unmute") {
+              this.props.gaStore.addEvent(this.state.gaStoreCategory, "unmute", this.props.movie.id.toString(), null);
               volumeBar.value = this.state.volume;
               volumeMask.style.width =
                 volumeBar.value / 100 * volumeBar.offsetWidth + "px";
             } else {
+              this.props.gaStore.addEvent(this.state.gaStoreCategory, "mute", this.props.movie.id.toString(), null);
               this.setState({ volume: volumeBar.value });
               volumeBar.value = 0;
               volumeMask.style.width = "0px";
@@ -380,7 +402,7 @@ export default class Player extends React.Component {
 
         volumeBar.addEventListener(
           "input",
-          function() {
+          function () {
             video.volume = volumeBar.value / 100;
             volumeMask.style.width =
               volumeBar.value / 100 * volumeBar.offsetWidth + "px";
@@ -397,14 +419,14 @@ export default class Player extends React.Component {
 
         seekBar.addEventListener(
           "mousedown",
-          function() {
+          function () {
             video.removeEventListener("timeupdate", TimeUpdate);
           }.bind(this)
         );
 
         seekBar.addEventListener(
           "mouseup",
-          function() {
+          function () {
             video.currentTime = seekBar.value;
             video.addEventListener("timeupdate", TimeUpdate);
           }.bind(this)
@@ -412,7 +434,7 @@ export default class Player extends React.Component {
 
         seekBar.addEventListener(
           "input",
-          function() {
+          function () {
             var val =
               ($("#seek-bar").val() - $("#seek-bar").attr("min")) /
               ($("#seek-bar").attr("max") - $("#seek-bar").attr("min"));
@@ -420,31 +442,32 @@ export default class Player extends React.Component {
             $("#seek-bar").css(
               "background-image",
               "-webkit-gradient(linear, left top, right top, " +
-                "color-stop(" +
-                val +
-                ", #7d1d65), " +
-                "color-stop(" +
-                val +
-                ", transparent)" +
-                ")"
+              "color-stop(" +
+              val +
+              ", #7d1d65), " +
+              "color-stop(" +
+              val +
+              ", transparent)" +
+              ")"
             );
           }.bind(this),
           false
         );
 
         // Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
-        video.addEventListener("loadedmetadata", function() {
+        video.addEventListener("loadedmetadata", function () {
           seekBar.setAttribute("max", video.duration);
         });
 
-        video.addEventListener("loadeddata", function() {
+        video.addEventListener("loadeddata", function () {
+          console.log("asdf");
           video.addEventListener("timeupdate", TimeUpdate);
         });
 
         // Add event listeners for video specific events
         video.addEventListener(
           "play",
-          function() {
+          function () {
             changeButtonState("playpause");
           },
 
@@ -452,13 +475,13 @@ export default class Player extends React.Component {
         );
         video.addEventListener(
           "pause",
-          function() {
+          function () {
             changeButtonState("playpause");
           },
           false
         );
 
-        video.addEventListener("progress", function() {
+        video.addEventListener("progress", function () {
           var bg = "linear-gradient(to right,";
           for (var i = 0; i < video.buffered.length; i++) {
             if (i > 0) {
@@ -502,62 +525,7 @@ export default class Player extends React.Component {
 
         // Video Quality Controls
 
-        function initVideoQualityOptions(hls) {
-          var qualityBtn = document.getElementById("quality-btn");
-          var quality = document.getElementById("quality");
 
-          qualityBtn.addEventListener("click", function(event) {
-            makeActive();
-            quality.classList.toggle("show");
-          });
-
-          //Create and append the options
-          var qualities = hls.levels;
-          for (var i = 0; i < qualities.length; i++) {
-            var q = document.createElement("a");
-            q.setAttribute("data-value", i);
-            q.setAttribute("class", "quality");
-            q.text = qualities[i].attrs.RESOLUTION.split("x")[1];
-            quality.appendChild(q);
-          }
-
-          // update dropdown selection
-          var elems = document.querySelectorAll("#quality a");
-
-          function makeActive(UserSelectionEvent) {
-            for (var i = 0; i < elems.length; i++) {
-              if (!UserSelectionEvent && i == hls.currentLevel) {
-                elems[i].classList.add("active-c");
-              } else {
-                elems[i].classList.remove("active-c");
-              }
-            }
-            if (UserSelectionEvent) {
-              var q_level = parseInt(this.getAttribute("data-value"));
-              hls.currentLevel = q_level;
-              this.classList.add("active-c");
-            }
-          }
-
-          for (var i = 0; i < elems.length; i++)
-            elems[i].addEventListener("mousedown", makeActive);
-
-          // hide dd if click elsewhere
-          window.onclick = function(event) {
-            if (!event.target.matches(".dropbtn")) {
-              var dropdowns = document.getElementsByClassName(
-                "dropdown-content"
-              );
-              var i;
-              for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains("show")) {
-                  openDropdown.classList.remove("show");
-                }
-              }
-            }
-          };
-        }
       } catch (err) {
         this.setState({ error: { cannotPlay: true } });
       }
@@ -565,11 +533,72 @@ export default class Player extends React.Component {
       this.setState({ showControls: false });
       video.src = url;
       video.setAttribute("controls", "controls");
-      video.addEventListener("canplay", function() {
+      video.addEventListener("canplay", function () {
         video.play();
       });
     }
   }
+
+  initVideoQualityOptions(hls) {
+    var qualityBtn = document.getElementById("quality-btn");
+    var quality = document.getElementById("quality");
+
+    qualityBtn.addEventListener("click", function (event) {
+      this.makeActive(event, hls);
+      quality.classList.toggle("show");
+    }.bind(this));
+
+    //Create and append the options
+    var qualities = hls.levels;
+    for (var i = 0; i < qualities.length; i++) {
+      var q = document.createElement("a");
+      q.setAttribute("data-value", i);
+      q.setAttribute("class", "quality");
+      q.text = qualities[i].attrs.RESOLUTION.split("x")[1];
+      quality.appendChild(q);
+    }
+
+    // update dropdown selection
+    var elems = document.querySelectorAll("#quality a");
+    for (var i = 0; i < elems.length; i++)
+      elems[i].addEventListener("mousedown", function (event) { this.makeActive(event, hls) }.bind(this));
+
+    // hide dd if click elsewhere
+    window.onclick = function (event) {
+      if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName(
+          "dropdown-content"
+        );
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+          }
+        }
+      }
+    };
+  }
+
+
+  makeActive(UserSelectionEvent, hls) {
+    var elems = document.querySelectorAll("#quality a");
+    for (var i = 0; i < elems.length; i++) {
+      if (!UserSelectionEvent && i == hls.currentLevel) {
+        elems[i].classList.add("active-c");
+      } else {
+        elems[i].classList.remove("active-c");
+      }
+    }
+    if (UserSelectionEvent) {
+      if (UserSelectionEvent.currentTarget.innerHTML != "")
+        this.props.gaStore.addEvent(this.state.gaStoreCategory, "qualityChange", this.props.movie.id.toString(), UserSelectionEvent.currentTarget.innerHTML);
+      var q_level = parseInt(UserSelectionEvent.currentTarget.getAttribute("data-value"));
+      hls.currentLevel = q_level;
+      UserSelectionEvent.currentTarget.classList.add("active-c");
+    }
+  }
+
 }
 
 var Loading = React.createClass({

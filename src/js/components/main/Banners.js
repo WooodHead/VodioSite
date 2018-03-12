@@ -6,7 +6,7 @@ import OwlCarousel from "react-owl-carousel";
 
 let dragging = false;
 
-@inject("session", "movieStore")
+@inject("session", "movieStore", "gaStore")
 @observer
 export default class Banners extends React.Component {
   makeUrl(category, genre) {
@@ -23,27 +23,46 @@ export default class Banners extends React.Component {
     return url;
   }
 
-  listClick(genreId, categoryId, title) {
+  listClick(genreId, categoryId, title, bannerId) {
     if (!dragging) {
+      var cId = 0;
+      var gId = 0;
+      if (categoryId != null) {
+        cId = categoryId + 1;
+      }
+      if (genreId != null) {
+        gId = genreId + 1;
+      }
+      this.props.session.gaUrl = "/list/" + cId + "/" + gId;
       this.props.session.offset = 0;
       var url = this.makeUrl(categoryId, genreId);
       this.props.session.listUrl = url;
       this.props.session.isInitiating = true;
       this.props.session.title = title;
       this.props.session.fetchList();
+      this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
     }
   }
 
-  movieClicked(movieId) {
+  movieClicked(movieId, bannerId) {
     if (!dragging) {
       this.props.movieStore.movieId = movieId;
       this.props.movieStore.fetchMovie();
+      this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
+    }
+  }
+
+  componentDidMount() {
+    var width = $(window).width();
+    if (width < 750) {
+      $(".owl-dots").css("margin-top", "0");
+      $(".owl-dots").css("display", "none");
     }
   }
 
   render() {
     var components = [];
-    var width = $(window).width();
+    var width = window.screen.availWidth * window.devicePixelRatio;
     this.props.bundle.banners.forEach((banner, l) => {
       if (banner.urlToClick != null) {
         components.push(
@@ -52,6 +71,7 @@ export default class Banners extends React.Component {
             style={{ cursor: "pointer" }}
             onClick={() => {
               if (!dragging) window.location.replace(banner.urlToClick);
+              this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
             }}
           >
             <img
@@ -66,7 +86,7 @@ export default class Banners extends React.Component {
         components.push(
           <Link
             key={l}
-            onClick={this.movieClicked.bind(this, banner.movieId)}
+            onClick={this.movieClicked.bind(this, banner.movieId, banner.id)}
             to={{ pathname: "/movie/" + banner.movieId }}
           >
             <img
@@ -86,7 +106,8 @@ export default class Banners extends React.Component {
               this,
               banner.genreId,
               banner.categoryId,
-              banner.listName
+              banner.listName,
+              banner.id
             )}
             to={{ pathname: "/List" }}
           >
@@ -102,9 +123,9 @@ export default class Banners extends React.Component {
     });
 
     return (
-        <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1}>
-          {components}
-        </OwlCarousel>
+      <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1} autoplay>
+        {components}
+      </OwlCarousel>
     );
   }
 }

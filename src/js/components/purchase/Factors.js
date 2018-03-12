@@ -1,10 +1,10 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
-import { latinToPersian, convertSecondToString } from "../../util/util";
+import { latinToPersian, convertMillisecondToString } from "../../util/util";
 var moment = require("moment-jalaali");
 
-@inject("session")
+@inject("session", "gaStore")
 @observer
 export default class Factors extends React.Component {
   constructor() {
@@ -12,18 +12,20 @@ export default class Factors extends React.Component {
     this.state = { factors: null };
   }
   componentDidMount() {
+    this.props.gaStore.addPageView("/factors");
     $.ajax({
       type: "GET",
       headers: {
         token: this.props.session.session
       },
-      url: MainUrl + "/factors.ashx",
-      success: function(data, textStatus, request) {
+      url: MainUrl + "/factor.ashx",
+      success: function (data, textStatus, request) {
+
         this.setState({
           factors: data.data
         });
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {}.bind(this)
+      error: function (request, textStatus, errorThrown) { }.bind(this)
     });
   }
 
@@ -32,10 +34,10 @@ export default class Factors extends React.Component {
 
     var m = moment(
       date.getUTCFullYear() +
-        "/" +
-        (date.getUTCMonth() + 1) +
-        "/" +
-        date.getUTCDate(),
+      "/" +
+      (date.getUTCMonth() + 1) +
+      "/" +
+      date.getUTCDate(),
       "YYYY/M/D"
     );
 
@@ -90,26 +92,26 @@ export default class Factors extends React.Component {
     } else {
       var elements = null;
       var width = $(window).width();
-      if (width > 740) {
+      if (width > 750) {
         elements = this.state.factors.map(
-          function(element, l) {
+          function (element, l) {
             return (
               <tr key={l} style={{ borderBottom: "1px solid lightgray" }}>
                 <td style={{ textAlign: "center", padding: "10px 0px" }}>
-                  {element.id}
+                  {latinToPersian(element.movie.id.toString())}
                 </td>
                 <td style={{ textAlign: "center", padding: "10px 0px" }}>
-                  {element.movieName}
+                  {element.movie.title}
                 </td>
-                <td style={{ textAlign: "center", padding: "10px 0px" }}>
+                <td style={{ textAlign: "center", padding: "10px 0px", direction: "rtl" }}>
                   {this.convertMilToDate(element.date)}
                 </td>
                 {/* <td style={{ textAlign: "center",padding:'10px 0px'}}>{element.amount}</td> */}
-                <td style={{ textAlign: "center", padding: "10px 0px" }}>
-                  {latinToPersian("1000 تومان")}
+                <td style={{ textAlign: "center", padding: "10px 0px", direction: "rtl" }}>
+                  {latinToPersian(element.movie.price + " تومان")}
                 </td>
                 <td style={{ textAlign: "center", padding: "10px 0px" }}>
-                  {element.success ? "موفق" : "ناموفق"}
+                  {element.result ? "موفق" : "ناموفق"}
                 </td>
               </tr>
             );
@@ -117,7 +119,7 @@ export default class Factors extends React.Component {
         );
       } else {
         elements = this.state.factors.map(
-          function(element, l) {
+          function (element, l) {
             return (
               <tr
                 key={l}
@@ -132,18 +134,19 @@ export default class Factors extends React.Component {
                       padding: "20px",
                       borderRadius: "5px",
                       border: "1px solid lightgray",
-                      margin: "5px"
+                      margin: "5px",
+                      direction: "rtl"
                     }}
                   >
                     <tbody>
                       <tr>
                         <td>شناسه</td>
-                        <td style={{ textAlign: "left" }}>{element.id}</td>
+                        <td style={{ textAlign: "left" }}>{latinToPersian(element.movie.id.toString())}</td>
                       </tr>
                       <tr>
                         <td>نام فیلم</td>
                         <td style={{ textAlign: "left" }}>
-                          {element.movieName}
+                          {element.movie.title}
                         </td>
                       </tr>
                       <tr>
@@ -155,13 +158,13 @@ export default class Factors extends React.Component {
                       <tr>
                         <td>مبلغ</td>
                         <td style={{ textAlign: "left" }}>
-                          {latinToPersian("1000 تومان")}
+                          {latinToPersian(element.movie.price + " تومان")}
                         </td>
                       </tr>
                       <tr>
                         <td>وضعیت خرید</td>
                         <td style={{ textAlign: "left" }}>
-                          {element.success ? "موفق" : "ناموفق"}
+                          {element.result ? "موفق" : "ناموفق"}
                         </td>
                       </tr>
                     </tbody>
@@ -173,13 +176,14 @@ export default class Factors extends React.Component {
         );
       }
 
-      if (width > 740) {
+      if (width > 750) {
         return (
           <table
             style={{
               width: "calc(100% - 120px)",
               margin: "10px 60px",
-              borderCollapse: "collapse"
+              borderCollapse: "collapse",
+              direction: "rtl"
             }}
           >
             <thead>

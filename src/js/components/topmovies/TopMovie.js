@@ -4,7 +4,7 @@ import { latinToPersian, convertSecondToString } from "../../util/util";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
-@inject("movieStore", "session")
+@inject("movieStore", "session", "gaStore")
 @observer
 export default class TopMovie extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ export default class TopMovie extends React.Component {
     var providerTemp;
     var ResearcherTemp;
     if (this.props.movie.role != undefined) {
-      $.each(this.props.movie, function(index, role) {
+      $.each(this.props.movie, function (index, role) {
         if (role.name == "کارگردان") {
           directorTemp = role;
         } else if (role.name == "بازیگر") {
@@ -47,47 +47,52 @@ export default class TopMovie extends React.Component {
       });
     }
 
-    $(".top-moviez-inner" + this.state.elementId).hover(
-      function() {
-        $(".top-moviez-post-overlay" + this.state.elementId).css(
-          "visibility",
-          "visible"
-        );
-        $(".top-moviez-post-overlay" + this.state.elementId).css(
-          "opacity",
-          "1"
-        );
-        $(".top-moviez-post-title" + this.state.elementId).css(
-          "top",
-          "calc(45% - 20px)"
-        );
-        $(".top-moviez-post-director" + this.state.elementId).css(
-          "top",
-          "calc(50% - 20px)"
-        );
-      }.bind(this),
-      function() {
-        $(".top-moviez-post-overlay" + this.state.elementId).css(
-          "opacity",
-          "0"
-        );
-        $(".top-moviez-post-overlay" + this.state.elementId).css(
-          "visibility",
-          "hidden"
-        );
-        $(".top-moviez-post-title" + this.state.elementId).css(
-          "top",
-          "calc(60% - 20px)"
-        );
-        $(".top-moviez-post-director" + this.state.elementId).css(
-          "top",
-          "calc(75% - 20px)"
-        );
-      }.bind(this)
-    );
+    var width = $(window).width();
+    if (width > 750) {
+      $(".top-moviez-inner" + this.state.elementId).hover(
+        function () {
+          $(".top-moviez-post-overlay" + this.state.elementId).css(
+            "visibility",
+            "visible"
+          );
+          $(".top-moviez-post-overlay" + this.state.elementId).css(
+            "opacity",
+            "1"
+          );
+          $(".top-moviez-post-title" + this.state.elementId).css(
+            "top",
+            "calc(45% - 20px)"
+          );
+          $(".top-moviez-post-director" + this.state.elementId).css(
+            "top",
+            "calc(50% - 20px)"
+          );
+        }.bind(this),
+        function () {
+          $(".top-moviez-post-overlay" + this.state.elementId).css(
+            "opacity",
+            "0"
+          );
+          $(".top-moviez-post-overlay" + this.state.elementId).css(
+            "visibility",
+            "hidden"
+          );
+          $(".top-moviez-post-title" + this.state.elementId).css(
+            "top",
+            "calc(60% - 20px)"
+          );
+          $(".top-moviez-post-director" + this.state.elementId).css(
+            "top",
+            "calc(75% - 20px)"
+          );
+        }.bind(this)
+      );
+    }
   }
 
   movieClicked(movieId) {
+    this.props.gaStore.addEvent(this.props.analyticsCategory, this.props.analyticsAction, this.props.analyticsLabel, this.props.analyticsId);
+    this.props.gaStore.addEvent("ItemEvent", "MovieItem", "click", movieId.toString(), null);
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
   }
@@ -114,7 +119,7 @@ export default class TopMovie extends React.Component {
       fontSize: "20px",
       transition: "top 0.3s linear",
       fontFamily: "IRSansBold",
-      lineHeight: "1.8"
+      lineHeight: "1"
     };
 
     var directorStyle = {

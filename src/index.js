@@ -7,15 +7,19 @@ import { Provider } from "mobx-react";
 import "./javascript/script";
 import Layout from "./js/components/Layout";
 
-import sessionStore from "./js/stores/SesssionStore";
-import searchStore from "./js/stores/SearchStore";
+import SessionStore from "./js/stores/SessionStore";
+import SearchStore from "./js/stores/SearchStore";
 import MovieStore from "./js/stores/MovieStore";
+import gaStore from "./js/stores/GoogleAnalyticsStore";
 
+var sessionStore = new SessionStore(gaStore);
 var movieStore = new MovieStore(sessionStore);
+var searchStore = new SearchStore(gaStore);
 const store = {
   session: sessionStore,
   search: searchStore,
-  movieStore: movieStore
+  movieStore: movieStore,
+  gaStore: gaStore
 };
 
 const app = document.getElementById("conroot");

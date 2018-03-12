@@ -21,7 +21,7 @@ export function latinToPersian(string) {
   return result;
 };
 
-export function persianToLatin(string){
+export function persianToLatin(string) {
   var latinToPersianMap = [
     /۱/g,
     /۲/g,

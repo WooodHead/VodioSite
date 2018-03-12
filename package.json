@@ -11,18 +11,14 @@
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "moment-jalaali": "^0.7.2",
-    "nuka-carousel": "^3.0.1",
     "prop-types": "^15.6.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
+    "react-favicon": "0.0.13",
+    "react-ga": "^2.4.1",
     "react-owl-carousel": "^2.2.0",
-    "react-owl-carousel2": "^0.3.0",
-    "react-responsive-carousel": "^3.1.33",
     "react-router-dom": "^4.2.2",
-    "react-slick": "^0.18.1",
-    "react-super-responsive-table": "^4.1.11",
-    "react-toastify": "^3.2.1",
-    "slick-carousel": "^1.8.1"
+    "react-toastify": "^3.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",

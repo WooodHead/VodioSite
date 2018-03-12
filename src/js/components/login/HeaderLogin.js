@@ -4,7 +4,7 @@ import { ToastContainer, toast, style } from "react-toastify";
 import { latinToPersian, persianToLatin } from "../../util/util";
 import { inject, observer } from "mobx-react";
 
-@inject("session")
+@inject("session", "gaStore")
 @observer
 export default class HeaderLogin extends React.Component {
   constructor() {
@@ -17,7 +17,7 @@ export default class HeaderLogin extends React.Component {
       textLoginPlaceholderInputValue: "شماره همراه خود را وارد کنید",
       closeNotify: false,
       code: "",
-      toastId : null
+      toastId: null
     };
   }
 
@@ -52,7 +52,7 @@ export default class HeaderLogin extends React.Component {
   loginClicked() {
     if ($.trim(this.state.textLoginInputValue) == "") {
       $(".header-login-drop").addClass("no-input-shake");
-      setTimeout(function() {
+      setTimeout(function () {
         $(".header-login-drop").removeClass("no-input-shake");
       }, 500);
     } else {
@@ -69,7 +69,7 @@ export default class HeaderLogin extends React.Component {
             this.state.msisdn +
             "&code=" +
             persianToLatin(this.state.code),
-          success: function(data, textStatus, request) {
+          success: function (data, textStatus, request) {
             this.setState({ login: data });
             this.setState({ closeNotify: true });
             localStorage.setItem("session", data.data.token);
@@ -87,13 +87,13 @@ export default class HeaderLogin extends React.Component {
             localStorage.removeItem("login");
             localStorage.removeItem("msisdn");
           }.bind(this),
-          error: function(request, textStatus, errorThrown) {}
+          error: function (request, textStatus, errorThrown) { }
         });
       } else {
         $.ajax({
           type: "GET",
           url: MainUrl + "/login.ashx?msisdn=" + this.state.msisdn,
-          success: function(data, textStatus, request) {
+          success: function (data, textStatus, request) {
             this.setState({ login: data });
             this.notify();
             $("#login-header-input-id").addClass("login-header-input");
@@ -109,7 +109,7 @@ export default class HeaderLogin extends React.Component {
             localStorage.setItem("msisdn", this.state.msisdn);
             localStorage.setItem("login", "CODE_SENT");
           }.bind(this),
-          error: function(request, textStatus, errorThrown) {}
+          error: function (request, textStatus, errorThrown) { }
         });
       }
     }
@@ -160,8 +160,9 @@ export default class HeaderLogin extends React.Component {
     $(".login-cover-page").fadeToggle(100);
   }
 
-  showLogin(){
+  showLogin() {
     this.props.session.showLogin = true;
+    this.props.gaStore.addEvent("Home", "click", "profileIcon", null);
   }
 
   render() {
@@ -177,30 +178,6 @@ export default class HeaderLogin extends React.Component {
           className="header-login-win"
           onClick={this.showLogin.bind(this)}
         />
-        {/* <div className="header-login-drop">
-          <div className="header-login-drop-form">
-            <input
-              id="header-login-input-id"
-              type="tel"
-              className="login-header-input"
-              value={this.state.textLoginInputValue}
-              placeholder={this.state.textLoginPlaceholderInputValue}
-              onChange={this.onLoginFieldChange.bind(this)}
-            />
-            <button
-              onClick={this.loginClicked.bind(this)}
-              className="login-header-submit"
-            />
-            <div className="loader-container">
-              <div className="loader" />
-            </div>
-          </div>
-          <div
-            className="header-login-close"
-            onClick={this.closeLogin.bind(this)}
-          />
-        </div>
-        <div class="login-cover-page" onClick={this.closeLogin.bind(this)} /> */}
       </div>
     );
   }

@@ -12,16 +12,21 @@ import Agent from "./agent/Agent";
 import List from "./list/List";
 import SearchList from "./search/SearchList";
 import Vodio from "./vodio/Vodio";
-import ContactUs from "./contact/ContactUs";
+import Complaint from "./contact/Complaint";
 import ErrorPage from "./error/ErrorPage";
 import Loading from "./loading/Loading";
 import MobileSearch from "./search/MobileSearch";
 import Purchase from "./purchase/Purchase";
 import FAQ from "./faq/FAQ";
 import Factors from "./purchase/Factors";
+import Invoice from "./purchase/Invoice";
+import Rules from './Rules';
+import Player from './movie/Player';
 import { latinToPersian, persianToLatin } from "../util/util";
+import Favicon from 'react-favicon';
+import favicon from '../../img/Vodio-Small.png';
 
-@inject("session")
+@inject("session", "movieStore")
 @withRouter
 @observer
 class Layout extends React.Component {
@@ -59,7 +64,7 @@ class Layout extends React.Component {
   componentDidMount() {
     this.fixedHeader();
     var mainHeight =
-      $(window).height() - $("#footer").height() - $("#header").height() - 210;
+      $(window).height() - $("#footer").height() - $("#header").height() - 136;
     $(".main-holder").css("min-height", mainHeight);
 
     if (localStorage.getItem("session") && localStorage.getItem("msisdn")) {
@@ -72,25 +77,28 @@ class Layout extends React.Component {
           MainUrl +
           "/login.ashx?msisdn=" +
           persianToLatin(localStorage.getItem("msisdn")),
-        success: function(data, textStatus, request) {
+        success: function (data, textStatus, request) {
           if (data.data.token != null) {
             localStorage.setItem("session", data.data.token);
             this.props.session.session = data.data.token;
           } else {
             localStorage.removeItem("session");
             localStorage.removeItem("msisdn");
+            localStorage.removeItem("otp");
             this.props.session.session = null;
           }
         }.bind(this),
-        error: function(request, textStatus, errorThrown) {
+        error: function (request, textStatus, errorThrown) {
           localStorage.removeItem("session");
           localStorage.removeItem("msisdn");
+          localStorage.removeItem("otp");
           this.props.session.session = null;
         }.bind(this)
       });
     } else {
       localStorage.removeItem("session");
       localStorage.removeItem("msisdn");
+      localStorage.removeItem("otp");
       this.props.session.session = null;
     }
   }
@@ -98,15 +106,15 @@ class Layout extends React.Component {
   fixedHeader() {
     var mainHeight =
       $(window).height() - $("#footer").height() - $("#header").height() - 210;
-      
+
     if ($(".main-holder").height() > mainHeight) {
       var nav = $("#header");
       var mainHolder = $(".main-holder");
       var navHomeY = nav.offset().top;
       var isFixed = false;
       var $w = $(window);
-      
-      $w.scroll(function() {
+
+      $w.scroll(function () {
         var scrollTop = $w.scrollTop();
         var shouldBeFixed = scrollTop > navHomeY;
         if (shouldBeFixed && !isFixed) {
@@ -138,6 +146,7 @@ class Layout extends React.Component {
   render() {
     return (
       <div>
+        <Favicon url={favicon} />
         <Header />
         <div class="main-holder">
           <MobileSearch />
@@ -145,19 +154,24 @@ class Layout extends React.Component {
             <Route exact path="/" component={Main} />
             <Route path="/movie/:id/:status?" component={Movie} />
             <Route path="/agent/:id" component={Agent} />
-            <Route path="/list" component={List} />
+            <Route path="/list/:categoryId/:genreId" component={List} />
             <Route path="/search/:keyword" component={SearchList} />
             <Route path="/vodio" component={Vodio} />
-            <Route path="/ContactUs" component={ContactUs} />
+            <Route path="/complaint" component={Complaint} />
             <Route path="/purchase" component={Purchase} />
             <Route path="/error" component={ErrorPage} />
             <Route path="/faq" component={FAQ} />
             <Route path="/factors" component={Factors} />
+            <Route path="/invoice/:id" component={Invoice} />
+            <Route path="/rules" component={Rules} />
           </Switch>
         </div>
         {this.props.session.showFooter && <Footer />}
         {this.props.session.showLogin && <Login />}
         {this.props.session.showLoading && <Loading />}
+        {this.props.session.showPlayerFullscreen && (
+          <Player movie={this.props.movieStore.movie} />
+        )}
       </div>
     );
   }

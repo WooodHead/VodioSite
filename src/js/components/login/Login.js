@@ -45,7 +45,7 @@ export default class Login extends React.Component {
     $("#error-message").hide(100);
     if ($.trim(this.state.mobileNumber) == "") {
       $("#mobile-input").addClass("no-input-shake");
-      setTimeout(function() {
+      setTimeout(function () {
         $("#mobile-input").removeClass("no-input-shake");
       }, 500);
     } else if (
@@ -55,6 +55,7 @@ export default class Login extends React.Component {
       this.setState({ errorMessage: "شماره صحیح نمی باشد" });
       $("#error-message").show(100);
     } else {
+      this.props.gaStore.addEvent("Login", "click", "sendPhoneNum", null);
       localStorage.setItem("msisdn", persianToLatin(this.state.mobileNumber));
       var url =
         MainUrl +
@@ -65,7 +66,7 @@ export default class Login extends React.Component {
       $.ajax({
         type: "GET",
         url: url,
-        success: function(data, textStatus, request) {
+        success: function (data, textStatus, request) {
           if (data.errorCode != 0) {
             this.setState({ showLoading: false, errorMessage: data.msg });
             $("#error-message").show(100);
@@ -78,7 +79,7 @@ export default class Login extends React.Component {
             this.setState({ showLoading: false });
             this.setState({ showCountDown: true });
             var x = setInterval(
-              function() {
+              function () {
                 var count = this.state.countDown - 1;
                 if (count == 0) {
                   this.setState({ showCountDown: false });
@@ -105,7 +106,7 @@ export default class Login extends React.Component {
             this.setState({ interval: x });
           }
         }.bind(this),
-        error: function(request, textStatus, errorThrown) {
+        error: function (request, textStatus, errorThrown) {
           $("#error-message").show(100);
           this.setState({
             showLoading: false,
@@ -120,10 +121,11 @@ export default class Login extends React.Component {
     $("#error-message").hide(100);
     if ($.trim(this.state.otpCode) == "") {
       $("#codeNumber").addClass("no-input-shake");
-      setTimeout(function() {
+      setTimeout(function () {
         $("#codeNumber").removeClass("no-input-shake");
       }, 500);
     } else {
+      this.props.gaStore.addEvent("Login", "click", "sendCode", null);
       this.setState({ showLoading: true });
       $.ajax({
         type: "GET",
@@ -133,7 +135,7 @@ export default class Login extends React.Component {
           persianToLatin(this.state.mobileNumber) +
           "&code=" +
           persianToLatin(this.state.otpCode),
-        success: function(data, textStatus, request) {
+        success: function (data, textStatus, request) {
           this.setState({ showLoading: false });
           if (data.errorCode != 0) {
             if (data.errorCode == 1004) {
@@ -173,19 +175,19 @@ export default class Login extends React.Component {
                   name:
                     $.trim(this.props.session.commentName) == ""
                       ? "بی نام"
-                      : $.trim(this.state.this.props.sesssion.commentName),
+                      : $.trim(this.state.this.props.session.commentName),
                   text: this.props.session.commentText,
                   email: $.trim(this.props.session.commentEmail),
                   movieId: this.props.movieId
                 }),
                 dataType: "json",
-                success: function(data, textStatus, jQxhr) {
+                success: function (data, textStatus, jQxhr) {
                   if (data.errorCode != 0) {
                   } else {
                   }
                   this.props.onCommentSubmit();
                 }.bind(this),
-                error: function(jqXhr, textStatus, errorThrown) {
+                error: function (jqXhr, textStatus, errorThrown) {
                   console.log(errorThrown);
                 }
               });
@@ -198,7 +200,7 @@ export default class Login extends React.Component {
             window.location.reload();
           }
         }.bind(this),
-        error: function(request, textStatus, errorThrown) {
+        error: function (request, textStatus, errorThrown) {
           this.setState({
             showLoading: false,
             errorMessage: "لطفا دوباره تلاش کنید"
@@ -219,6 +221,11 @@ export default class Login extends React.Component {
 
   resendCode(vc) {
     $("#error-message").hide(100);
+    if(vc == 0){
+      this.props.gaStore.addEvent("Login", "click", "resendCode", null);
+    }else{
+      this.props.gaStore.addEvent("Login", "click", "voiceCode", null);
+    }
 
     var url =
       MainUrl +
@@ -230,7 +237,7 @@ export default class Login extends React.Component {
     $.ajax({
       type: "GET",
       url: url,
-      success: function(data, textStatus, request) {
+      success: function (data, textStatus, request) {
         if (data.errorCode != 0) {
           this.setState({ showLoading: false, errorMessage: data.msg });
         } else if (data.data != null && data.data.otpSent == true) {
@@ -245,7 +252,7 @@ export default class Login extends React.Component {
           }
           this.setState({ showCountDown: true });
           var x = setInterval(
-            function() {
+            function () {
               var count = this.state.countDown - 1;
               if (count == 0) {
                 this.setState({ showCountDown: false });
@@ -268,7 +275,7 @@ export default class Login extends React.Component {
           this.setState({ interval: x });
         }
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {
+      error: function (request, textStatus, errorThrown) {
         this.setState({
           showLoading: false,
           errorMessage: "لطفا دوباره تلاش کنید"
@@ -284,7 +291,7 @@ export default class Login extends React.Component {
   componentDidMount() {
     $("#mobile-input").on(
       "keyup",
-      function(e) {
+      function (e) {
         if (e.keyCode == 13) {
           this.sendMobileNumber();
         }
@@ -293,7 +300,7 @@ export default class Login extends React.Component {
 
     $("#codeNumber").on(
       "keydown",
-      function(e) {
+      function (e) {
         if (e.keyCode == 13) {
           this.sendOtpCode();
         } else {
@@ -315,6 +322,7 @@ export default class Login extends React.Component {
       }.bind(this)
     );
 
+
     this.setState({ mobileNumber: localStorage.getItem("msisdn") });
     if (localStorage.getItem("otp") == "1") {
       $(".login").slideToggle();
@@ -330,7 +338,7 @@ export default class Login extends React.Component {
       });
       this.setState({ showCountDown: true });
       var x = setInterval(
-        function() {
+        function () {
           var count = this.state.countDown - 1;
           if (count == 0) {
             this.setState({ showCountDown: false });
@@ -416,7 +424,7 @@ export default class Login extends React.Component {
                   placeholder="شماره موبایل"
                 />
 
-                <p style={{ textAlign: "center", color: "white" }}>
+                <p style={{ textAlign: "center", color: "white", direction: "rtl" }}>
                   برای عضویت در ودیو شماره موبایل خود را وارد کنید.
                 </p>
                 <button
@@ -435,7 +443,7 @@ export default class Login extends React.Component {
                   value={this.state.otpCode}
                   placeholder="کد فعال سازی"
                 />
-                <p style={{ textAlign: "center", color: "white" }}>
+                <p style={{ textAlign: "center", color: "white", direction: "rtl" }}>
                   کد فعال سازی برای شما ارسال شد.
                 </p>
                 <button
@@ -474,21 +482,21 @@ export default class Login extends React.Component {
                       ) : null}
                     </div>
                   ) : (
-                    <p style={{ textAlign: "center", color: "white" }}>
-                      لطفا منتظر بمانید
+                      <p style={{ textAlign: "center", color: "white" }}>
+                        لطفا منتظر بمانید
                       <img
-                        src={timerLogo}
-                        style={{
-                          width: "15px",
-                          marginRight: "5px",
-                          marginLeft: "5px"
-                        }}
-                      />
-                      {this.state.showCountDown == true
-                        ? this.state.countDownText
-                        : null}
-                    </p>
-                  )}
+                          src={timerLogo}
+                          style={{
+                            width: "15px",
+                            marginRight: "5px",
+                            marginLeft: "5px"
+                          }}
+                        />
+                        {this.state.showCountDown == true
+                          ? this.state.countDownText
+                          : null}
+                      </p>
+                    )}
                 </div>
               </div>
             </div>

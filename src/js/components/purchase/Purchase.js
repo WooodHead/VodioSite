@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
 import ListIcon from "../../../img/List.svg";
 
-@inject("session")
+@inject("session", "movieStore", "gaStore")
 @observer
 export default class Purchase extends React.Component {
   constructor(props) {
@@ -20,12 +20,13 @@ export default class Purchase extends React.Component {
   }
 
   componentWillMount() {
-    if(this.props.session.session == null){
+    if (this.props.session.session == null) {
       this.props.session.history.push("/");
     }
   }
 
   componentDidMount() {
+    this.props.gaStore.addPageView("/purchase")
     // this.props.session.showFooter = false;
     if (this.props.session.purchaseIsInitiating == true) {
       this.props.session.purchaseIsInitiating = false;
@@ -37,7 +38,7 @@ export default class Purchase extends React.Component {
       this.props.session.fetchPurchaseList();
     }
 
-    window.onscroll = function() {
+    window.onscroll = function () {
       if (!this.props.session.purchaseIsInitiating) {
         var d = document.documentElement;
         var height = d.scrollTop + $(window).height() - 90;
@@ -46,7 +47,7 @@ export default class Purchase extends React.Component {
           offset < height &&
           !this.state.isLoading &&
           this.props.session.purchaseListElementsCount !=
-            this.props.session.purchaseListElements.length
+          this.props.session.purchaseListElements.length
         ) {
           this.props.session.purchaseIsLoading = true;
           this.props.session.purchaseOffset =
@@ -60,12 +61,16 @@ export default class Purchase extends React.Component {
   componentWillUnmount() {
     // this.props.session.showFooter = true;
   }
+  movieClicked(movieId) {
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+  }
 
   render() {
     var childElements = null;
     if (this.props.session.purchaseListElements) {
       childElements = this.props.session.purchaseListElements.map(
-        function(element, l) {
+        function (element, l) {
           var width = $(".row-header").width();
           if (width > 1400) {
             width = width * 12.5 / 100;
@@ -78,11 +83,14 @@ export default class Purchase extends React.Component {
           } else if (width > 400) {
             width = width * 50 / 100;
           }
+          width = Math.round(width);
+          var height = Math.round(width / 11 * 16);
           return (
             <div class="box movie-list-item" key={l}>
               <Link
                 to={{ pathname: "/movie/" + element.id }}
                 class="movie-list-item-link"
+                onClick={this.movieClicked.bind(this, element.id)}
               >
                 <span class="movie-list-item-cover">
                   <img
@@ -92,7 +100,9 @@ export default class Purchase extends React.Component {
                       "/image.ashx?file=" +
                       element.thumbnail.url +
                       "&width=" +
-                      width
+                      width +
+                      "&height=" +
+                      height
                     }
                   />
                 </span>
@@ -126,10 +136,10 @@ export default class Purchase extends React.Component {
           {this.props.session.purchaseListElements ? (
             childElements
           ) : (
-            <div
-              style={{ width: "100px", height: "100px", background: "red" }}
-            />
-          )}
+              <div
+                style={{ width: "100px", height: "100px", background: "red" }}
+              />
+            )}
           {this.props.session.purchaseIsLoading && (
             <div class="box ">
               <div class="cssload-thecube-container-list">

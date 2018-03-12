@@ -8,6 +8,7 @@ import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import { ToastContainer, toast, style } from "react-toastify";
 import hdImage from "../../../img/hd.svg";
+import sdImage from "../../../img/sd.svg";
 import teaserImage from "../../../img/teaser.svg";
 import commentImage from "../../../img/Comment.svg";
 import purchaseImage from "../../../img/Buy.svg";
@@ -17,15 +18,14 @@ import Image1080 from "../../../img/quality/1080.svg";
 import Image480 from "../../../img/quality/480.svg";
 import Image360 from "../../../img/quality/360.svg";
 
-@inject("session", "movieStore")
+
+@inject("session", "movieStore", "gaStore")
 @observer
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       durationString: "",
-      movieDetailClicked: false,
-      commentClicked: false,
       toastId: null
     };
   }
@@ -59,7 +59,7 @@ export default class Movie extends React.Component {
       this.setState({ toastId: id });
     }
     setTimeout(
-      function() {
+      function () {
         toast.dismiss(this.state.toastId);
       }.bind(this),
       3000
@@ -67,13 +67,17 @@ export default class Movie extends React.Component {
   }
 
   onMovieDetailClick() {
-    this.setState({ movieDetailClicked: true, commentClicked: false });
+    this.props.gaStore.addEvent("Movie", "click", "teaserTab", this.props.match.params.id);
+    this.props.movieStore.movieDetailClicked = true;
+    this.props.movieStore.commentClicked = false;
     $("#tab-detail").addClass("current");
     $("#tab-comment").removeClass("current");
   }
 
   onCommentClick() {
-    this.setState({ movieDetailClicked: false, commentClicked: true });
+    this.props.gaStore.addEvent("Movie", "click", "commentsTab", this.props.match.params.id);
+    this.props.movieStore.movieDetailClicked = false;
+    this.props.movieStore.commentClicked = true;
     $("#tab-detail").removeClass("current");
     $("#tab-comment").addClass("current");
   }
@@ -85,6 +89,11 @@ export default class Movie extends React.Component {
         this.props.movieStore.fetchMovie();
       }
     }
+
+
+  }
+  componentWillUnmount() {
+    document.title = "ودیو مرجع فیلم مستقل";
   }
 
   componentDidMount() {
@@ -101,18 +110,18 @@ export default class Movie extends React.Component {
       this.props.movieStore.fetchMovie();
     }
 
-    $(document).ready(function() {
-      $("#season-header-01-01").click(function() {
+    $(document).ready(function () {
+      $("#season-header-01-01").click(function () {
         $("#season-content-01-01").slideToggle("100");
       });
     });
-    $(document).ready(function() {
-      $("#season-header-01-02").click(function() {
+    $(document).ready(function () {
+      $("#season-header-01-02").click(function () {
         $("#season-content-01-02").slideToggle("100");
       });
     });
-    $(document).ready(function() {
-      $("#season-header-01-03").click(function() {
+    $(document).ready(function () {
+      $("#season-header-01-03").click(function () {
         $("#season-content-01-03").slideToggle("100");
       });
     });
@@ -127,50 +136,62 @@ export default class Movie extends React.Component {
   }
 
   purchase() {
-    if (
-      this.props.session.session != null &&
-      this.props.session.session != ""
-    ) {
-      console.log(this.props.session.session);
-      this.props.session.showLoading = true;
-      var url =
-        MainUrl +
-        "/NextpayPurchaseHandler.ashx?movieId=" +
-        this.props.movieStore.movie.id +
-        "&token=" +
-        this.props.session.session;
-      window.location.replace(url);
-    } else {
-      this.props.session.showLogin = true;
-      this.props.session.movieIdForPurchase = this.props.movieStore.movie.id;
-    }
+    this.props.gaStore.addEvent("Movie", "click", "purchaseButton", this.props.match.params.id);
+    this.props.session.history.push({
+      pathname: "/invoice/" + this.props.movieStore.movie.id,
+      state: { director: this.props.movieStore.director }
+    });
   }
+  makeUrl(category, genre) {
+    var url = MainUrl + "/movielist.ashx";
+    if (category || genre) {
+      url = url + "?";
+    }
+    if (category) {
+      url = url + "categoryId=" + category.id;
+    }
+    if (genre) {
+      url = url + "genreId=" + genre.id;
+    }
+    return url;
+  }
+
+  onCategoryClicked(category, genre) {
+    this.props.gaStore.addEvent("Movie", "click", "category", category.id);
+    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
+    this.props.session.history.push("/list/" + (category.id + 1) + "/0");
+    this.props.session.offset = 0;
+    var url = this.makeUrl(category, genre);
+    this.props.session.listUrl = url;
+    this.props.session.isInitiating = true;
+    this.props.session.title = category.name;
+    this.props.session.fetchList();
+  }
+
 
   render() {
     if (this.props.movieStore.movie) {
-      var width = Math.round($(".movie-main-content-poster").width() * 0.8);
+      document.title = "ودیو - " + this.props.movieStore.movie.title;
+      this.props.gaStore.addPageView("/movie/" + this.props.movieStore.movie.id);
+
+      $("#tab-detail").removeClass("current");
+      $("#tab-comment").removeClass("current");
+      var width = Math.round($(".movie-main-content-poster").width());
       var height = Math.round(width * 16 / 11);
       const videoStyle = { width: "100%", height: "400px", background: "red" };
-
       const hdStyle = { width: "100%" };
+
       return (
         <div>
           <div className="content-container max-width">
             <div className="content-inner">
-              <div className="single-product-container">
-                <img
-                  class="single-product-background-image"
-                  src={
-                    MainUrl +
-                    "/image.ashx?file=" +
-                    this.props.movieStore.movie.thumbnail.url +
-                    "&width=" +
-                    width +
-                    "&height=" +
-                    height
-                  }
-                />
-                <div className="single-product-container-center">
+              <div className="single-product-container" style={{
+                background: '#1c1c1c'
+              }}>
+                <div className="single-product-container-center" style={{
+                  zIndex: "2", position: "relative",
+                  background: '#1c1c1c'
+                }}>
                   <div class="movie-main-content-poster">
                     <img
                       class="movie-main-content-image"
@@ -188,34 +209,40 @@ export default class Movie extends React.Component {
                   </div>
                   <div class="movie-main-content-info">
                     <h1 className="single-product-title">
-                      <img class="hd-image" src={hdImage} alt="hd" />
-                      <span style={{ paddingRight: "10px" }}>
+                      {this.props.movieStore.movie.isHd ? <img class="hd-image" src={hdImage} alt="hd" /> : <img class="hd-image" src={sdImage} alt="sd" />}
+                      <span style={{ marginRight: "10px" }}>
                         {latinToPersian(this.props.movieStore.movie.title)}
                       </span>
                     </h1>
                     <div className="single-product-header-meta">
-                      <span style={{ fontSize: "12px", color: "white" }}>
+                      <div style={{
+                        fontSize: '12px',
+                        color: 'white',
+                        width: 'fit-content',
+                        float: 'right',
+                        marginTop: '10px'
+                      }}>
                         {latinToPersian(this.props.movieStore.durationString)}{" "}
-                      </span>
-                      <span style={{ display: "inline-flex" }}>
-                        {this.props.movieStore.movie.categories.map(
-                          category => (
-                            <p
-                              className="single-product-category"
-                              key={category.id}
+                      </div>
+                      {this.props.movieStore.movie.categories.map(
+                        category => (
+                          <div
+                            className="single-product-category"
+                            key={category.id}
+                          >
+                            <a
+                              class="category-item"
+                              onClick={this.onCategoryClicked.bind(
+                                this,
+                                category,
+                                null
+                              )}
                             >
-                              <Link
-                                to={{
-                                  pathname: "/List",
-                                  query: { name: category.name }
-                                }}
-                              >
-                                {category.name}
-                              </Link>
-                            </p>
-                          )
-                        )}
-                      </span>
+                              {category.name}
+                            </a>
+                          </div>
+                        )
+                      )}
                     </div>
                     {this.props.movieStore.movie.editorialRate != 0 && (
                       <div className="single-product-score">
@@ -236,11 +263,54 @@ export default class Movie extends React.Component {
                     )}
                     <div class="button-container">
                       {this.props.session.session != null &&
-                      this.props.movieStore.movie.bought == true ? (
-                        <div style={{ width: "160px" }}>
+                        this.props.movieStore.movie.bought == true ? (
+                          <div style={{ width: "160px" }}>
+                            <a
+                              onClick={this.play.bind(this)}
+                              className="purchase-button-container"
+                            >
+                              <img
+                                src={purchaseImage}
+                                style={{
+                                  width: "20px",
+                                  marginRight: "15px",
+                                  height: "45px"
+                                }}
+                              />
+                              <strong class="single-product-add-strong">
+                                نمایش
+                            </strong>
+                            </a>
+                            {this.props.movieStore.movieId != null && this.props.movieStore.movie.downloadQualities != null && (
+                              <a
+                                onClick={this.download.bind(this)}
+                                className="download-button-container"
+                              >
+                                <img
+                                  src={downloadImage}
+                                  style={{
+                                    width: "20px",
+                                    marginRight: "15px",
+                                    height: "45px"
+                                  }}
+                                />
+                                <strong class="single-product-add-strong">
+                                  دانلود
+                              </strong>
+                              </a>
+                            )}
+                            {this.props.movieStore.movie.downloadQualities ? (
+                              <Download
+                                qualities={
+                                  this.props.movieStore.movie.downloadQualities
+                                }
+                              />
+                            ) : null}
+                          </div>
+                        ) : (
                           <a
-                            onClick={this.play.bind(this)}
-                            className="purchase-button-container"
+                            onClick={this.purchase.bind(this)}
+                            className="single-product-add"
                           >
                             <img
                               src={purchaseImage}
@@ -251,58 +321,13 @@ export default class Movie extends React.Component {
                               }}
                             />
                             <strong class="single-product-add-strong">
-                              نمایش
+                              {latinToPersian(
+                                this.props.movieStore.movie.price.toString()
+                              ) + " تومان"}
                             </strong>
                           </a>
-                          {this.props.movieStore.movieId != null && (
-                            <a
-                              onClick={this.download.bind(this)}
-                              className="download-button-container"
-                            >
-                              <img
-                                src={downloadImage}
-                                style={{
-                                  width: "20px",
-                                  marginRight: "15px",
-                                  height: "45px"
-                                }}
-                              />
-                              <strong class="single-product-add-strong">
-                                دانلود
-                              </strong>
-                            </a>
-                          )}
-                          {this.props.movieStore.movie.downloadQualities ? (
-                            <Download
-                              qualities={
-                                this.props.movieStore.movie.downloadQualities
-                              }
-                            />
-                          ) : null}
-                        </div>
-                      ) : (
-                        <a
-                          onClick={this.purchase.bind(this)}
-                          className="single-product-add"
-                        >
-                          <img
-                            src={purchaseImage}
-                            style={{
-                              width: "20px",
-                              marginRight: "15px",
-                              height: "45px"
-                            }}
-                          />
-                          <strong class="single-product-add-strong">
-                            {latinToPersian(
-                              this.props.movieStore.movie.price.toString()
-                            ) + " تومان"}
-                          </strong>
-                        </a>
-                      )}
-                      {this.props.session.showPlayerFullscreen && (
-                        <Player movie={this.props.movieStore.movie} />
-                      )}
+                        )}
+
                       {!this.state.closeNotify && (
                         <ToastContainer
                           toastClassName={{
@@ -326,9 +351,23 @@ export default class Movie extends React.Component {
                       {this.props.movieStore.actors != null ? (
                         <Actor actors={this.props.movieStore.actors} />
                       ) : null}
-
                       {this.props.movieStore.provider != null ? (
                         <Provider providers={this.props.movieStore.provider} />
+                      ) : null}
+                      {this.props.movieStore.composers != null ? (
+                        <Composer composers={this.props.movieStore.composers} />
+                      ) : null}
+                      {this.props.movieStore.editors != null ? (
+                        <Editor editors={this.props.movieStore.editors} />
+                      ) : null}
+                      {this.props.movieStore.writers != null ? (
+                        <Writer writers={this.props.movieStore.writers} />
+                      ) : null}
+                      {this.props.movieStore.composers != null ? (
+                        <Composer composers={this.props.movieStore.composers} />
+                      ) : null}
+                      {this.props.movieStore.animators != null ? (
+                        <Animator animators={this.props.movieStore.animators} />
                       ) : null}
 
                       {this.props.movieStore.researcher != null ? (
@@ -365,24 +404,19 @@ export default class Movie extends React.Component {
                         style={{ display: "inline-block" }}
                         onClick={this.onMovieDetailClick.bind(this)}
                       >
-                        <img
-                          src={teaserImage}
-                          style={{
-                            width: "20px",
-                            marginLeft: "5px"
-                          }}
-                        />
-                        تیزر
+                        <div style={{ color: 'white' }}>
+                          تیزر
+                        </div>
                       </a>
                     </li>
                     <li>
                       <div
                         style={{
-                          width: "1px",
-                          top: "15%",
-                          background: "black",
-                          height: "70%",
-                          position: "relative"
+                          width: '1px',
+                          background: 'white',
+                          height: '25px',
+                          position: 'relative',
+                          marginLeft: '20px'
                         }}
                       />
                     </li>
@@ -391,23 +425,18 @@ export default class Movie extends React.Component {
                         style={{ display: "inline-block" }}
                         onClick={this.onCommentClick.bind(this)}
                       >
-                        <img
-                          src={commentImage}
-                          style={{
-                            width: "20px",
-                            marginLeft: "5px"
-                          }}
-                        />
-                        نظرات کاربران
+                        <div style={{ color: 'white' }}>
+                          نظرات کاربران
+                        </div>
                       </a>
                     </li>
                   </ul>
                 </div>
                 <div style={{ direction: "rtl" }}>
-                  {this.state.commentClicked && (
+                  {this.props.movieStore.commentClicked && (
                     <MovieComment movieId={this.props.movieStore.movie.id} />
                   )}
-                  {this.state.movieDetailClicked && (
+                  {this.props.movieStore.movieDetailClicked && (
                     <Player
                       movie={this.props.movieStore.movie}
                       isTrailer={true}
@@ -417,6 +446,10 @@ export default class Movie extends React.Component {
               </div>
               {this.props.movieStore.relatedMovies != null ? (
                 <TopMovies
+                  analyticsValue={this.props.movieStore.movie.id}
+                  analyticsLabel="relatedBar"
+                  analyticsAction="click"
+                  analyticsCategory="Movie"
                   movies={this.props.movieStore.relatedMovies}
                   title="فیلم های مشابه"
                   id={1}
@@ -469,6 +502,122 @@ var Director = React.createClass({
               {director.name}
             </Link>
             {this.props.directors.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Writer = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">نویسنده : </strong>
+        {this.props.writers.agents.map((actor, l) => (
+          <div className="inline-class" key={actor.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + actor.id }}
+            >
+              {actor.name}
+            </Link>
+            {this.props.writers.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Editor = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">تدوین : </strong>
+        {this.props.editors.agents.map((actor, l) => (
+          <div className="inline-class" key={actor.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + actor.id }}
+            >
+              {actor.name}
+            </Link>
+            {this.props.editors.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+
+var Cameraman = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">فیلم‌بردار : </strong>
+        {this.props.cameramans.agents.map((actor, l) => (
+          <div className="inline-class" key={actor.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + actor.id }}
+            >
+              {actor.name}
+            </Link>
+            {this.props.cameramans.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Composer = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">آهنگساز : </strong>
+        {this.props.composers.agents.map((actor, l) => (
+          <div className="inline-class" key={actor.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + actor.id }}
+            >
+              {actor.name}
+            </Link>
+            {this.props.composers.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Animator = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">انیماتور : </strong>
+        {this.props.animators.agents.map((actor, l) => (
+          <div className="inline-class" key={actor.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + actor.id }}
+            >
+              {actor.name}
+            </Link>
+            {this.props.animators.agents.length - 1 != l ? (
               <p className="inline-class"> , </p>
             ) : null}
           </div>

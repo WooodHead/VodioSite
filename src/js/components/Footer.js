@@ -1,36 +1,60 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { latinToPersian } from "../util/util";
+import { MainUrl } from "../util/RequestHandler";
+import "../../css/loading-fading.css";
 
 export default class Footer extends React.Component {
   constructor() {
     super();
     this.state = {
-      email: ""
+      email: "",
+      errorInfo: "",
+      successInfo: ""
     };
   }
 
   componentDidMount() {
-    $(function() {
-      $(".float-top-header").click(function() {
+    $(function () {
+      $(".float-top-header").click(function () {
         $("html, body").animate({ scrollTop: 0 }, 1000);
       });
     });
   }
-
+  isEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
+  }
   submitEmail() {
-    if ($.trim(this.state.email) == "") {
-      $.ajax({
-        type: "GET",
-        url: MainUrl + "/saveemail.ashx?email=" + this.state.email,
-        success: function(data, textStatus, request) {
-
-        }.bind(this),
-        error: function(request, textStatus, errorThrown) {}.bind(this)
-      });
-    }else{
-      
+    if ($.trim(this.state.email) != "") {
+      if (this.isEmail(this.state.email)) {
+        $("#loding").show();
+        $.ajax({
+          type: "GET",
+          url: MainUrl + "/saveemail.ashx?email=" + this.state.email,
+          success: function (data, textStatus, request) {
+            this.setState({ errorInfo: "", successInfo: "ایمیل شما ثبت شد" });
+            $("#loding").hide();
+          }.bind(this),
+          error: function (request, textStatus, errorThrown) {
+            $("#loding").hide();
+            this.setState({ errorInfo: "لطفا دوباره تلاش کنید", successInfo: "" });
+           }.bind(this)
+        });
+      } else {
+        this.setState({ errorInfo: "ایمیل وارد شده اشتباه است", successInfo: "" });
+        $("#email-input").css("border-bottom", "solid 1px red")
+      }
+    } else {
+      $("#email-input").css("border-bottom", "solid 1px red")
+      this.setState({ errorInfo: "لطفا ایمیل خود را وارد کنید", successInfo: "" });
     }
+  }
+
+  emailChanged(e) {
+    $("#email-input").css("border-bottom", "solid 2px #e6e6e6")
+    this.setState({ email: e.target.value, errorInfo: "", successInfo: "" });
+
   }
 
   render() {
@@ -43,17 +67,18 @@ export default class Footer extends React.Component {
           <div className="footer-links">
             <strong className="footer-title">لینک‌ها</strong>
             <ul>
+              
               <li>
-                <Link to={{ pathname: "/" }}>صفحه اصلی</Link>
+                <Link to={{ pathname: "/vodio" }}>درباره ما</Link>
               </li>
               <li>
-                <Link to={{ pathname: "/vodio" }}>ودیو چیست؟</Link>
-              </li>
-              <li>
-                <Link to={{ pathname: "/ContactUs" }}>تماس با ما</Link>
+                <Link to={{ pathname: "/rules" }}>قوانین سایت</Link>
               </li>
               <li>
                 <Link to={{ pathname: "/faq" }}>پرسش های متداول</Link>
+              </li>
+              <li>
+                <Link to={{ pathname: "/complaint" }}>ثبت شکایت</Link>
               </li>
             </ul>
           </div>
@@ -97,22 +122,48 @@ export default class Footer extends React.Component {
               ما هر روزه برای شما آخرین فیلم و سریال های روز را در ایمیلتان
               ارسال میکنیم!
             </div>
-            <form className="footer-news-letter-form">
+            <div className="footer-news-letter-form">
               <div className="footer-news-letter-form-input-bg">
                 <input
+                  id="email-input"
                   type="email"
                   className="text-input"
                   placeholder="ایمیل..."
+                  onChange={this.emailChanged.bind(this)}
                 />
-                <button
-                  className="submit"
-                  onClick={this.submitEmail.bind(this)}
-                >
-                  <span className="icon-paper-plane-empty" />
-                </button>
+                <div>
+                  <div id="loding" style={{
+                    display: "none",
+                    position: 'absolute',
+                    left: '0px',
+                    zIndex: '2',
+                    width: '50px',
+                    height: '50px'
+                  }}>
+                    <div class="spinner" style={{
+                      width: '50px',
+                      height: '50px'
+                    }}>
+                    </div>
+                  </div>
+                  <button
+                    className="submit"
+                    onClick={this.submitEmail.bind(this)}
+                  >
+                    <span className="icon-paper-plane-empty" />
+                  </button>
+
+                </div>
               </div>
-            </form>
+            </div>
+            <div style={{ color: 'red', fontSize: '13px', position: 'absolute' }}>
+              {this.state.errorInfo}
+            </div>
+            <div style={{ color: 'green', fontSize: '13px', position: 'absolute' }}>
+              {this.state.successInfo}
+            </div>
           </div>
+
         </div>
       </footer>
     );

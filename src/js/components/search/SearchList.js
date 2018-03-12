@@ -14,7 +14,7 @@ export default class SearchList extends React.Component {
 
   componentDidMount() {
     this.props.session.showFooter = false;
-    window.onscroll = function() {
+    window.onscroll = function () {
       if (
         this.props.search.elements != null &&
         this.props.search.elements.length != this.props.search.count &&
@@ -25,7 +25,6 @@ export default class SearchList extends React.Component {
       }
     }.bind(this);
     if (this.props.search.keyword == null) {
-      console.log(this.props.match.params.keyword);
       this.props.search.fetchSearchList(this.props.match.params.keyword);
     }
   }
@@ -43,7 +42,7 @@ export default class SearchList extends React.Component {
     var childElements = null;
     if (this.props.search.elements != null) {
       childElements = this.props.search.elements.map(
-        function(element, l) {
+        function (element, l) {
           if (element != null) {
             var width = $(window).width();
             if (width > 1400) {
@@ -96,9 +95,15 @@ export default class SearchList extends React.Component {
 
     return (
       <div class="movie-list">
-        <div class="top-moviez-slide-title-background">
+        <div style={{
+          position: 'relative',
+          height: '30px',
+          marginTop: '20px'
+        }}>
           <h5 class="top-moviez-slide-title">نتایج جستجو</h5>
+          <div class="top-moviez-slide-title-background"></div>
         </div>
+
         <div class="list-content-header" style={{ width: "100%" }}>
           {this.props.search.elements != null && childElements}
           {this.props.search.count == 0 && (

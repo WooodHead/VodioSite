@@ -14,12 +14,12 @@ export default class MobileSearch extends React.Component {
 
   componentDidMount() {
     $(window).click(
-      function() {
+      function () {
         this.setState({ searchResult: null, searchInputValue: "" });
       }.bind(this)
     );
 
-    $("#MobileSearchInput").click(function(event) {
+    $("#MobileSearchInput").click(function (event) {
       event.stopPropagation();
     });
   }
@@ -35,10 +35,10 @@ export default class MobileSearch extends React.Component {
       $.ajax({
         type: "GET",
         url: MainUrl + "/search.ashx?keyword=" + e.target.value,
-        success: function(data, textStatus, request) {
+        success: function (data, textStatus, request) {
           this.setState({ searchResult: data.data });
         }.bind(this),
-        error: function(request, textStatus, errorThrown) {}
+        error: function (request, textStatus, errorThrown) { }
       });
     } else {
       this.setState({ searchResult: null });
@@ -47,18 +47,21 @@ export default class MobileSearch extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
+      this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
       this.props.search.fetchSearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
       this.setState({ searchResult: null, searchInputValue: "" });
     } else {
       $(".mobile-search").addClass("no-input-shake");
-      setTimeout(function() {
+      setTimeout(function () {
         $(".mobile-search").removeClass("no-input-shake");
       }, 500);
     }
   }
 
   movieClicked(movieId) {
+    this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
+    this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
     this.props.session.history.push("/movie/" + movieId);
@@ -76,7 +79,7 @@ export default class MobileSearch extends React.Component {
             height: "35px",
             marginRight: "5px",
             marginLeft: "5px",
-            direction:"rtl"
+            direction: "rtl"
           }}
         >
           <input
@@ -116,34 +119,34 @@ export default class MobileSearch extends React.Component {
               {this.state.searchResult.length == 0 ? (
                 <div />
               ) : (
-                <ul>
-                  {this.state.searchResult.map((search, l) => (
-                    <li key={l} class="mobile-search-result-li">
-                      <a onClick={this.movieClicked.bind(this, search.id)}>
-                        <div style={{ display: "inline-block" }}>
-                          <span>
-                            <span>{search.title}</span>
-                            {search.director != null ? (
-                              <span>{"کارگردان : " + search.director}</span>
-                            ) : null}
-                          </span>
-                          <img
-                            src={
-                              MainUrl +
-                              "/image.ashx?file=" +
-                              search.thumbnail.url +
-                              "&width=" +
-                              width +
-                              "&height=" +
-                              height
-                            }
-                          />
-                        </div>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                  <ul>
+                    {this.state.searchResult.map((search, l) => (
+                      <li key={l} class="mobile-search-result-li">
+                        <a onClick={this.movieClicked.bind(this, search.id)}>
+                          <div style={{ display: "inline-block" }}>
+                            <span>
+                              <span>{search.title}</span>
+                              {search.director != null ? (
+                                <span>{"کارگردان : " + search.director}</span>
+                              ) : null}
+                            </span>
+                            <img
+                              src={
+                                MainUrl +
+                                "/image.ashx?file=" +
+                                search.thumbnail.url +
+                                "&width=" +
+                                width +
+                                "&height=" +
+                                height
+                              }
+                            />
+                          </div>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
             </div>
           </div>
         ) : null}

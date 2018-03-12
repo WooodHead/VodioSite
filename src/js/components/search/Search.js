@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import exit from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search","movieStore")
+@inject("session", "search", "movieStore", "gaStore")
 @observer
 export default class Search extends React.Component {
   constructor(props) {
@@ -12,23 +12,28 @@ export default class Search extends React.Component {
     this.state = { searchResult: null, searchInputValue: "", sarachIndex: 0 };
   }
 
+  componentWillUnmount() {
+    document.title = "ودیو مرجع فیلم مستقل";
+  }
+
   componentDidMount() {
+    document.title = "جستجو";
     $(window).click(
-      function() {
+      function () {
         this.setState({ searchResult: null, searchInputValue: "" });
       }.bind(this)
     );
 
-    $("#SearchDropdown").click(function(event) {
+    $("#SearchDropdown").click(function (event) {
       event.stopPropagation();
     });
-    $("#searchInput").click(function(event) {
+    $("#searchInput").click(function (event) {
       event.stopPropagation();
     });
 
     $("#searchInput").on(
       "keyup",
-      function(e) {
+      function (e) {
         if (e.keyCode == 13) {
           this.onClick();
         }
@@ -36,12 +41,12 @@ export default class Search extends React.Component {
     );
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   searchSelectionAndHover() {
     $(".search-result-item").on(
       "mouseover",
-      function(e) {
+      function (e) {
         var $listItems = $(".search-result-item");
         $listItems.removeClass("selected");
         if (e.target.id != undefined && e.target.id != "") {
@@ -51,7 +56,7 @@ export default class Search extends React.Component {
     );
 
     var listItems = document.getElementsByClassName("search-result-item");
-    $("#searchInput").on("keydown", function(e) {
+    $("#searchInput").on("keydown", function (e) {
       var key = e.keyCode,
         selected,
         current,
@@ -113,13 +118,13 @@ export default class Search extends React.Component {
       $.ajax({
         type: "GET",
         url: MainUrl + "/search.ashx?keyword=" + e.target.value,
-        success: function(data, textStatus, request) {
+        success: function (data, textStatus, request) {
           this.setState({ searchResult: data.data });
           $(".search-result-item").off("mouseover");
           $("#searchInput").off("keydown");
           this.searchSelectionAndHover();
         }.bind(this),
-        error: function(request, textStatus, errorThrown) {}
+        error: function (request, textStatus, errorThrown) { }
       });
     } else {
       this.setState({ searchResult: null });
@@ -128,6 +133,7 @@ export default class Search extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
+      this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
       this.props.search.fetchSearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
       this.setState({
@@ -137,7 +143,7 @@ export default class Search extends React.Component {
       });
     } else {
       $(".search-container").addClass("no-input-shake");
-      setTimeout(function() {
+      setTimeout(function () {
         $(".search-container").removeClass("no-input-shake");
       }, 500);
     }
@@ -145,15 +151,12 @@ export default class Search extends React.Component {
 
   onClick() {
 
-    $("#searchInput").focus();
-    // if ($("#searchInput").width() >= 280) {
     this.search();
-    // } else {
-    //   $("#searchContainer").width(340);
-    //   $("#searchInput").width(285);
-    // }
   }
+
   movieClicked(movieId) {
+    this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
+    this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
     this.props.session.history.push("/movie/" + movieId);
@@ -186,31 +189,31 @@ export default class Search extends React.Component {
               {this.state.searchResult.length == 0 ? (
                 <div />
               ) : (
-                <ul id="search-result" style={{ width: "100%" }}>
-                  {this.state.searchResult.map((search, l) => (
-                    <li key={"li" + l} id={"li" + l} class="search-result-li">
-                      <a
-                        id={"link" + l}
-                        onClick={this.movieClicked.bind(this, search.id)}
-                        class="search-result-item"
-                      />
-                      <div>
-                        <span>
-                          <span>{search.title}</span>
-                          {search.director != null ? (
-                            <span>{"کارگردان : " + search.director}</span>
-                          ) : null}
-                        </span>
-                        <img
-                          src={
-                            MainUrl + "/image.ashx?file=" + search.thumbnail.url
-                          }
+                  <ul id="search-result" style={{ width: "100%" }}>
+                    {this.state.searchResult.map((search, l) => (
+                      <li key={"li" + l} id={"li" + l} class="search-result-li">
+                        <a
+                          id={"link" + l}
+                          onClick={this.movieClicked.bind(this, search.id)}
+                          class="search-result-item"
                         />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                        <div>
+                          <span>
+                            <span>{search.title}</span>
+                            {search.director != null ? (
+                              <span>{"کارگردان : " + search.director}</span>
+                            ) : null}
+                          </span>
+                          <img
+                            src={
+                              MainUrl + "/image.ashx?file=" + search.thumbnail.url
+                            }
+                          />
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
             </div>
           </div>
         ) : null}

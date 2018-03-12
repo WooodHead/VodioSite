@@ -1,5 +1,10 @@
 import React from "react";
+import { MainUrl } from "../../util/RequestHandler";
+import "../../../css/loading-fading.css";
+import { inject, observer } from "mobx-react";
 
+@inject("gaStore")
+@observer
 export default class FAQ extends React.Component {
   constructor() {
     super();
@@ -8,10 +13,14 @@ export default class FAQ extends React.Component {
       family: "",
       email: "",
       body: "",
-      subject: ""
+      subject: "",
+      errorInfo: "",
+      successInfo: ""
     };
   }
   componentDidMount() {
+    this.props.gaStore.addPageView("/faq");
+
     window.scrollTo(0, 0);
     $(".content-holder").css("background", "#dedede");
   }
@@ -19,26 +28,27 @@ export default class FAQ extends React.Component {
     $(".content-holder").css("background", "white");
   }
 
-  changeName() {
+  changeName(e) {
     this.setState({ name: e.target.value });
   }
 
-  changeEmail() {
+  changeEmail(e) {
     this.setState({ email: e.target.value });
   }
 
-  changefamily() {
+  changefamily(e) {
     this.setState({ family: e.target.value });
   }
 
-  changeQuestion() {
+  changeQuestion(e) {
     this.setState({ body: e.target.value });
   }
 
-  changeSubject() {
+  changeSubject(e) {
     this.setState({ subject: e.target.value });
   }
   sendEmail() {
+    $("#loading").show();
     $.ajax({
       type: "POST",
       url: MainUrl + "/sendemail.ashx",
@@ -50,17 +60,19 @@ export default class FAQ extends React.Component {
         subject: this.props.movieId
       }),
       dataType: "json",
-      success: function(data, textStatus, jQxhr) {
+      success: function (data, textStatus, jQxhr) {
         if (data.errorCode != 0) {
+          this.setState({ errorInfo: data.msg });
+          this.setState({ successInfo: "" });
         } else {
+          this.setState({ successInfo: data.msg });
+          this.setState({ errorInfo: "" });
         }
-        this.props.session.commentMovieId = this.props.movieId;
-        this.props.session.fetchCommentList();
+        $("#loading").hide();
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {
-        if (request.status == 403) {
-          this.props.session.session = null;
-        }
+      error: function (request, textStatus, errorThrown) {
+        this.setState({ errorInfo: "لطفا دوباره تلاش کنید" });
+        $("#loading").hide();
       }.bind(this)
     });
   }
@@ -91,10 +103,6 @@ export default class FAQ extends React.Component {
           را از نتیجه مطلع نمایند.
         </p>
         <br />
-        <h3 class="faq-question-title">روش دانلود فیلم‌ها چگونه است؟</h3>
-        <p class="faq-answer">
-          با خرید هر فیلم شما به دانلود فیلم ها دسترسی خواهید داشت .
-        </p>
         <div
           style={{
             padding: "10px",
@@ -110,7 +118,23 @@ export default class FAQ extends React.Component {
           >
             سوال خود را برای ما ارسال کنید.
           </p>
-          <div style={{ maxWidth: "600px", minWidth: "200px" }}>
+          <div style={{ maxWidth: "600px", minWidth: "200px", position: "relative" }}>
+            <div id="loading" style={{ display: 'none' }}>
+              <div style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                background: 'rgba(255,255,255,0.8)'
+              }}
+              >
+                <div class="spinner" style={{
+                  position: 'absolute',
+                  top: 'calc(50% - 20px)',
+                  right: 'calc(50% - 20px)'
+                }}>
+                </div>
+              </div>
+            </div>
             <div class="question-container">
               <div class="faq-name">
                 <input
@@ -159,9 +183,15 @@ export default class FAQ extends React.Component {
             <button class="faq-send-button" onClick={this.sendEmail.bind(this)}>
               ارسال
             </button>
+            <div style={{ color: 'red' }}>
+              {this.state.errorInfo}
+            </div>
+            <div style={{ color: 'green' }}>
+              {this.state.successInfo}
+            </div>
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
     );
   }
 }

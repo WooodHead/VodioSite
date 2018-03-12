@@ -12,6 +12,10 @@ class SearchStore {
   @observable size = 20;
   @observable count = -1;
   @observable lastElementId = "0";
+  gaStore = null;
+  constructor(gastore) {
+    this.gaStore = gastore;
+  }
 
   @action
   fetchSearchList(kw) {
@@ -25,19 +29,23 @@ class SearchStore {
     $.ajax({
       type: "GET",
       url: url,
-      success: function(data, textStatus, request) {
+      success: function (data, textStatus, request) {
         this.count = data.count;
         if (data.data != null)
           this.lastElementId = "element" + (data.data.length - 1);
         this.elements = data.data;
         this.firstLoad = false;
+        if (data.data != null)
+          this.offset = data.data.length;
+        this.gaStore.addPageView("/search/" + kw);
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
+      error: function (request, textStatus, errorThrown) { }
     });
   }
 
   @action
   fetchNextSearchList() {
+    console.log(this.offset);
     this.isLoading = true;
     var url =
       MainUrl +
@@ -50,18 +58,17 @@ class SearchStore {
     $.ajax({
       type: "GET",
       url: url,
-      success: function(data, textStatus, request) {
+      success: function (data, textStatus, request) {
         var items = this.elements.concat(data.data);
         this.lastElementId = "element" + (items.length - 1);
         this.isLoading = false;
         this.offset = items.length - 1;
         this.elements = items;
       }.bind(this),
-      error: function(request, textStatus, errorThrown) {}
+      error: function (request, textStatus, errorThrown) { }
     });
   }
 }
 
-var searchStore = new SearchStore();
 
-export default searchStore;
+export default SearchStore;

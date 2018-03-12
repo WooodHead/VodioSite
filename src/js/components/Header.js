@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import logo from "../../img/logo.svg";
+import logo from "../../img/vodio-logo.svg";
 import { MainUrl } from "../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import Search from "./search/Search";
@@ -20,41 +20,44 @@ export default class Header extends React.Component {
 
   componentDidMount() {
     $(window).click(
-      function() {
+      function () {
         $("#myDropdown").hide(100);
       }.bind(this)
     );
 
-    $(".header-sign-out").click(function(event) {
+    $(".header-sign-out").click(function (event) {
       event.stopPropagation();
     });
 
-    $(".header-sign-out").click(function(event) {
+    $(".header-sign-out").click(function (event) {
+      if ($("#myDropdown").css("display") == "none")
+        this.props.gaStore.addEvent("Home", "click", "profileIcon", null);
       $("#myDropdown").toggle(100);
       event.stopPropagation();
     });
-    $(window).click(function() {
+    $(window).click(function () {
       if ($(window).width() < 1001) {
         $(".header-menu").hide(100);
         $("#myDropdown").hide(100);
       }
     });
 
-    $("#menucontainer").click(function(event) {
+    $("#menucontainer").click(function (event) {
       event.stopPropagation();
     });
 
     setTimeout(
-      function() {
+      function () {
         $.ajax({
           type: "GET",
           url: MainUrl + "/category.ashx",
-          success: function(data, textStatus, request) {
+          success: function (data, textStatus, request) {
             this.setState({
               categories: data.data
             });
+            this.props.session.categories = data.data;
           }.bind(this),
-          error: function(request, textStatus, errorThrown) {}
+          error: function (request, textStatus, errorThrown) { }
         });
       }.bind(this),
       1000
@@ -62,6 +65,7 @@ export default class Header extends React.Component {
   }
 
   signOutClicked() {
+    this.props.gaStore.addEvent("Profile", "click", "exit", null);
     localStorage.removeItem("session");
     $(".header-login").show();
     $("#myDropdown").hide();
@@ -75,6 +79,7 @@ export default class Header extends React.Component {
   }
 
   purchaseList() {
+    this.props.gaStore.addEvent("Profile", "click", "purchases", null);
     this.props.session.history.push("/purchase");
     this.props.session.purchaseOffset = 0;
     this.props.session.purchaseListUrl = MainUrl + "/userpurchases.ashx?";
@@ -85,6 +90,7 @@ export default class Header extends React.Component {
   }
 
   factorList() {
+    this.props.gaStore.addEvent("Profile", "click", "factors", null);
     this.props.session.history.push("/factors");
   }
 
@@ -94,14 +100,20 @@ export default class Header extends React.Component {
         <div className="header-inner max-width">
           <Link to={{ pathname: "/" }} className="logo" title="وودیو">
             <img
-              style={{ width: "70px", height: "40px", marginTop: "15px" }}
+              style={{
+                width: '80px',
+                height: '50px',
+                marginTop: '10px'
+              }}
               src={logo}
               alt="وودیو"
             />
           </Link>
           <span className="show-main-menu-btn icon-menu-1" />
           <Category categories={this.state.categories} />
-          <div className="">
+          <div style={{
+            paddingLeft: '10px'
+          }} >
             {/* <nav className="header-menu">
               <ul className="header-menu-ul">
                 <li>
@@ -128,29 +140,29 @@ export default class Header extends React.Component {
               <Search />
               <div className="header-left-meta">
                 {this.props.session.session != null &&
-                this.props.session.session != "" ? (
-                  <div class="header-sign-out-panel">
-                    <div
-                      class="dropdown"
-                      id="sign-out"
-                      class="header-sign-out"
-                    />
-                    <div id="myDropdown" class="dropdown-content">
-                      <a onClick={this.purchaseList.bind(this)}>خریدها</a>
-                      <a onClick={this.factorList.bind(this)}>فاکتورها</a>
-                      {/* <a href="#contact">پروفایل</a> */}
-                      <a onClick={this.signOutClicked.bind(this)}>خروج</a>
+                  this.props.session.session != "" ? (
+                    <div class="header-sign-out-panel">
+                      <div
+                        class="dropdown"
+                        id="sign-out"
+                        class="header-sign-out"
+                      />
+                      <div id="myDropdown" class="dropdown-content">
+                        <a onClick={this.purchaseList.bind(this)}>خریدها</a>
+                        <a onClick={this.factorList.bind(this)}>فاکتورها</a>
+                        {/* <a href="#contact">پروفایل</a> */}
+                        <a onClick={this.signOutClicked.bind(this)}>خروج</a>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <HeaderLogin />
-                )}
+                  ) : (
+                    <HeaderLogin />
+                  )}
               </div>
             </div>
           </div>
-        </div>
+        </div >
         {/* <a class="test-popup-link" href="http://cinemamarket.ir/UploadedData/1/Contents/poster/Vilaeeha(Po-NLogo-1)-HTS-CinemaMarket.jpg">Open popup</a> */}
-      </header>
+      </header >
     );
   }
 }
