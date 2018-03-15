@@ -7,7 +7,7 @@ import HeaderLogin from "./login/HeaderLogin";
 import { Link } from "react-router-dom";
 import Category from "./Category";
 
-@inject("session")
+@inject("session","gaStore")
 @observer
 export default class Header extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export default class Header extends React.Component {
         this.props.gaStore.addEvent("Home", "click", "profileIcon", null);
       $("#myDropdown").toggle(100);
       event.stopPropagation();
-    });
+    }.bind(this));
     $(window).click(function () {
       if ($(window).width() < 1001) {
         $(".header-menu").hide(100);

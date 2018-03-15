@@ -16,12 +16,16 @@ export default class Vodio extends React.Component {
   }
   render() {
     return (
-      <div class="vodio-container" style={{ paddingTop: '0px', color: 'white' }}>
+      <div class="vodio-container" style={{
+        paddingTop: '0px', color: 'white', width: '1000px',
+        marginLeft: 'calc(50% - 500px)'
+      }}>
         <img src={vodioChistImage} style={{
           width: '500px',
           marginRight: 'calc(50% - 250px)',
           display: 'flex'
-        }} />
+        }
+        } />
         <div
           style={{
             fontFamily: "IRsansBold",
@@ -69,7 +73,7 @@ export default class Vodio extends React.Component {
         >
           ودیو حامی سینمای مستقل ایران
           </div>
-      </div>
+      </ div>
     );
   }
 }

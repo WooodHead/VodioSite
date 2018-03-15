@@ -11,7 +11,7 @@ import timerLogo from "../../../img/Timer.svg";
 import pointerLogo from "../../../img/pointer.png";
 import editIcon from "../../../img/edit.svg";
 
-@inject("session")
+@inject("session","gaStore")
 @observer
 export default class Login extends React.Component {
   constructor(props) {

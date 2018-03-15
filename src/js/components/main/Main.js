@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TopMovies from "../topmovies/TopMovies";
+import FeaturedMovies from "../topmovies/FeaturedMovies";
 import Banners from "./Banners";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
@@ -53,6 +54,20 @@ export default class Main extends React.Component {
               analyticsAction="click"
               analyticsCategory="Home"
               margin={10}
+              key={l}
+              movies={bundle.movies}
+              id={bundle.id}
+              title={bundle.title}
+            />
+          );
+        } else if (bundle.type == 3) {
+          components.push(
+            <FeaturedMovies
+              analyticsId={bundle.id}
+              analyticsLabel="featuredList"
+              analyticsAction="click"
+              analyticsCategory="Home"
+              margin={0}
               key={l}
               movies={bundle.movies}
               id={bundle.id}

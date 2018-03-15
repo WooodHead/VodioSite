@@ -128,6 +128,7 @@ export default class Movie extends React.Component {
   }
 
   play() {
+    this.props.movieStore.movieDetailClicked = false;
     this.props.session.showPlayerFullscreen = true;
   }
 
@@ -173,7 +174,6 @@ export default class Movie extends React.Component {
     if (this.props.movieStore.movie) {
       document.title = "ودیو - " + this.props.movieStore.movie.title;
       this.props.gaStore.addPageView("/movie/" + this.props.movieStore.movie.id);
-
       $("#tab-detail").removeClass("current");
       $("#tab-comment").removeClass("current");
       var width = Math.round($(".movie-main-content-poster").width());
@@ -744,13 +744,10 @@ class Download extends React.Component {
           break;
         case "1500":
           q720 = true;
-
           break;
         case "2200":
           q1080 = true;
-
           break;
-
         default:
           break;
       }

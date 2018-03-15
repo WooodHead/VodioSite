@@ -77,7 +77,7 @@ export default class Complaint extends React.Component {
   }
   render() {
     return (
-      <div class="vodio-container">
+      <div class="vodio-container" style={{ paddingTop: '65px' }}>
         <div
           style={{
             padding: "10px",

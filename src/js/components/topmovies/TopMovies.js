@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import TopMovie from "./TopMovie";
 import OwlCarousel from "react-owl-carousel";
+import movielistImage from '../../../img/movieList.svg';
 
 let dragging = false;
 export default class TopMovies extends React.Component {
@@ -66,10 +67,17 @@ export default class TopMovies extends React.Component {
       <div class="slide-overlay" style={{ marginRight: margin, marginLeft: margin }}>
         <div style={{
           position: 'relative',
-          height: '30px'
+          height: '30px',
+          display: 'inline-flex',
+          width: '100%'
         }}>
+          <img src={movielistImage} style={{
+            width: '15px',
+            position: 'absolute',
+            right: '5px',
+            top: '13px'
+          }} />
           <h5 class="top-moviez-slide-title">{this.props.title}</h5>
-          <div class="top-moviez-slide-title-background"></div>
         </div>
         <div class="slide-next-container">
           <div class="slide-next" onClick={this.nextClicked.bind(this)} />

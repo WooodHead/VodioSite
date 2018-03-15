@@ -3,6 +3,7 @@ import { MainUrl } from "../../util/RequestHandler";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import OwlCarousel from "react-owl-carousel";
+import bannerImage from "../../../img/Banner Icon.png"
 
 let dragging = false;
 
@@ -89,6 +90,10 @@ export default class Banners extends React.Component {
             onClick={this.movieClicked.bind(this, banner.movieId, banner.id)}
             to={{ pathname: "/movie/" + banner.movieId }}
           >
+            <div class="banner-text-container">
+              <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
+              <div class="banner-container-description">{banner.description}</div>
+            </div>
             <img
               style={{ width: "100%" }}
               src={
@@ -123,7 +128,7 @@ export default class Banners extends React.Component {
     });
 
     return (
-      <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1} autoplay>
+      <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1} >
         {components}
       </OwlCarousel>
     );

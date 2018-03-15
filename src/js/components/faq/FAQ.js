@@ -109,7 +109,12 @@ export default class FAQ extends React.Component {
             paddingTop: "80px"
           }}
         >
-          <h3 style={{ color: "#eb0089" }}>پاسخ خود را پیدا نکردید؟</h3>
+          <h3 style={{
+            color: "#eb0089", maxWidth: '600px',
+            borderTop: '1px solid #eee',
+            height: '30px',
+            paddingTop: '18px'
+          }}>پاسخ خود را پیدا نکردید؟</h3>
           <p
             style={{
               margin: "20px",

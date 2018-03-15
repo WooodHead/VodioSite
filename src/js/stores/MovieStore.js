@@ -95,6 +95,8 @@ class MovieStore {
   @action
   fetchMovie() {
     this.sessionStore.showLoading = true;
+    console.log(this.sessionStore.session);
+    console.log(MainUrl + "/movie.ashx?movieId=" + this.movieId);
     $.ajax({
       type: "GET",
       headers: {

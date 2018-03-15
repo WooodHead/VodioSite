@@ -24,7 +24,7 @@ export default class Category extends React.Component {
   onCategoryClicked(category, genre) {
     var width = $(window).width();
     if (width > 750) {
-      this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", category.id);
+      this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", (category.id + 1).toString());
       this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
       this.props.session.history.push("/list/" + (category.id + 1) + "/0");
       this.props.session.offset = 0;
@@ -106,7 +106,7 @@ export default class Category extends React.Component {
       <div class="header-category">
         <div class="header-category-show" id="header-category-show">
           <img style={{
-            width: '20px',
+            width: '13px',
             marginRight: '20px'
           }} src={categoryImage} />
           <span>دسته‌بندی‌ها</span>
@@ -178,7 +178,7 @@ export default class Category extends React.Component {
   }
 }
 
-@inject("session")
+@inject("session", "gaStore")
 @observer
 class SubCategory extends React.Component {
   makeUrl(category, genre) {
@@ -196,9 +196,13 @@ class SubCategory extends React.Component {
   }
 
   onGenreClicked(category, genre) {
-    this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", category.id + " - " + gemre.id);
-    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/" + (genre.id + 1);
-    this.props.session.history.push("/list/" + (category.id + 1) + "/" + (genre.id + 1));
+    var gId = 0;
+    if (genre != null) {
+      gId = genre.id + 1;
+    }
+    this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", (category.id + 1).toString() + " - " + gId.toString());
+    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/" + gId;
+    this.props.session.history.push("/list/" + (category.id + 1) + "/" + gId);
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
     this.props.session.listUrl = url;
