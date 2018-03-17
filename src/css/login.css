@@ -252,6 +252,7 @@ input:-ms-input-placeholder {
   text-align: center;
   font-size: 13px;
   color: #24a59c;
+  direction:rtl;
 }
 
 .mobile-number {

@@ -155,7 +155,7 @@ export default class Search extends React.Component {
   }
 
   movieClicked(movieId) {
-    this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
+    this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
     this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
@@ -176,8 +176,8 @@ export default class Search extends React.Component {
         <img
           style={{
             width: "24px",
-            height: "24px",
-            padding: "6px"
+            height: "30px",
+            padding: "5px"
           }}
           src={exit}
           onClick={this.onClick.bind(this)}

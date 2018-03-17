@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
-@inject("session")
+@inject("session","gaStore")
 @observer
 export default class Comment extends React.Component {
   constructor(props) {

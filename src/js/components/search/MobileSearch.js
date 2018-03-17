@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search", "movieStore")
+@inject("session", "search", "movieStore","gaStore")
 @observer
 export default class MobileSearch extends React.Component {
   constructor(props) {

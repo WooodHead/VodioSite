@@ -11,7 +11,7 @@ import timerLogo from "../../../img/Timer.svg";
 import pointerLogo from "../../../img/pointer.png";
 import editIcon from "../../../img/edit.svg";
 
-@inject("session","gaStore")
+@inject("session", "gaStore")
 @observer
 export default class Login extends React.Component {
   constructor(props) {
@@ -219,11 +219,23 @@ export default class Login extends React.Component {
     }
   }
 
+  otpCodeChanged(e) {
+    $(".wrong-code").hide(100);
+    $("#error-message").hide(100);
+    if ($.isNumeric(persianToLatin(e.target.value))) {
+      this.setState({
+        otpCode: latinToPersian(e.target.value)
+      });
+    } else if (e.target.value == "") {
+      this.setState({ otpCode: "" });
+    }
+  }
+
   resendCode(vc) {
     $("#error-message").hide(100);
-    if(vc == 0){
+    if (vc == 0) {
       this.props.gaStore.addEvent("Login", "click", "resendCode", null);
-    }else{
+    } else {
       this.props.gaStore.addEvent("Login", "click", "voiceCode", null);
     }
 
@@ -297,31 +309,6 @@ export default class Login extends React.Component {
         }
       }.bind(this)
     );
-
-    $("#codeNumber").on(
-      "keydown",
-      function (e) {
-        if (e.keyCode == 13) {
-          this.sendOtpCode();
-        } else {
-          $(".wrong-code").hide(100);
-          $("#error-message").hide(100);
-          if (
-            ((e.keyCode >= 48 && e.keyCode <= 57) ||
-              (e.keyCode >= 96 && e.keyCode <= 105)) &&
-            this.state.otpCode.length < 4
-          ) {
-            this.setState({
-              otpCode: latinToPersian(this.state.otpCode + e.key)
-            });
-          } else if (e.keyCode == 8) {
-            var otpcode = this.state.otpCode.slice(0, -1);
-            this.setState({ otpCode: otpcode });
-          }
-        }
-      }.bind(this)
-    );
-
 
     this.setState({ mobileNumber: localStorage.getItem("msisdn") });
     if (localStorage.getItem("otp") == "1") {
@@ -441,6 +428,7 @@ export default class Login extends React.Component {
                   type="text"
                   name="name"
                   value={this.state.otpCode}
+                  onChange={this.otpCodeChanged.bind(this)}
                   placeholder="کد فعال سازی"
                 />
                 <p style={{ textAlign: "center", color: "white", direction: "rtl" }}>
