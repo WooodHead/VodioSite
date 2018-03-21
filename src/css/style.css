@@ -5596,18 +5596,25 @@ footer#footer {
   }
 }
 
-.owl-dots {
-  margin-top: -29px !important;
-  position: absolute;
-  width: 85px;
-  right: calc(50% - 43px);
+.slick-dots {
+  bottom: 0px !important;
 }
 
-.owl-dot span {
-  background: transparent !important;
-  border: 2px solid white;
+.slick-dots li button:before {
+  width: 12px !important;
+  height: 12px !important;
+  border: 2px solid white !important;
+  border-radius: 10px !important;
+  opacity: 1 !important;
+  color:transparent !important;
 }
 
-.owl-dots .active span {
+.slick-dots li.slick-active button:before {
+  opacity: 1 !important;
   background: white !important;
+  color: transparent !important;
+}
+
+.max-width-banner{
+  width:100%;
 }

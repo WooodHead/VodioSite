@@ -3,7 +3,8 @@ import { MainUrl } from "../../util/RequestHandler";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import OwlCarousel from "react-owl-carousel";
-import bannerImage from "../../../img/Banner Icon.png"
+import bannerImage from "../../../img/Banner Icon.png";
+import Slider from 'react-slick';
 
 let dragging = false;
 
@@ -46,19 +47,25 @@ export default class Banners extends React.Component {
   }
 
   movieClicked(movieId, bannerId) {
-    if (!dragging) {
-      this.props.movieStore.movieId = movieId;
-      this.props.movieStore.fetchMovie();
-      this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
-    }
+    this.props.movieStore.movieId = movieId;
+    this.props.movieStore.fetchMovie();
+    this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
   }
 
   componentDidMount() {
     var width = $(window).width();
     if (width < 750) {
-      $(".owl-dots").css("margin-top", "0");
-      $(".owl-dots").css("display", "none");
+      $(".slick-dots").css("margin-top", "0");
+      $(".slick-dots").css("display", "none");
     }
+  }
+
+  beforeChange() {
+    dragging = true;
+  }
+
+  afterChange() {
+    dragging = false;
   }
 
   render() {
@@ -69,14 +76,19 @@ export default class Banners extends React.Component {
         components.push(
           <a
             key={l}
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              if (!dragging) window.location.replace(banner.urlToClick);
-              this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
+            style={{ cursor: "pointer", position: "relative" }}
+            onClick={e => {
+              if (!dragging) {
+                this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
+              } else {
+                e.preventDefault();
+              }
             }}
+            href={banner.urlToClick}
           >
+
             <img
-              style={{ width: "100%" }}
+              style={{ width: "100%", pointerEvents: "none" }}
               src={
                 MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
               }
@@ -87,19 +99,28 @@ export default class Banners extends React.Component {
         components.push(
           <Link
             key={l}
-            onClick={this.movieClicked.bind(this, banner.movieId, banner.id)}
+            onClick={e => {
+              if (!dragging) {
+                this.props.movieStore.movieId = banner.movieId;
+                this.props.movieStore.fetchMovie();
+                this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
+              } else { e.preventDefault() }
+            }}
             to={{ pathname: "/movie/" + banner.movieId }}
+            style={{ position: "relative", width: "100%", cursor: "pointer" }}
           >
-            <div class="banner-text-container">
-              <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
-              <div class="banner-container-description">{banner.description}</div>
-            </div>
             <img
-              style={{ width: "100%" }}
+              style={{ width: "100%", pointerEvents: "none" }}
               src={
                 MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
               }
             />
+            <div style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
+
+            <div class="banner-text-container" style={{ pointerEvents: "none" }}>
+              <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
+              <div class="banner-container-description">{banner.description}</div>
+            </div>
           </Link>
         );
       } else if (banner.genreId != null || banner.categoryId != null) {
@@ -127,10 +148,27 @@ export default class Banners extends React.Component {
       }
     });
 
+    var dots = true;
+    if ($(window).width() < 750) {
+      dots = false;
+    }
+    const settings = {
+      dots: dots,
+      infinite: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      autoplay: true,
+      autoplaySpeed: 3000,
+      rtl: false,
+      afterChange: this.afterChange.bind(this),
+      beforeChange: this.beforeChange.bind(this),
+    };
+
     return (
-      <OwlCarousel className="owl-theme" rtlClass="rtlClass" loop items={1} >
+      <Slider class="max-width-banner" {...settings}>
         {components}
-      </OwlCarousel>
+      </Slider>
     );
   }
 }

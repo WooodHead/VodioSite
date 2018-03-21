@@ -19,6 +19,8 @@ class MovieStore {
   @observable relatedMovies = null;
   @observable durationString = "";
 
+  @observable showLoading = "";
+
   @observable movieDetailClicked = false;
   @observable commentClicked = false;
   sessionStore = null;
@@ -72,10 +74,10 @@ class MovieStore {
         this.composers = composerTemp;
         this.animators = animatorTemp;
 
-        this.sessionStore.showLoading = false;
+        this.showLoading = false;
       }.bind(this),
       error: function (request, textStatus, errorThrown) {
-        this.sessionStore.showLoading = false;
+        this.showLoading = false;
       }
     });
   }
@@ -94,9 +96,7 @@ class MovieStore {
 
   @action
   fetchMovie() {
-    this.sessionStore.showLoading = true;
-    console.log(this.sessionStore.session);
-    console.log(MainUrl + "/movie.ashx?movieId=" + this.movieId);
+    this.showLoading = true;
     $.ajax({
       type: "GET",
       headers: {
@@ -110,7 +110,12 @@ class MovieStore {
         this.fetchRelated();
         this.movieDetailClicked = false;
         this.commentClicked = false;
-        window.scrollTo(0, 0);
+        if (document.getElementById("movie-container") != null) {
+          console.log($("#movie-container"));
+          $("#movie-container").animate({ scrollTop: 0 }, "fast");
+          $('html, body').animate({scrollTop: 0
+            }, 0 );
+        }
       }.bind(this),
       error: function (request, textStatus, errorThrown) {
         if (request.status == 403) {

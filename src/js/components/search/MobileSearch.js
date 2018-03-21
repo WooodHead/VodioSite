@@ -60,7 +60,7 @@ export default class MobileSearch extends React.Component {
   }
 
   movieClicked(movieId) {
-    this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
+    this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
     this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();

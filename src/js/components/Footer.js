@@ -88,6 +88,7 @@ export default class Footer extends React.Component {
               <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
               <p>{latinToPersian("تلفن: 02126141571")}</p>
               <p>ایمیل: Info@vodio.com</p>
+              <a href="https://t.me/vodioir">پشتیبانی در تلگرام</a>
               <div className="footer-contact-content-socail">
                 <a href="https://t.me/vodiochannel" className="telegram">
                   <span className="icon-paper-plane-empty" />

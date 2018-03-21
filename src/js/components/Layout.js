@@ -144,6 +144,7 @@ class Layout extends React.Component {
   }
 
   render() {
+    
     return (
       <div>
         <Favicon url={favicon} />

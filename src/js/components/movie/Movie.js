@@ -17,6 +17,8 @@ import Image720 from "../../../img/quality/720p.svg";
 import Image1080 from "../../../img/quality/1080.svg";
 import Image480 from "../../../img/quality/480.svg";
 import Image360 from "../../../img/quality/360.svg";
+import Loading from "../loading/Loading";
+import DocumentMeta from 'react-document-meta';
 
 
 @inject("session", "movieStore", "gaStore")
@@ -181,9 +183,31 @@ export default class Movie extends React.Component {
       const videoStyle = { width: "100%", height: "400px", background: "red" };
       const hdStyle = { width: "100%" };
 
+      const meta = {
+        meta: {
+          property: {
+            'og:title': this.props.movieStore.movie.title,
+            'og:type': 'website',
+            'og:image':
+              MainUrl +
+              "/image.ashx?file=" +
+              this.props.movieStore.movie.thumbnail.url +
+              "&width=" +
+              width +
+              "&height=" +
+              height
+            ,
+            'og:site_name': 'Vodio - ودیو',
+            'og:url': "http://vodio.ir/movie/" + this.props.movieStore.movie.id
+          }
+        }
+      };
+
       return (
         <div>
-          <div className="content-container max-width">
+          <DocumentMeta {...meta} />
+
+          <div id="movie-container" className="content-container max-width">
             <div className="content-inner">
               <div className="single-product-container" style={{
                 background: '#1c1c1c'
@@ -457,6 +481,8 @@ export default class Movie extends React.Component {
               ) : null}
             </div>
           </div>
+          {this.props.movieStore.showLoading && <Loading />}
+
         </div>
       );
     } else {

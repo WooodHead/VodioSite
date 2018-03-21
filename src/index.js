@@ -6,6 +6,8 @@ import { BrowserRouter, HashRouter } from "react-router-dom";
 import { Provider } from "mobx-react";
 import "./javascript/script";
 import Layout from "./js/components/Layout";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import SessionStore from "./js/stores/SessionStore";
 import SearchStore from "./js/stores/SearchStore";

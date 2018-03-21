@@ -134,7 +134,7 @@ export default class TopMovie extends React.Component {
     };
 
     return (
-      <div className={"top-moviez-inner" + this.state.elementId}>
+      <div style={{ width: "100%" }} className={"top-moviez-inner" + this.state.elementId}>
         <Link
           to={{ pathname: "/movie/" + this.props.movie.id }}
           onClick={this.movieClicked.bind(this, this.props.movie.id)}
