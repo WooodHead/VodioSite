@@ -4081,7 +4081,7 @@ header#header {
   position: absolute;
   display: none;
   font: 500 0.7em/50px "IRSans", Sans-serif;
-  right: 150px;
+  right: 180px;
   margin-top: 5px;
 }
 
@@ -4843,7 +4843,7 @@ footer#footer {
 .footer-contact-content-socail {
   width: 100%;
   overflow: hidden;
-  margin-top: 20px;
+  margin-top: 14px;
 }
 
 .footer-contact-content-socail a {
@@ -5036,6 +5036,14 @@ footer#footer {
   direction: rtl;
 }
 
+.invoice-parent-container {
+  padding-top: 100px;
+  width: 750px;
+  margin-left: calc(50% - 375px);
+  text-align: justify;
+  direction: rtl;
+}
+
 .question-container {
   display: flex;
 }
@@ -5133,12 +5141,19 @@ footer#footer {
     width: 580px;
     margin-left: calc(50% - 260px);
   }
+  .invoice-purchase-btn{
+    margin-bottom:10px;
+  }
+  .invoice-parent-container {
+    width: 580px;
+    margin-left: calc(50% - 260px);
+  }
   .invoice-purchase {
-    position: absolute;
+    position: inherit;
+    display: block;
+    margin-right: 10px;
     margin-left: 10px;
-    margin-bottom: 10px;
-    display: inline-flex;
-    float: left;
+    width: calc(100% - 20px);
   }
   .footer-links {
     width: 50%;
@@ -5170,6 +5185,10 @@ footer#footer {
   .faq-name {
     width: 100%;
   }
+  .invoice-parent-container {
+    width: 90%;
+    margin-left: 5%;
+  }
   .faq-question-name {
     width: calc(100% - 30px);
     margin-left: 0px;
@@ -5178,7 +5197,7 @@ footer#footer {
   .question-container {
     display: block;
   }
-  .vodio-container {
+  .vodio-parent-container {
     width: 80%;
     margin-left: 10%;
   }
@@ -5211,6 +5230,7 @@ footer#footer {
     width: 90%;
     margin-left: 5%;
   }
+  
   .footer-links {
     width: 100%;
   }
@@ -5606,7 +5626,7 @@ footer#footer {
   border: 2px solid white !important;
   border-radius: 10px !important;
   opacity: 1 !important;
-  color:transparent !important;
+  color: transparent !important;
 }
 
 .slick-dots li.slick-active button:before {
@@ -5615,6 +5635,6 @@ footer#footer {
   color: transparent !important;
 }
 
-.max-width-banner{
-  width:100%;
+.max-width-banner {
+  width: 100%;
 }

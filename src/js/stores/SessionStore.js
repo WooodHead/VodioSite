@@ -49,6 +49,8 @@ class SessionStore {
       type: "Get",
       url: MainUrl + "/comments.ashx?movieId=" + this.commentMovieId,
       success: function (data, textStatus, jQxhr) {
+        this.commentListCount = 0;
+        this.commentList = null;
         if (data.errorCode != 0) {
         } else {
           if (data.data != null) {

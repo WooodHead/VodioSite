@@ -18,6 +18,9 @@ class MovieStore {
   @observable provider = null;
   @observable relatedMovies = null;
   @observable durationString = "";
+  @observable soundRecorders = null;
+  @observable sounders = null;
+  @observable redirectToMovie = false;
 
   @observable showLoading = "";
 
@@ -41,8 +44,10 @@ class MovieStore {
         var animatorTemp;
         var cameramanTemp;
         var editorTemp;
+        var soundRecorderTemp;
         var writerTemp;
         var composerTemp;
+        var sounderTemp;
         $.each(data.data, function (index, role) {
           if (role.name == "کارگردان") {
             directorTemp = role;
@@ -53,7 +58,7 @@ class MovieStore {
           } else if (role.name == "پژوهشگر") {
             ResearcherTemp = role;
           } else if (role.name == "صدابردار") {
-            composerTemp = role;
+            soundRecorderTemp = role;
           } else if (role.name == "تدوین") {
             editorTemp = role;
           } else if (role.name == "نویسنده") {
@@ -62,17 +67,20 @@ class MovieStore {
             composerTemp = role;
           } else if (role.name == "انیماتور") {
             animatorTemp = role;
+          } else if (role.name == "صداگذار") {
+            sounderTemp = role;
           }
         });
         this.director = directorTemp;
         this.researcher = ResearcherTemp;
         this.provider = providerTemp;
         this.actors = ActorTemp;
-        this.composers = composerTemp;
         this.editors = editorTemp;
         this.writers = writerTemp;
         this.composers = composerTemp;
         this.animators = animatorTemp;
+        this.soundRecorders = soundRecorderTemp;
+        this.sounders = sounderTemp;
 
         this.showLoading = false;
       }.bind(this),
@@ -104,17 +112,25 @@ class MovieStore {
       },
       url: MainUrl + "/movie.ashx?movieId=" + this.movieId,
       success: function (data, textStatus, request) {
-        this.movie = data.data;
-        this.durationString = convertSecondToString(this.movie.duration);
-        this.fetchRoles();
-        this.fetchRelated();
-        this.movieDetailClicked = false;
-        this.commentClicked = false;
-        if (document.getElementById("movie-container") != null) {
-          console.log($("#movie-container"));
-          $("#movie-container").animate({ scrollTop: 0 }, "fast");
-          $('html, body').animate({scrollTop: 0
-            }, 0 );
+        if (data.data != null) {
+          this.movie = data.data;
+          this.durationString = convertSecondToString(this.movie.duration);
+          this.fetchRoles();
+          this.fetchRelated();
+          this.movieDetailClicked = false;
+          this.commentClicked = false;
+          if (document.getElementById("movie-container") != null) {
+            $("#movie-container").animate({ scrollTop: 0 }, "fast");
+            $('html, body').animate({
+              scrollTop: 0
+            }, 0);
+          }
+          if (this.redirectToMovie == true && data.data.bought == true) {
+            this.redirectToMovie = false;
+            this.sessionStore.history.push("/movie/" + this.movie.id)
+          }
+        }else{
+          this.sessionStore.history.push("/movie/" + this.movie.id)
         }
       }.bind(this),
       error: function (request, textStatus, errorThrown) {

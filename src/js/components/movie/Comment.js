@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
-@inject("session","gaStore")
+@inject("session", "gaStore")
 @observer
 export default class Comment extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { text: "", email: "", name: "" };
+    this.state = { text: "", email: "", name: "", successInfo: "" };
   }
   sendComment() {
     if ($.trim(this.state.text) == "") {
@@ -34,6 +34,8 @@ export default class Comment extends React.Component {
           success: function (data, textStatus, jQxhr) {
             if (data.errorCode != 0) {
             } else {
+              console.log("sasadf")
+              this.setState({ successInfo: "نظر شما با موفقیت ثبت شد.پس از تایید نمایش داده می شود." })
             }
             this.props.gaStore.addEvent("Movie", "complete", "sendComment", this.props.movieId);
             this.props.session.commentMovieId = this.props.movieId;
@@ -115,6 +117,7 @@ export default class Comment extends React.Component {
               لطفا نظر خود را وارد کنید
             </span>
           </div>
+          <div style={{ color: "#00a69c" }}>{this.state.successInfo}</div>
         </div>
       </div>
     );

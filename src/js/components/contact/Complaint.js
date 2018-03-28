@@ -15,7 +15,7 @@ export default class Complaint extends React.Component {
       body: "",
       subject: "",
       errorInfo: "",
-      successInfo: ""
+      successInfo: "",
     };
   }
   componentDidMount() {
@@ -55,16 +55,18 @@ export default class Complaint extends React.Component {
         name: this.state.name,
         family: this.state.text,
         email: $.trim(this.state.email),
-        body: this.props.movieId,
-        subject: this.props.movieId
+        body: this.state.body,
+        subject: this.state.subject,
+        type:"مشکل"
       }),
       dataType: "json",
       success: function (data, textStatus, jQxhr) {
         if (data.errorCode != 0) {
+          this.setState({})
           this.setState({ errorInfo: data.msg });
           this.setState({ successInfo: "" });
         } else {
-          this.setState({ successInfo: data.msg });
+          this.setState({ successInfo: "مشکل شما ثبت شد.در اسرع وقت با شما تماس میگیریم" });
           this.setState({ errorInfo: "" });
         }
         $("#loading").hide();
@@ -150,7 +152,7 @@ export default class Complaint extends React.Component {
                 class="faq-question-text"
                 cols="43"
                 rows="5"
-                placeholder="سوال خود را بنویسید"
+                placeholder="مشکل خود را بنویسید"
                 onChange={this.changeQuestion.bind(this)}
               />
             </div>

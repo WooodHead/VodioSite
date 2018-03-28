@@ -5,7 +5,7 @@ import { latinToPersian, convertSecondToString } from "../../util/util";
 import invoiceImage from '../../../img/receipt.svg';
 import portalImage from '../../../img/Dargah-Icon.svg';
 
-@inject("session", "movieStore","gaStore")
+@inject("session", "movieStore", "gaStore")
 @observer
 export default class Invoice extends React.Component {
 
@@ -34,6 +34,10 @@ export default class Invoice extends React.Component {
     }
 
     componentDidMount() {
+        this.props.movieStore.movieId = this.props.match.params.id;
+        this.props.movieStore.redirectToMovie = true;
+        this.props.movieStore.fetchMovie();
+        
         this.props.gaStore.addPageView("/invoice/" + this.props.match.params.id);
 
         this.props.movieStore.movieId = this.props.match.params.id;
@@ -45,7 +49,7 @@ export default class Invoice extends React.Component {
 
     render() {
         if (this.props.movieStore.movie) {
-            return <div class="vodio-container">
+            return <div class="invoice-parent-container" >
                 <div style={{
                     height: '40px',
                     fontFamily: 'irsansbold',
@@ -84,7 +88,8 @@ export default class Invoice extends React.Component {
                                 {this.props.movieStore.director != null ? (
                                     <Director directors={this.props.movieStore.director} />
                                 ) : null}
-                                <div class="invoice-price">{latinToPersian(this.props.movieStore.movie.price + "تومان")}</div>
+                                <div class="invoice-price">{latinToPersian("هزینه نهایی : " + this.props.movieStore.movie.price + "تومان")}</div>
+                                <div style={{ direction: "rtl" }}>مابقی هزینه ها بر عهده ودیو می باشد.</div>
                             </div>
                         </div>
                         <div class="invoice-purchase">

@@ -56,8 +56,9 @@ export default class FAQ extends React.Component {
         name: this.state.name,
         family: this.state.text,
         email: $.trim(this.state.email),
-        body: this.props.movieId,
-        subject: this.props.movieId
+        body: this.state.body,
+        subject: this.state.subject,
+        type:"سوال"
       }),
       dataType: "json",
       success: function (data, textStatus, jQxhr) {

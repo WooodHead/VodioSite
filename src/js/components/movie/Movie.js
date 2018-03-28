@@ -18,7 +18,6 @@ import Image1080 from "../../../img/quality/1080.svg";
 import Image480 from "../../../img/quality/480.svg";
 import Image360 from "../../../img/quality/360.svg";
 import Loading from "../loading/Loading";
-import DocumentMeta from 'react-document-meta';
 
 
 @inject("session", "movieStore", "gaStore")
@@ -183,29 +182,9 @@ export default class Movie extends React.Component {
       const videoStyle = { width: "100%", height: "400px", background: "red" };
       const hdStyle = { width: "100%" };
 
-      const meta = {
-        meta: {
-          property: {
-            'og:title': this.props.movieStore.movie.title,
-            'og:type': 'website',
-            'og:image':
-              MainUrl +
-              "/image.ashx?file=" +
-              this.props.movieStore.movie.thumbnail.url +
-              "&width=" +
-              width +
-              "&height=" +
-              height
-            ,
-            'og:site_name': 'Vodio - ودیو',
-            'og:url': "http://vodio.ir/movie/" + this.props.movieStore.movie.id
-          }
-        }
-      };
 
       return (
         <div>
-          <DocumentMeta {...meta} />
 
           <div id="movie-container" className="content-container max-width">
             <div className="content-inner">
@@ -378,9 +357,6 @@ export default class Movie extends React.Component {
                       {this.props.movieStore.provider != null ? (
                         <Provider providers={this.props.movieStore.provider} />
                       ) : null}
-                      {this.props.movieStore.composers != null ? (
-                        <Composer composers={this.props.movieStore.composers} />
-                      ) : null}
                       {this.props.movieStore.editors != null ? (
                         <Editor editors={this.props.movieStore.editors} />
                       ) : null}
@@ -392,6 +368,12 @@ export default class Movie extends React.Component {
                       ) : null}
                       {this.props.movieStore.animators != null ? (
                         <Animator animators={this.props.movieStore.animators} />
+                      ) : null}
+                      {this.props.movieStore.soundRecorders != null ? (
+                        <SourndRecorder soundRecorders={this.props.movieStore.soundRecorders} />
+                      ) : null}
+                      {this.props.movieStore.sounders != null ? (
+                        <Sounder sounders={this.props.movieStore.sounders} />
                       ) : null}
 
                       {this.props.movieStore.researcher != null ? (
@@ -528,6 +510,52 @@ var Director = React.createClass({
               {director.name}
             </Link>
             {this.props.directors.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var SourndRecorder = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">صدابردار : </strong>
+        {this.props.soundRecorders.agents.map((sr, l) => (
+          <div className="inline-class" key={sr.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + sr.id }}
+            >
+              {sr.name}
+            </Link>
+            {this.props.soundRecorders.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Sounder = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">صداگذار : </strong>
+        {this.props.sounders.agents.map((sr, l) => (
+          <div className="inline-class" key={sr.id}>
+            <Link
+              className="inline-class r-disable"
+              to={{ pathname: "/agent/" + sr.id }}
+            >
+              {sr.name}
+            </Link>
+            {this.props.sounders.agents.length - 1 != l ? (
               <p className="inline-class"> , </p>
             ) : null}
           </div>

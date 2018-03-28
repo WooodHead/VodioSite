@@ -39,7 +39,7 @@ export default class Footer extends React.Component {
           error: function (request, textStatus, errorThrown) {
             $("#loding").hide();
             this.setState({ errorInfo: "لطفا دوباره تلاش کنید", successInfo: "" });
-           }.bind(this)
+          }.bind(this)
         });
       } else {
         this.setState({ errorInfo: "ایمیل وارد شده اشتباه است", successInfo: "" });
@@ -67,7 +67,7 @@ export default class Footer extends React.Component {
           <div className="footer-links">
             <strong className="footer-title">لینک‌ها</strong>
             <ul>
-              
+
               <li>
                 <Link to={{ pathname: "/vodio" }}>درباره ما</Link>
               </li>
@@ -87,8 +87,8 @@ export default class Footer extends React.Component {
             <div className="footer-contact-content">
               <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
               <p>{latinToPersian("تلفن: 02126141571")}</p>
-              <p>ایمیل: Info@vodio.com</p>
-              <a href="https://t.me/vodioir">پشتیبانی در تلگرام</a>
+              <p style={{ marginBottom: "5px" }}>ایمیل: Info@vodio.com</p>
+              <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#00a69c" }}>پشتیبانی در تلگرام</a>
               <div className="footer-contact-content-socail">
                 <a href="https://t.me/vodiochannel" className="telegram">
                   <span className="icon-paper-plane-empty" />

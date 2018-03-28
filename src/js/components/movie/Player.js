@@ -16,7 +16,7 @@ var TimeUpdate = function TimeUpdate() {
   var video = document.getElementById("video"),
     seekBar = document.getElementById("seek-bar");
 
-  if (!seekBar.getAttribute("max")) seekBar.setAttribute("max", video.duration);
+  if ( seekBar != null && !seekBar.getAttribute("max")) seekBar.setAttribute("max", video.duration);
   seekBar.value = video.currentTime;
   var val = video.currentTime / video.duration;
   seekBar.style.backgroundImage =
@@ -89,7 +89,7 @@ export default class Player extends React.Component {
     if (this.props.isTrailer) {
       this.setState({
         url:
-          "http://media.vodio.ir/StreamTokenHandler.ashx?movieId=" +
+          "http://185.105.238.196:8080/StreamTokenHandler.ashx?movieId=" +
           this.props.movie.id +
           "&trailer=1"
         , gaStoreCategory: "player - trailer"
@@ -98,13 +98,20 @@ export default class Player extends React.Component {
       document.body.style.overflowY = "hidden";
       this.setState({
         url:
-          "http://media.vodio.ir/StreamTokenHandler.ashx?token=" +
+          "http://185.105.238.196:8080/StreamTokenHandler.ashx?token=" +
           this.props.session.session +
           "&movieId=" +
           this.props.movie.id
         , gaStoreCategory: "player - film"
       });
     }
+
+    setTimeout(function () {
+      if (!this.state.doesPlayed) {
+        this.setState({ doesPlayed: true });
+        this.addEventListeners();
+      }
+    }.bind(this), 100);
   }
 
   close() {
@@ -276,6 +283,7 @@ export default class Player extends React.Component {
       seekBar = document.getElementById("seek-bar"),
       seekContainer = document.getElementById("seek-container");
 
+
     if (Hls.isSupported()) {
       this.setState({ testText: "supported", showTestText: false });
       try {
@@ -286,7 +294,19 @@ export default class Player extends React.Component {
           video.play();
           this.initVideoQualityOptions(hls);
         }.bind(this));
-
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          $.ajax({
+            type: "Post",
+            data: JSON.stringify({
+              session: this.props.session.session,
+              error: this.props.movie.id + " #-#" + data.url + " #-# " + data.type + " #-# " + data.reason + " #-# " + data.details
+            }),
+            url: MainUrl + "/clienterror.ashx",
+            success: function (data, textStatus, request) {
+            }.bind(this),
+            error: function (request, textStatus, errorThrown) { }
+          });
+        }.bind(this));
         // HLS video init
         // Hide controls in case of no mouse or touch activity for 10 seconds
 
@@ -460,7 +480,6 @@ export default class Player extends React.Component {
         });
 
         video.addEventListener("loadeddata", function () {
-          console.log("asdf");
           video.addEventListener("timeupdate", TimeUpdate);
         });
 
@@ -554,7 +573,7 @@ export default class Player extends React.Component {
       var q = document.createElement("a");
       q.setAttribute("data-value", i);
       q.setAttribute("class", "quality");
-      q.text = qualities[i].attrs.RESOLUTION.split("x")[1];
+      q.text = latinToPersian(qualities[i].attrs.RESOLUTION.split("x")[1] + "p");
       quality.appendChild(q);
     }
 
@@ -583,14 +602,21 @@ export default class Player extends React.Component {
 
   makeActive(UserSelectionEvent, hls) {
     var elems = document.querySelectorAll("#quality a");
+    var continute = false;
     for (var i = 0; i < elems.length; i++) {
-      if (!UserSelectionEvent && i == hls.currentLevel) {
+      if (UserSelectionEvent.currentTarget == elems[i]) {
+        continute = true
+      }
+    }
+    for (var i = 0; i < elems.length; i++) {
+      if (i == hls.currentLevel) {
         elems[i].classList.add("active-c");
-      } else {
+      }
+      if (continute == true) {
         elems[i].classList.remove("active-c");
       }
     }
-    if (UserSelectionEvent) {
+    if (continute == true) {
       if (UserSelectionEvent.currentTarget.innerHTML != "")
         this.props.gaStore.addEvent(this.state.gaStoreCategory, "qualityChange", this.props.movie.id.toString(), UserSelectionEvent.currentTarget.innerHTML);
       var q_level = parseInt(UserSelectionEvent.currentTarget.getAttribute("data-value"));
@@ -598,7 +624,6 @@ export default class Player extends React.Component {
       UserSelectionEvent.currentTarget.classList.add("active-c");
     }
   }
-
 }
 
 var Loading = React.createClass({

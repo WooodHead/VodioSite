@@ -175,7 +175,7 @@ export default class Login extends React.Component {
                   name:
                     $.trim(this.props.session.commentName) == ""
                       ? "بی نام"
-                      : $.trim(this.state.this.props.session.commentName),
+                      : $.trim(this.props.session.commentName),
                   text: this.props.session.commentText,
                   email: $.trim(this.props.session.commentEmail),
                   movieId: this.props.movieId
