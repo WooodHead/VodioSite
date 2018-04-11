@@ -162,7 +162,7 @@ export default class HeaderLogin extends React.Component {
 
   showLogin() {
     this.props.session.showLogin = true;
-    this.props.gaStore.addEvent("Home", "click", "profileIcon", null);
+    this.props.gaStore.addEvent("Home", "click", "profileIcon");
   }
 
   render() {

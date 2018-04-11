@@ -13,7 +13,7 @@ export default class Comment extends React.Component {
     if ($.trim(this.state.text) == "") {
       $("#text-validation").slideDown("100", "linear");
     } else {
-      this.props.gaStore.addEvent("Movie", "click", "sendComment", this.props.movieId);
+      this.props.gaStore.addEvent("Movie", "sendComment", this.props.movieId.toString());
       if (this.props.session.session != null) {
         $.ajax({
           type: "POST",
@@ -34,10 +34,8 @@ export default class Comment extends React.Component {
           success: function (data, textStatus, jQxhr) {
             if (data.errorCode != 0) {
             } else {
-              console.log("sasadf")
               this.setState({ successInfo: "نظر شما با موفقیت ثبت شد.پس از تایید نمایش داده می شود." })
             }
-            this.props.gaStore.addEvent("Movie", "complete", "sendComment", this.props.movieId);
             this.props.session.commentMovieId = this.props.movieId;
             this.props.session.fetchCommentList();
           }.bind(this),

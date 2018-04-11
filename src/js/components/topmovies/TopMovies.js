@@ -100,6 +100,7 @@ export default class TopMovies extends React.Component {
               height={height}
               key={movie.id}
               movie={movie}
+              title={this.props.title}
             />
           ))}
         </OwlCarousel>

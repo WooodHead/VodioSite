@@ -25,7 +25,7 @@ export default class Invoice extends React.Component {
                 this.props.movieStore.movie.id +
                 "&token=" +
                 this.props.session.session;
-            this.props.gaStore.addEvent("Invoice", "click", "Pay" + this.props.movieStore.movie.id, this.props.movieStore.movie.price);
+            this.props.gaStore.addEvent("Invoice", this.props.movieStore.movie.id.toString(), this.props.movieStore.movie.price.toString());
             window.location.replace(url);
         } else {
             this.props.session.showLogin = true;
@@ -37,7 +37,7 @@ export default class Invoice extends React.Component {
         this.props.movieStore.movieId = this.props.match.params.id;
         this.props.movieStore.redirectToMovie = true;
         this.props.movieStore.fetchMovie();
-        
+
         this.props.gaStore.addPageView("/invoice/" + this.props.match.params.id);
 
         this.props.movieStore.movieId = this.props.match.params.id;

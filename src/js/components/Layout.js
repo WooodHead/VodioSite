@@ -62,6 +62,14 @@ class Layout extends React.Component {
   }
 
   componentDidMount() {
+    window._mfq = window._mfq || [];
+    (function () {
+      var mf = document.createElement("script");
+      mf.type = "text/javascript"; mf.async = true;
+      mf.src = "//cdn.mouseflow.com/projects/6fbce61e-2bcc-411e-b548-2bbf01a91053.js";
+      document.getElementsByTagName("head")[0].appendChild(mf);
+    })();
+
     this.fixedHeader();
     var mainHeight =
       $(window).height() - $("#footer").height() - $("#header").height() - 136;
@@ -144,7 +152,7 @@ class Layout extends React.Component {
   }
 
   render() {
-    
+
     return (
       <div>
         <Favicon url={favicon} />
@@ -153,7 +161,7 @@ class Layout extends React.Component {
           <MobileSearch />
           <Switch>
             <Route exact path="/" component={Main} />
-            <Route path="/movie/:id/:status?" component={Movie} />
+            <Route path="/movie/:id/:status?/:transactionId?" component={Movie} />
             <Route path="/agent/:id" component={Agent} />
             <Route path="/list/:categoryId/:genreId" component={List} />
             <Route path="/search/:keyword" component={SearchList} />
@@ -171,7 +179,7 @@ class Layout extends React.Component {
         {this.props.session.showLogin && <Login />}
         {this.props.session.showLoading && <Loading />}
         {this.props.session.showPlayerFullscreen && (
-          <Player movie={this.props.movieStore.movie} />
+          <Player movie={this.props.movieStore.movie} isTrailer={false} />
         )}
       </div>
     );

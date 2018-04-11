@@ -91,8 +91,7 @@ export default class FeaturedMovie extends React.Component {
     }
 
     movieClicked(movieId) {
-        this.props.gaStore.addEvent(this.props.analyticsCategory, this.props.analyticsAction, this.props.analyticsLabel, this.props.analyticsId);
-        this.props.gaStore.addEvent("ItemEvent", "MovieItem", "click", movieId.toString(), null);
+        this.props.gaStore.addEvent("FeaturedBar - " + this.props.title, "MovieItem", movieId.toString());
         this.props.movieStore.movieId = movieId;
         this.props.movieStore.fetchMovie();
     }

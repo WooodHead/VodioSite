@@ -15,7 +15,7 @@ import MovieStore from "./js/stores/MovieStore";
 import gaStore from "./js/stores/GoogleAnalyticsStore";
 
 var sessionStore = new SessionStore(gaStore);
-var movieStore = new MovieStore(sessionStore);
+var movieStore = new MovieStore(sessionStore,gaStore);
 var searchStore = new SearchStore(gaStore);
 const store = {
   session: sessionStore,
@@ -28,9 +28,9 @@ const app = document.getElementById("conroot");
 
 ReactDOM.render(
   <Provider {...store}>
-    <BrowserRouter>
+    <HashRouter>
       <Layout />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>,
   app
 );

@@ -24,7 +24,7 @@ export default class Category extends React.Component {
   onCategoryClicked(category, genre) {
     var width = $(window).width();
     if (width > 750) {
-      this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", (category.id + 1).toString());
+      this.props.gaStore.addEvent("CategoriesList", "click", (category.id + 1).toString());
       this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
       this.props.session.history.push("/list/" + (category.id + 1) + "/0");
       this.props.session.offset = 0;
@@ -32,7 +32,7 @@ export default class Category extends React.Component {
       this.props.session.listUrl = url;
       this.props.session.isInitiating = true;
       this.props.session.title = category.name;
-      this.props.session.fetchList();
+      this.props.session.fetchList(1);
       this.closeMainMenu();
     }
   }
@@ -42,7 +42,7 @@ export default class Category extends React.Component {
 
   toggleCategory() {
     if ($(".header-category-drop-down").css("display") == "none") {
-      this.props.gaStore.addEvent("Home", "click", "categoryMenu", null);
+      this.props.gaStore.addEvent("Home", "click", "categoryMenu");
     }
     $(".header-category-drop-down").slideToggle(100);
   }
@@ -200,11 +200,12 @@ class SubCategory extends React.Component {
     if (genre != null) {
       gId = genre.id + 1;
     }
-    this.props.gaStore.addEvent("ItemEvent", "CategoriesList", "click", (category.id + 1).toString() + " - " + gId.toString());
+    this.props.gaStore.addEvent("CategoriesList", "click", (category.id + 1).toString() + " - " + gId.toString());
     this.props.session.gaUrl = "/list/" + (category.id + 1) + "/" + gId;
     this.props.session.history.push("/list/" + (category.id + 1) + "/" + gId);
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
+    
     this.props.session.listUrl = url;
     var title = category.name;
     if (genre) {
@@ -212,7 +213,7 @@ class SubCategory extends React.Component {
     }
     this.props.session.title = title;
     this.props.session.isInitiating = true;
-    this.props.session.fetchList();
+    this.props.session.fetchList(2);
     this.props.onClose();
   }
 

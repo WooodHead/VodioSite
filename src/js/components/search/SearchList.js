@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl } from "../../util/RequestHandler";
 import "jquery-visible";
+import clboard from '../../../img/clapperboard.png'
 
 @inject("session", "search")
 @observer
@@ -16,20 +17,24 @@ export default class SearchList extends React.Component {
     this.props.session.showFooter = false;
     window.onscroll = function () {
       if (
-        this.props.search.elements != null &&
-        this.props.search.elements.length != this.props.search.count &&
-        $("#" + this.props.search.lastElementId).visible() &&
+        this.props.search.aElements != null &&
+        this.props.search.aElements.length != this.props.search.aCount &&
+        $("#" + this.props.search.aLastElementId).visible() &&
         this.props.search.isLoading == false
       ) {
-        this.props.search.fetchNextSearchList();
+        console.log(this.props.search.aCount + " " + this.props.search.aElements.length)
+        this.props.search.fetchANextSearchList();
       }
     }.bind(this);
     if (this.props.search.keyword == null) {
-      this.props.search.fetchSearchList(this.props.match.params.keyword);
+      this.props.search.filter = "فیلم"
+      this.props.search.fetchASearchList(this.props.match.params.keyword);
     }
+    $("body").css("background", "#eeeeee");
   }
 
   componentWillUnmount() {
+    $("body").css("background", "white");
     this.props.session.showFooter = true;
   }
 
@@ -38,10 +43,20 @@ export default class SearchList extends React.Component {
     this.props.movieStore.fetchMovie();
   }
 
+  filterClicked(e, filter) {
+    var elems = Array.prototype.slice.call(document.getElementsByClassName("search-filter"))
+    elems.forEach(element => {
+      element.classList.remove("search-filter-active")
+    });
+    e.currentTarget.classList.add("search-filter-active")
+    this.props.search.filter = filter;
+    this.props.search.fetchASearchList(this.props.match.params.keyword);
+  }
+
   render() {
     var childElements = null;
-    if (this.props.search.elements != null) {
-      childElements = this.props.search.elements.map(
+    if (this.props.search.aElements != null) {
+      childElements = this.props.search.aElements.map(
         function (element, l) {
           if (element != null) {
             var width = $(window).width();
@@ -59,12 +74,13 @@ export default class SearchList extends React.Component {
             width = Math.round(width);
             var height = Math.round(width / 11 * 16);
             return (
-              <div id={"element" + l} class="box movie-list-item" key={l}>
+              <div id={"element" + l} class="box movie-list-item" style={{ paddingRight: '5px', paddingLeft: '5px' }} key={l}>
                 <Link
                   to={{ pathname: "/movie/" + element.id }}
                   onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >
+
                   <span class="movie-list-item-cover">
                     <img
                       class={"movie-list-item-img"}
@@ -79,12 +95,7 @@ export default class SearchList extends React.Component {
                       }
                     />
                   </span>
-                  <h2 class="movie-list-item-title">
-                    <span class="movie-list-item-title-persian">
-                      {element.title}
-                    </span>
-                    <span class="movie-list-item-title-english" />
-                  </h2>
+                  <div style={{ height: '15px' }}></div>
                 </Link>
               </div>
             );
@@ -93,20 +104,51 @@ export default class SearchList extends React.Component {
       );
     }
 
+
     return (
-      <div class="movie-list">
+      <div class="movie-list vodio-container" style={{ paddingTop: "20px" }}>
         <div style={{
           position: 'relative',
           height: '30px',
-          marginTop: '20px'
+          marginTop: '20px',
+          display: 'block',
+          width: '100%'
         }}>
-          <h5 class="top-moviez-slide-title">نتایج جستجو</h5>
-          <div class="top-moviez-slide-title-background"></div>
+          <img src={clboard} style={{
+            width: '15px', float: 'right',
+            marginTop: '5px',
+            marginLeft: '10px',
+            marginRight: '5px'
+          }} />
+          <div style={{
+            fontSize: '13px',
+            fontFamily: 'irsansbold', float: 'right',
+            marginTop: '5px'
+          }}>نتایج جستجو / </div>
+          <div style={{
+            fontSize: '13px',
+            fontFamily: 'irsansbold',
+            color: '#eb0089',
+            marginRight: '10px',
+            marginLeft: '5px',
+            float: 'right',
+            marginTop: '5px'
+          }}>{this.props.match.params.keyword}</div>
+          <div onClick={(e) => this.filterClicked(e, "فیلم")} class="search-filter search-filter-active">فیلم</div>
+          <div onClick={(e) => this.filterClicked(e, "کارگردان")} class="search-filter">کارگردان</div>
+          <div onClick={(e) => this.filterClicked(e, "بازیگر")} class="search-filter">بازیگر</div>
+          <div onClick={(e) => this.filterClicked(e, "آهنگ‌ساز")} class="search-filter">آهنگ‌ساز</div>
+          <div onClick={(e) => this.filterClicked(e, "انیماتور")} class="search-filter">انیماتور</div>
+          <div onClick={(e) => this.filterClicked(e, "تدوین")} class="search-filter">تدوین</div>
+          <div onClick={(e) => this.filterClicked(e, "تهیه کننده")} class="search-filter">تهیه کننده</div>
+          <div onClick={(e) => this.filterClicked(e, "صدابردار")} class="search-filter">صدابردار</div>
+          <div onClick={(e) => this.filterClicked(e, "فیلم‌بردار")} class="search-filter">فیلم‌بردار</div>
+          <div onClick={(e) => this.filterClicked(e, "نویسنده")} class="search-filter">نویسنده</div>
         </div>
 
-        <div class="list-content-header" style={{ width: "100%" }}>
-          {this.props.search.elements != null && childElements}
-          {this.props.search.count == 0 && (
+        <div class="list-content-header">
+          {this.props.search.aElements != null && childElements}
+          {this.props.search.aCount == 0 && (
             <div style={{ width: "100%", textAlign: "center" }}>
               نتیجه ای یافت نشد.
             </div>

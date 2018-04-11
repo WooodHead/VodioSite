@@ -4114,8 +4114,10 @@ header#header {
 .list-content-header {
   display: inline-block;
   margin: 0 auto;
-  width: 100%;
-  padding-top: 10px;
+  width: calc(100% - 50px);
+  background: white;
+  padding: 20px 15px 20px 15px;
+  margin: 10px;
 }
 
 .movie-list-item {
@@ -4167,8 +4169,7 @@ header#header {
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
-  padding-bottom: 30px;
-  text-align: center;
+  text-align: right;
 }
 
 .movie-list-item-title-english {
@@ -4484,6 +4485,10 @@ header#header {
   border-color: #eb0089;
   width: calc(100% - 10px);
   position: relative;
+}
+
+.search-result-li-last {
+  border-bottom: 0px solid;
 }
 
 .search-result-item {
@@ -5141,8 +5146,8 @@ footer#footer {
     width: 580px;
     margin-left: calc(50% - 260px);
   }
-  .invoice-purchase-btn{
-    margin-bottom:10px;
+  .invoice-purchase-btn {
+    margin-bottom: 10px;
   }
   .invoice-parent-container {
     width: 580px;
@@ -5230,7 +5235,6 @@ footer#footer {
     width: 90%;
     margin-left: 5%;
   }
-  
   .footer-links {
     width: 100%;
   }
@@ -5637,4 +5641,45 @@ footer#footer {
 
 .max-width-banner {
   width: 100%;
+}
+
+.slick-track {
+  display: flex !important;
+}
+
+.featured-slider {
+  display: flex;
+  width: 75%;
+  margin-left: 12.5%;
+}
+
+.agent-title {
+  font-family: irsansbold;
+  direction: rtl;
+  text-align: center;
+  width: 100%;
+}
+
+.agent-title span {
+  font-family: irsansbold;
+}
+
+.search-filter {
+  background: lightgray;
+  width: 80px;
+  text-align: center;
+  border-radius: 45px;
+  font-size: 13px;
+  height: fit-content;
+  padding: 1px;
+  font-family: irsansbold;
+  margin-right: 5px;
+  margin-top: 5px;
+  float: right;
+  cursor: pointer;
+}
+
+.search-filter-active {
+  color: white;
+  background: #eb0089;
 }

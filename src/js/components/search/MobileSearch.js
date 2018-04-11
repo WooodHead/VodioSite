@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
 
-@inject("session", "search", "movieStore","gaStore")
+@inject("session", "search", "movieStore", "gaStore")
 @observer
 export default class MobileSearch extends React.Component {
   constructor(props) {
@@ -47,8 +47,9 @@ export default class MobileSearch extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
-      this.props.gaStore.addEvent("Search", "click", "search", this.search.searchInputValue.toString());
-      this.props.search.fetchSearchList(this.state.searchInputValue);
+      this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
+      this.props.search.filter = "فیلم"
+      this.props.search.fetchASearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
       this.setState({ searchResult: null, searchInputValue: "" });
     } else {
@@ -60,8 +61,8 @@ export default class MobileSearch extends React.Component {
   }
 
   movieClicked(movieId) {
-    this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
-    this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
+    this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
+    this.props.gaStore.addEvent("Search", "MovieItem", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
     this.props.session.history.push("/movie/" + movieId);
@@ -114,35 +115,30 @@ export default class MobileSearch extends React.Component {
         </div>
 
         {this.state.searchResult != null ? (
-          <div id="MobileSearchDropdown" class="mobile-search-dropdown-content">
-            <div class="mobile-search-result">
+          <div id="SearchDropdown" class="search-dropdown-content">
+            <div class="search-result">
               {this.state.searchResult.length == 0 ? (
                 <div />
               ) : (
-                  <ul>
+                  <ul id="search-result" style={{ width: "100%", direction: 'rtl' }}>
                     {this.state.searchResult.map((search, l) => (
-                      <li key={l} class="mobile-search-result-li">
-                        <a onClick={this.movieClicked.bind(this, search.id)}>
-                          <div style={{ display: "inline-block" }}>
-                            <span>
-                              <span>{search.title}</span>
-                              {search.director != null ? (
-                                <span>{"کارگردان : " + search.director}</span>
-                              ) : null}
-                            </span>
-                            <img
-                              src={
-                                MainUrl +
-                                "/image.ashx?file=" +
-                                search.thumbnail.url +
-                                "&width=" +
-                                width +
-                                "&height=" +
-                                height
-                              }
-                            />
-                          </div>
-                        </a>
+                      <li key={"li" + l} id={"li" + l} class="search-result-li"  >
+                        <a
+                          id={"link" + l}
+                          onClick={this.movieClicked.bind(this, search.id)}
+                          class="search-result-item"
+                        />
+                        <div >
+                          <span >
+                            <span style={{ width: '100%' }}>{search.title}</span>
+                            <span style={{ width: '100%' }}>{search.role + " : " + search.agent}</span>
+                          </span>
+                          <img
+                            src={
+                              MainUrl + "/image.ashx?file=" + search.thumbnail.url + "&width=200"
+                            }
+                          />
+                        </div>
                       </li>
                     ))}
                   </ul>

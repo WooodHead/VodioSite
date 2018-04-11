@@ -19,7 +19,6 @@ import Image480 from "../../../img/quality/480.svg";
 import Image360 from "../../../img/quality/360.svg";
 import Loading from "../loading/Loading";
 
-
 @inject("session", "movieStore", "gaStore")
 @observer
 export default class Movie extends React.Component {
@@ -33,6 +32,7 @@ export default class Movie extends React.Component {
 
   notify(success) {
     if (success == true) {
+
       var id = toast.success("خرید شما با موفقیت انجام شد", {
         position: toast.POSITION.TOP_RIGHT,
         closeButton: false,
@@ -68,7 +68,7 @@ export default class Movie extends React.Component {
   }
 
   onMovieDetailClick() {
-    this.props.gaStore.addEvent("Movie", "click", "teaserTab", this.props.match.params.id);
+    this.props.gaStore.addEvent("Movie", "teaserTab", this.props.match.params.id.toString());
     this.props.movieStore.movieDetailClicked = true;
     this.props.movieStore.commentClicked = false;
     $("#tab-detail").addClass("current");
@@ -76,7 +76,7 @@ export default class Movie extends React.Component {
   }
 
   onCommentClick() {
-    this.props.gaStore.addEvent("Movie", "click", "commentsTab", this.props.match.params.id);
+    this.props.gaStore.addEvent("Movie", "commentsTab", this.props.match.params.id.toString());
     this.props.movieStore.movieDetailClicked = false;
     this.props.movieStore.commentClicked = true;
     $("#tab-detail").removeClass("current");
@@ -85,6 +85,7 @@ export default class Movie extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {
+      this.props.gaStore.addPageView("/movie/" + this.props.match.params.id);
       if (this.props.movieStore.movieId != this.props.match.params.id) {
         this.props.movieStore.movieId = this.props.match.params.id;
         this.props.movieStore.fetchMovie();
@@ -98,17 +99,24 @@ export default class Movie extends React.Component {
   }
 
   componentDidMount() {
+    this.props.gaStore.addPageView("/movie/" + this.props.match.params.id);
+
     if (this.props.match.params.status) {
       if (this.props.match.params.status == "success") {
+        this.props.movieStore.transactionId = this.props.match.params.transactionId
+        this.props.movieStore.purchaseGaSent = true;
+        this.props.movieStore.purchaseGaResult = "success";
         this.notify(true);
       } else if (this.props.match.params.status == "fail") {
+        this.props.movieStore.purchaseGaSent = true;
+        this.props.movieStore.purchaseGaResult = "fail";
         this.notify(false);
       }
     }
 
     if (this.props.movieStore.movieId == -1) {
       this.props.movieStore.movieId = this.props.match.params.id;
-      this.props.movieStore.fetchMovie();
+      this.props.movieStore.fetchMovie("1");
     }
 
     $(document).ready(function () {
@@ -138,12 +146,13 @@ export default class Movie extends React.Component {
   }
 
   purchase() {
-    this.props.gaStore.addEvent("Movie", "click", "purchaseButton", this.props.match.params.id);
+    this.props.gaStore.addEvent("Movie", "purchaseButton", this.props.match.params.id.toString());
     this.props.session.history.push({
       pathname: "/invoice/" + this.props.movieStore.movie.id,
       state: { director: this.props.movieStore.director }
     });
   }
+
   makeUrl(category, genre) {
     var url = MainUrl + "/movielist.ashx";
     if (category || genre) {
@@ -159,7 +168,7 @@ export default class Movie extends React.Component {
   }
 
   onCategoryClicked(category, genre) {
-    this.props.gaStore.addEvent("Movie", "click", "category", category.id);
+    this.props.gaStore.addEvent("Movie", "category", category.id.toString());
     this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
     this.props.session.history.push("/list/" + (category.id + 1) + "/0");
     this.props.session.offset = 0;
@@ -167,14 +176,13 @@ export default class Movie extends React.Component {
     this.props.session.listUrl = url;
     this.props.session.isInitiating = true;
     this.props.session.title = category.name;
-    this.props.session.fetchList();
+    this.props.session.fetchList(6);
   }
 
 
   render() {
     if (this.props.movieStore.movie) {
       document.title = "ودیو - " + this.props.movieStore.movie.title;
-      this.props.gaStore.addPageView("/movie/" + this.props.movieStore.movie.id);
       $("#tab-detail").removeClass("current");
       $("#tab-comment").removeClass("current");
       var width = Math.round($(".movie-main-content-poster").width());
@@ -185,7 +193,6 @@ export default class Movie extends React.Component {
 
       return (
         <div>
-
           <div id="movie-container" className="content-container max-width">
             <div className="content-inner">
               <div className="single-product-container" style={{
@@ -357,6 +364,9 @@ export default class Movie extends React.Component {
                       {this.props.movieStore.provider != null ? (
                         <Provider providers={this.props.movieStore.provider} />
                       ) : null}
+                      {this.props.movieStore.cameramans != null ? (
+                        <Cameraman cameramans={this.props.movieStore.cameramans} />
+                      ) : null}
                       {this.props.movieStore.editors != null ? (
                         <Editor editors={this.props.movieStore.editors} />
                       ) : null}
@@ -374,6 +384,9 @@ export default class Movie extends React.Component {
                       ) : null}
                       {this.props.movieStore.sounders != null ? (
                         <Sounder sounders={this.props.movieStore.sounders} />
+                      ) : null}
+                      {this.props.movieStore.narrations != null ? (
+                        <Sounder narrations={this.props.movieStore.narrations} />
                       ) : null}
 
                       {this.props.movieStore.researcher != null ? (
@@ -481,7 +494,7 @@ var Genre = React.createClass({
         {this.props.genres.map((genre, l) => (
           <div className="inline-class" key={genre.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class"
               to={{ pathname: "/agent/" + genre.id }}
             >
               {genre.name}
@@ -504,7 +517,7 @@ var Director = React.createClass({
         {this.props.directors.agents.map((director, l) => (
           <div className="inline-class" key={director.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + director.id }}
             >
               {director.name}
@@ -527,7 +540,7 @@ var SourndRecorder = React.createClass({
         {this.props.soundRecorders.agents.map((sr, l) => (
           <div className="inline-class" key={sr.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + sr.id }}
             >
               {sr.name}
@@ -550,7 +563,7 @@ var Sounder = React.createClass({
         {this.props.sounders.agents.map((sr, l) => (
           <div className="inline-class" key={sr.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + sr.id }}
             >
               {sr.name}
@@ -573,7 +586,7 @@ var Writer = React.createClass({
         {this.props.writers.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -596,7 +609,7 @@ var Editor = React.createClass({
         {this.props.editors.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -620,7 +633,7 @@ var Cameraman = React.createClass({
         {this.props.cameramans.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -643,7 +656,7 @@ var Composer = React.createClass({
         {this.props.composers.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -666,7 +679,7 @@ var Animator = React.createClass({
         {this.props.animators.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -689,7 +702,7 @@ var Actor = React.createClass({
         {this.props.actors.agents.map((actor, l) => (
           <div className="inline-class" key={actor.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + actor.id }}
             >
               {actor.name}
@@ -712,12 +725,35 @@ var Provider = React.createClass({
         {this.props.providers.agents.map((provider, l) => (
           <div className="inline-class" key={provider.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + provider.id }}
             >
               {provider.name}
             </Link>
             {this.props.providers.agents.length - 1 != l ? (
+              <p className="inline-class"> , </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+
+var Narration = React.createClass({
+  render() {
+    return (
+      <div class="movie-main-content-detail-lineheight">
+        <strong className="inline-class">نریشن : </strong>
+        {this.props.narrations.agents.map((narration, l) => (
+          <div className="inline-class" key={narration.id}>
+            <Link
+              className="inline-class "
+              to={{ pathname: "/agent/" + narration.id }}
+            >
+              {narration.name}
+            </Link>
+            {this.props.narrations.agents.length - 1 != l ? (
               <p className="inline-class"> , </p>
             ) : null}
           </div>
@@ -735,7 +771,7 @@ var Researcher = React.createClass({
         {this.props.researchers.agents.map((researcher, l) => (
           <div className="inline-class" key={researcher.id}>
             <Link
-              className="inline-class r-disable"
+              className="inline-class "
               to={{ pathname: "/agent/" + researcher.id }}
             >
               {researcher.name}

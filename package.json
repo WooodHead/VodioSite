@@ -17,12 +17,14 @@
     "react-dom": "^0.14.6",
     "react-favicon": "0.0.13",
     "react-ga": "^2.4.1",
+    "react-google-analytics": "^0.2.0",
     "react-helmet": "^5.2.0",
     "react-meta-tags": "^0.3.0",
     "react-owl-carousel": "^2.2.0",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.21.0",
     "react-toastify": "^3.2.1",
+    "react-visibility-sensor": "^3.11.0",
     "slick-carousel": "^1.8.1"
   },
   "devDependencies": {

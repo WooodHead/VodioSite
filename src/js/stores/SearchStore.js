@@ -12,6 +12,15 @@ class SearchStore {
   @observable size = 20;
   @observable count = -1;
   @observable lastElementId = "0";
+
+  @observable filter = "0";
+  @observable aOffset = 0;
+  @observable aSize = 30;
+  @observable aLastElementId = "0";
+  @observable aElements = null;
+  @observable aCount = -1;
+
+
   gaStore = null;
   constructor(gastore) {
     this.gaStore = gastore;
@@ -45,7 +54,6 @@ class SearchStore {
 
   @action
   fetchNextSearchList() {
-    console.log(this.offset);
     this.isLoading = true;
     var url =
       MainUrl +
@@ -64,6 +72,59 @@ class SearchStore {
         this.isLoading = false;
         this.offset = items.length - 1;
         this.elements = items;
+      }.bind(this),
+      error: function (request, textStatus, errorThrown) { }
+    });
+  }
+
+
+  @action
+  fetchASearchList(kw) {
+    this.aOffset = 0;
+    this.aCount = -1;
+    this.aElements = null;
+    this.firstLoad = true;
+    this.aLastElementId = "0";
+    this.keyword = kw;
+    var url = MainUrl + "/advanceSearch.ashx?keyword=" + kw + "&size=" + this.aSize + "&filter=" + this.filter;
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function (data, textStatus, request) {
+        this.aCount = data.count;
+        if (data.data != null)
+          this.aLastElementId = "element" + (data.data.length - 1);
+        this.aElements = data.data;
+        this.firstLoad = false;
+        if (data.data != null)
+          this.aOffset = data.data.length;
+        this.gaStore.addPageView("/search/" + kw);
+      }.bind(this),
+      error: function (request, textStatus, errorThrown) { }
+    });
+  }
+
+  @action
+  fetchANextSearchList() {
+    this.isLoading = true;
+    var url =
+      MainUrl +
+      "/advanceSearch.ashx?keyword=" +
+      this.keyword +
+      "&offset=" +
+      this.aOffset +
+      "&size=" +
+      this.aSize +
+      "&filter=" + this.filter;
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function (data, textStatus, request) {
+        var items = this.aElements.concat(data.data);
+        this.aLastElementId = "element" + (items.length - 1);
+        this.aOffset = items.length - 1;
+        this.aElements = items;
+        this.isLoading = false;
       }.bind(this),
       error: function (request, textStatus, errorThrown) { }
     });

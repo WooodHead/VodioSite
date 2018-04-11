@@ -26,6 +26,7 @@ class SessionStore {
   @observable offset = 0;
   @observable size = 20;
   @observable isInitiating = false;
+  @observable count = 0;
 
   @observable commentText = null;
   @observable commentName = null;
@@ -124,7 +125,7 @@ class SessionStore {
   }
 
   @action
-  fetchList() {
+  fetchList(la) {
     if (this.offset == 0) {
       this.gaStore.addPageView(this.gaUrl);
       this.listElements = [];
@@ -136,6 +137,10 @@ class SessionStore {
       success: function (es, textStatus, request) {
         this.listElements = this.listElements.concat(es.data);
         this.listElementsCount = es.count;
+
+        this.isInitiating = false;
+        this.count = es.count;
+        this.offset = this.listElements.length;
         this.isLoading = false;
       }.bind(this),
       error: function (request, textStatus, errorThrown) { }

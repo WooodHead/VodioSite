@@ -58,7 +58,7 @@ export default class List extends React.Component {
         });
       }
       this.props.session.offset = 0;
-      this.props.session.fetchList();
+      this.props.session.fetchList(3);
     }
 
     window.onscroll = function () {
@@ -66,16 +66,14 @@ export default class List extends React.Component {
         var d = document.documentElement;
         var height = d.scrollTop + $(window).height() - 90;
         var offset = $(".movie-list").innerHeight();
-        if (offset < height && !this.state.isLoading) {
+        if (offset < height && !this.props.session.isLoading && this.props.session.count != this.props.session.offset) {
           this.props.session.isLoading = true;
-          this.props.session.offset =
-            this.props.session.offset + this.props.session.size;
-          this.props.session.fetchList();
+          this.props.session.fetchList(4);
         }
       }
     }.bind(this);
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.title = "ودیو مرجع فیلم مستقل";
     this.props.session.showFooter = true;
   }

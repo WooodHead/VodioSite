@@ -41,15 +41,15 @@ export default class Banners extends React.Component {
       this.props.session.listUrl = url;
       this.props.session.isInitiating = true;
       this.props.session.title = title;
-      this.props.session.fetchList();
-      this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
+      this.props.session.fetchList(5);
+      this.props.gaStore.addEvent("Home", "banner", bannerId.toString());
     }
   }
 
   movieClicked(movieId, bannerId) {
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.gaStore.addEvent("Home", "click", "banner", bannerId.toString());
+    this.props.gaStore.addEvent("Home", "banner", bannerId.toString());
   }
 
   componentDidMount() {
@@ -79,7 +79,7 @@ export default class Banners extends React.Component {
             style={{ cursor: "pointer", position: "relative" }}
             onClick={e => {
               if (!dragging) {
-                this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
+                this.props.gaStore.addEvent("Home", "banner", banner.id.toString());
               } else {
                 e.preventDefault();
               }
@@ -103,7 +103,7 @@ export default class Banners extends React.Component {
               if (!dragging) {
                 this.props.movieStore.movieId = banner.movieId;
                 this.props.movieStore.fetchMovie();
-                this.props.gaStore.addEvent("Home", "click", "banner", banner.id.toString());
+                this.props.gaStore.addEvent("Home", "banner", banner.id.toString());
               } else { e.preventDefault() }
             }}
             to={{ pathname: "/movie/" + banner.movieId }}

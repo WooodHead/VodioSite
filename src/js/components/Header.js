@@ -31,7 +31,7 @@ export default class Header extends React.Component {
 
     $(".header-sign-out").click(function (event) {
       if ($("#myDropdown").css("display") == "none")
-        this.props.gaStore.addEvent("Home", "click", "profileIcon", null);
+        this.props.gaStore.addEvent("Home", "click", "profileIcon");
       $("#myDropdown").toggle(100);
       event.stopPropagation();
     }.bind(this));
@@ -65,7 +65,7 @@ export default class Header extends React.Component {
   }
 
   signOutClicked() {
-    this.props.gaStore.addEvent("Profile", "click", "exit", null);
+    this.props.gaStore.addEvent("Profile", "click", "exit");
     localStorage.removeItem("session");
     $(".header-login").show();
     $("#myDropdown").hide();
@@ -79,7 +79,7 @@ export default class Header extends React.Component {
   }
 
   purchaseList() {
-    this.props.gaStore.addEvent("Profile", "click", "purchases", null);
+    this.props.gaStore.addEvent("Profile", "click", "purchases");
     this.props.session.history.push("/purchase");
     this.props.session.purchaseOffset = 0;
     this.props.session.purchaseListUrl = MainUrl + "/userpurchases.ashx?";
@@ -90,7 +90,7 @@ export default class Header extends React.Component {
   }
 
   factorList() {
-    this.props.gaStore.addEvent("Profile", "click", "factors", null);
+    this.props.gaStore.addEvent("Profile", "click", "factors");
     this.props.session.history.push("/factors");
   }
 

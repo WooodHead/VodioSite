@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { latinToPersian } from "../util/util";
 import { MainUrl } from "../util/RequestHandler";
 import "../../css/loading-fading.css";
+import { inject, observer } from "mobx-react";
 
+@inject("gaStore")
+@observer
 export default class Footer extends React.Component {
   constructor() {
     super();
@@ -57,6 +60,15 @@ export default class Footer extends React.Component {
 
   }
 
+  SocialClicked(snl) {
+    this.props.gaStore.addEvent("Social", snl, null)
+  }
+
+  TelegramSupport() {
+    this.props.gaStore.addEvent("Support", "telegram", null)
+
+  }
+
   render() {
     return (
       <footer id="footer">
@@ -86,20 +98,21 @@ export default class Footer extends React.Component {
             <strong className="footer-title">تماس‌با‌ما</strong>
             <div className="footer-contact-content">
               <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
-              <p>{latinToPersian("تلفن: 02126141571")}</p>
+              <p>{latinToPersian("تلفن: ۰۲۱۲۸۴۲۵۹۷۲")}</p>
               <p style={{ marginBottom: "5px" }}>ایمیل: Info@vodio.com</p>
-              <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#00a69c" }}>پشتیبانی در تلگرام</a>
+              <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#00a69c" }} onClick={this.TelegramSupport.bind(this)}>پشتیبانی در تلگرام</a>
               <div className="footer-contact-content-socail">
-                <a href="https://t.me/vodiochannel" className="telegram">
+                <a href="https://t.me/vodiochannel" onClick={this.SocialClicked.bind(this, "telegram")} className="telegram">
                   <span className="icon-paper-plane-empty" />
                 </a>
-                <a href="http://instagram.com/vodio.ir" className="instagram">
+                <a href="http://instagram.com/vodio.ir" onClick={this.SocialClicked.bind(this, "instagram")} className="instagram">
                   <span className="icon-instagram-1" />
                 </a>
-                <a href="http://twitter.com/vodio_ir" className="twitter">
+                <a href="http://twitter.com/vodio_ir" onClick={this.SocialClicked.bind(this, "twitter")} className="twitter">
                   <span className="icon-twitter" />
                 </a>
                 <a
+                  onClick={this.SocialClicked.bind(this, "facebook")}
                   href="https://www.facebook.com/vodio.ir/"
                   className="facebook"
                 >

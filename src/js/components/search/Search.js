@@ -133,8 +133,9 @@ export default class Search extends React.Component {
 
   search() {
     if (this.state.searchInputValue != "") {
-      this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
-      this.props.search.fetchSearchList(this.state.searchInputValue);
+      this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
+      this.props.search.filter = "فیلم"
+      this.props.search.fetchASearchList(this.state.searchInputValue);
       this.props.session.history.push("/search/" + this.state.searchInputValue);
       this.setState({
         searchResult: null,
@@ -155,8 +156,8 @@ export default class Search extends React.Component {
   }
 
   movieClicked(movieId) {
-    this.props.gaStore.addEvent("Search", "click", "search", this.state.searchInputValue.toString());
-    this.props.gaStore.addEvent("ItemEvent","MovieItem", "click", movieId.toString());
+    this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
+    this.props.gaStore.addEvent("ItemEvent", "MovieItem", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
     this.props.session.history.push("/movie/" + movieId);
@@ -191,22 +192,20 @@ export default class Search extends React.Component {
               ) : (
                   <ul id="search-result" style={{ width: "100%" }}>
                     {this.state.searchResult.map((search, l) => (
-                      <li key={"li" + l} id={"li" + l} class="search-result-li">
+                      <li key={"li" + l} id={"li" + l} class="search-result-li" >
                         <a
                           id={"link" + l}
                           onClick={this.movieClicked.bind(this, search.id)}
                           class="search-result-item"
                         />
                         <div>
-                          <span>
-                            <span>{search.title}</span>
-                            {search.director != null ? (
-                              <span>{"کارگردان : " + search.director}</span>
-                            ) : null}
+                          <span >
+                            <span style={{ width: '100%' }}>{search.title}</span>
+                            <span style={{ width: '100%' }}>{search.role + " : " + search.agent}</span>
                           </span>
                           <img
                             src={
-                              MainUrl + "/image.ashx?file=" + search.thumbnail.url
+                              MainUrl + "/image.ashx?file=" + search.thumbnail.url + "&width=200"
                             }
                           />
                         </div>

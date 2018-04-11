@@ -12,11 +12,15 @@ import { latinToPersian, persianToLatin } from "../../util/util";
 import { inject, observer } from "mobx-react";
 import exit from "../../../img/exit.svg";
 
+
+var lastQuarter = 0;
+var gaStore;
+var gaStoreCategory;
 var TimeUpdate = function TimeUpdate() {
   var video = document.getElementById("video"),
     seekBar = document.getElementById("seek-bar");
 
-  if ( seekBar != null && !seekBar.getAttribute("max")) seekBar.setAttribute("max", video.duration);
+  if (seekBar != null && !seekBar.getAttribute("max")) seekBar.setAttribute("max", video.duration);
   seekBar.value = video.currentTime;
   var val = video.currentTime / video.duration;
   seekBar.style.backgroundImage =
@@ -28,6 +32,28 @@ var TimeUpdate = function TimeUpdate() {
     val +
     ", transparent)" +
     ")";
+
+  var quarter = video.currentTime / video.duration * 4;
+  if (quarter > 1 && quarter < 2) {
+    if (lastQuarter != 1) {
+      lastQuarter = 1;
+      gaStore.addEvent(gaStoreCategory, "watch", "Q1")
+    }
+  }
+  if (quarter > 2 && quarter < 3) {
+    if (lastQuarter != 2) {
+      lastQuarter = 2;
+      gaStore.addEvent(gaStoreCategory, "watch", "Q2")
+    }
+  }
+  if (quarter > 3 && quarter < 4) {
+    if (lastQuarter != 3) {
+      gaStore.addEvent(gaStoreCategory, "watch", "Q3")
+      lastQuarter = 3;
+    }
+  } else if (quarter == 4) {
+    gaStore.addEvent(gaStoreCategory, "watch", "Q4")
+  }
 
   var durationHour = parseInt(video.duration / 3600);
   var durationMinute = parseInt((video.duration - durationHour * 3600) / 60);
@@ -82,11 +108,12 @@ export default class Player extends React.Component {
     var video = document.getElementById("video");
     video.removeEventListener("timeupdate", TimeUpdate);
     var parts = video.duration / 8;
-    this.props.gaStore.addEvent(this.state.gaStoreCategory, "exit", this.props.movie.id.toString(), Math.ceil(video.currentTime / parts).toString());
+    this.props.gaStore.addEvent(this.state.gaStoreCategory, "exit " + this.props.movie.id.toString(), Math.ceil(video.currentTime / parts).toString());
   }
 
   componentDidMount() {
-    if (this.props.isTrailer) {
+    gaStore = this.props.gaStore;
+    if (this.props.isTrailer == true) {
       this.setState({
         url:
           "http://185.105.238.196:8080/StreamTokenHandler.ashx?movieId=" +
@@ -94,6 +121,7 @@ export default class Player extends React.Component {
           "&trailer=1"
         , gaStoreCategory: "player - trailer"
       });
+      gaStoreCategory = "player - trailer";
     } else {
       document.body.style.overflowY = "hidden";
       this.setState({
@@ -104,10 +132,11 @@ export default class Player extends React.Component {
           this.props.movie.id
         , gaStoreCategory: "player - film"
       });
+      gaStoreCategory = "player - film";
     }
 
     setTimeout(function () {
-      if (!this.state.doesPlayed) {
+      if (!this.state.doesPlayed && this.props.isTrailer == false) {
         this.setState({ doesPlayed: true });
         this.addEventListeners();
       }
@@ -143,7 +172,7 @@ export default class Player extends React.Component {
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
       }
-      this.props.gaStore.addEvent(this.state.gaStoreCategory, "exitFullscreen", this.props.movie.id.toString(), null);
+      this.props.gaStore.addEvent(this.state.gaStoreCategory, "exitFullscreen " + this.props.movie.id.toString(), null);
 
     } else {
       var element = document.getElementById("player");
@@ -156,7 +185,7 @@ export default class Player extends React.Component {
       } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
       }
-      this.props.gaStore.addEvent(this.state.gaStoreCategory, "enterFullscreen", this.props.movie.id.toString(), null);
+      this.props.gaStore.addEvent(this.state.gaStoreCategory, "enterFullscreen " + this.props.movie.id.toString(), null);
     }
   }
 
@@ -380,11 +409,11 @@ export default class Player extends React.Component {
         playpause.addEventListener("click", function (e) {
           if (video.paused || video.ended) {
             video.play();
-            this.props.gaStore.addEvent(this.state.gaStoreCategory, "play", this.props.movie.id.toString(), null);
+            this.props.gaStore.addEvent(this.state.gaStoreCategory, "play " + this.props.movie.id.toString(), null);
           }
           else {
             video.pause();
-            this.props.gaStore.addEvent(this.state.gaStoreCategory, "pause", this.props.movie.id.toString(), null);
+            this.props.gaStore.addEvent(this.state.gaStoreCategory, "pause " + this.props.movie.id.toString(), null);
           }
         }.bind(this));
 
@@ -407,12 +436,12 @@ export default class Player extends React.Component {
             video.muted = !video.muted;
             changeButtonState("mute");
             if (mute.getAttribute("data-state") == "unmute") {
-              this.props.gaStore.addEvent(this.state.gaStoreCategory, "unmute", this.props.movie.id.toString(), null);
+              this.props.gaStore.addEvent(this.state.gaStoreCategory, "unmute " + this.props.movie.id.toString(), null);
               volumeBar.value = this.state.volume;
               volumeMask.style.width =
                 volumeBar.value / 100 * volumeBar.offsetWidth + "px";
             } else {
-              this.props.gaStore.addEvent(this.state.gaStoreCategory, "mute", this.props.movie.id.toString(), null);
+              this.props.gaStore.addEvent(this.state.gaStoreCategory, "mute " + this.props.movie.id.toString(), null);
               this.setState({ volume: volumeBar.value });
               volumeBar.value = 0;
               volumeMask.style.width = "0px";
@@ -618,7 +647,7 @@ export default class Player extends React.Component {
     }
     if (continute == true) {
       if (UserSelectionEvent.currentTarget.innerHTML != "")
-        this.props.gaStore.addEvent(this.state.gaStoreCategory, "qualityChange", this.props.movie.id.toString(), UserSelectionEvent.currentTarget.innerHTML);
+        this.props.gaStore.addEvent(this.state.gaStoreCategory, "qualityChange " + this.props.movie.id.toString(), UserSelectionEvent.currentTarget.innerHTML);
       var q_level = parseInt(UserSelectionEvent.currentTarget.getAttribute("data-value"));
       hls.currentLevel = q_level;
       UserSelectionEvent.currentTarget.classList.add("active-c");

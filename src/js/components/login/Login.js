@@ -52,10 +52,11 @@ export default class Login extends React.Component {
       $.trim(this.state.mobileNumber).length != 11 ||
       persianToLatin($.trim(this.state.mobileNumber)).match("^09") == null
     ) {
+      this.props.gaStore.addEvent("Login", "sendPhoneNum", "wrong number");
       this.setState({ errorMessage: "شماره صحیح نمی باشد" });
       $("#error-message").show(100);
     } else {
-      this.props.gaStore.addEvent("Login", "click", "sendPhoneNum", null);
+      this.props.gaStore.addEvent("Login", "sendPhoneNum", null);
       localStorage.setItem("msisdn", persianToLatin(this.state.mobileNumber));
       var url =
         MainUrl +
@@ -125,7 +126,6 @@ export default class Login extends React.Component {
         $("#codeNumber").removeClass("no-input-shake");
       }, 500);
     } else {
-      this.props.gaStore.addEvent("Login", "click", "sendCode", null);
       this.setState({ showLoading: true });
       $.ajax({
         type: "GET",
@@ -138,6 +138,8 @@ export default class Login extends React.Component {
         success: function (data, textStatus, request) {
           this.setState({ showLoading: false });
           if (data.errorCode != 0) {
+            this.props.gaStore.addEvent("Login", "EnterCode", "fail");
+
             if (data.errorCode == 1004) {
               this.setState({
                 wrongCodeMessage:
@@ -150,6 +152,8 @@ export default class Login extends React.Component {
               $(".wrong-code").show(100);
             }
           } else if (data.data != null && data.data.canLogin == true) {
+            this.props.gaStore.addEvent("Login", "EnterCode", "success");
+
             this.props.session.session = data.data.token;
             this.props.session.showLogin = false;
             if (this.props.session.movieIdForPurchase != -1) {
@@ -234,9 +238,9 @@ export default class Login extends React.Component {
   resendCode(vc) {
     $("#error-message").hide(100);
     if (vc == 0) {
-      this.props.gaStore.addEvent("Login", "click", "resendCode", null);
+      this.props.gaStore.addEvent("Login", "resendCode");
     } else {
-      this.props.gaStore.addEvent("Login", "click", "voiceCode", null);
+      this.props.gaStore.addEvent("Login", "voiceCode");
     }
 
     var url =

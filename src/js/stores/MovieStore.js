@@ -20,15 +20,22 @@ class MovieStore {
   @observable durationString = "";
   @observable soundRecorders = null;
   @observable sounders = null;
+  @observable narrations = null;
   @observable redirectToMovie = false;
 
   @observable showLoading = "";
+  @observable transactionId = -1;
+
+  @observable purchaseGaSent = false;
+  @observable purchaseGaResult = "";
 
   @observable movieDetailClicked = false;
   @observable commentClicked = false;
   sessionStore = null;
-  constructor(session) {
+  gaStore = null
+  constructor(session, gastore) {
     this.sessionStore = session;
+    this.gaStore = gastore;
   }
 
   @action
@@ -47,7 +54,7 @@ class MovieStore {
         var soundRecorderTemp;
         var writerTemp;
         var composerTemp;
-        var sounderTemp;
+        var sounderTemp; var narrationTemp;
         $.each(data.data, function (index, role) {
           if (role.name == "کارگردان") {
             directorTemp = role;
@@ -69,6 +76,10 @@ class MovieStore {
             animatorTemp = role;
           } else if (role.name == "صداگذار") {
             sounderTemp = role;
+          } else if (role.name == "نریشن") {
+            narrationTemp = role;
+          }else if (role.name == "فیلم‌بردار") {
+            cameramanTemp = role;
           }
         });
         this.director = directorTemp;
@@ -81,7 +92,8 @@ class MovieStore {
         this.animators = animatorTemp;
         this.soundRecorders = soundRecorderTemp;
         this.sounders = sounderTemp;
-
+        this.cameramans = cameramanTemp;
+        this.narrations = narrationTemp;
         this.showLoading = false;
       }.bind(this),
       error: function (request, textStatus, errorThrown) {
@@ -103,7 +115,7 @@ class MovieStore {
   }
 
   @action
-  fetchMovie() {
+  fetchMovie(asdf) {
     this.showLoading = true;
     $.ajax({
       type: "GET",
@@ -119,6 +131,14 @@ class MovieStore {
           this.fetchRelated();
           this.movieDetailClicked = false;
           this.commentClicked = false;
+          if (this.transactionId != -1) {
+            this.gaStore.addTransaction(this.movie.title, this.movie.price, this.transactionId)
+            this.transactionId = -1;
+          }
+          if(this.purchaseGaSent == true){
+            this.purchaseGaSent = false;
+            this.gaStore.addEvent("Purchase", this.purchaseGaResult, this.movie.id.toString(),this.movie.price.toString())
+          }
           if (document.getElementById("movie-container") != null) {
             $("#movie-container").animate({ scrollTop: 0 }, "fast");
             $('html, body').animate({
@@ -129,7 +149,7 @@ class MovieStore {
             this.redirectToMovie = false;
             this.sessionStore.history.push("/movie/" + this.movie.id)
           }
-        }else{
+        } else {
           this.sessionStore.history.push("/movie/" + this.movie.id)
         }
       }.bind(this),
