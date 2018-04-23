@@ -1,6 +1,6 @@
 import React from 'react'
 import { inject, observer } from "mobx-react";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { latinToPersian, convertSecondToString } from "../../util/util";
 import invoiceImage from '../../../img/receipt.svg';
 import portalImage from '../../../img/Dargah-Icon.svg';
@@ -76,7 +76,7 @@ export default class Invoice extends React.Component {
                     <div class="invoice-detail-container">
                         <div style={{ display: 'inline-flex' }}>
                             <div class="invoice-thumbnail">
-                                <img src={MainUrl +
+                                <img src={MediaUrl +
                                     "/image.ashx?file=" +
                                     this.props.movieStore.movie.thumbnail.url +
                                     "&width=" +

@@ -2,7 +2,7 @@ import React from "react";
 import "../../../css/infinite.css";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import "jquery-visible";
 import clboard from '../../../img/clapperboard.png'
 
@@ -85,7 +85,7 @@ export default class SearchList extends React.Component {
                     <img
                       class={"movie-list-item-img"}
                       src={
-                        MainUrl +
+                        MediaUrl +
                         "/image.ashx?file=" +
                         element.thumbnail.url +
                         "&width=" +

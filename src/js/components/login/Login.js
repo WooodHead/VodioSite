@@ -416,7 +416,7 @@ export default class Login extends React.Component {
                 />
 
                 <p style={{ textAlign: "center", color: "white", direction: "rtl" }}>
-                  برای عضویت در ودیو شماره موبایل خود را وارد کنید.
+                  برای ثبت نام / ورود در ودیو شماره موبایل خود را وارد کنید.
                 </p>
                 <button
                   className="submitfoodmood"

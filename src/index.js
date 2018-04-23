@@ -9,13 +9,14 @@ import Layout from "./js/components/Layout";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+
 import SessionStore from "./js/stores/SessionStore";
 import SearchStore from "./js/stores/SearchStore";
 import MovieStore from "./js/stores/MovieStore";
 import gaStore from "./js/stores/GoogleAnalyticsStore";
 
 var sessionStore = new SessionStore(gaStore);
-var movieStore = new MovieStore(sessionStore,gaStore);
+var movieStore = new MovieStore(sessionStore, gaStore);
 var searchStore = new SearchStore(gaStore);
 const store = {
   session: sessionStore,
@@ -28,9 +29,9 @@ const app = document.getElementById("conroot");
 
 ReactDOM.render(
   <Provider {...store}>
-    <HashRouter>
+    <BrowserRouter>
       <Layout />
-    </HashRouter>
+    </BrowserRouter>
   </Provider>,
   app
 );

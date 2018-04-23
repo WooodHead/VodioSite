@@ -4,7 +4,7 @@ import MovieComment from "./MovieComment";
 import { latinToPersian, convertSecondToString } from "../../util/util";
 import TopMovies from "../topmovies/TopMovies";
 import { Link } from "react-router-dom";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import { ToastContainer, toast, style } from "react-toastify";
 import hdImage from "../../../img/hd.svg";
@@ -206,7 +206,7 @@ export default class Movie extends React.Component {
                     <img
                       class="movie-main-content-image"
                       src={
-                        MainUrl +
+                        MediaUrl +
                         "/image.ashx?file=" +
                         this.props.movieStore.movie.thumbnail.url +
                         "&width=" +

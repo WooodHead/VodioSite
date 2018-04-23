@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { latinToPersian, convertSecondToString } from "../../util/util";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
 @inject("movieStore", "session", "gaStore")
@@ -90,8 +90,11 @@ export default class TopMovie extends React.Component {
     }
   }
 
-  movieClicked(movieId) {
-    this.props.gaStore.addEvent("HorizontalListBar - " + this.props.title, "MovieItem", movieId.toString(), null);
+  movieClicked(movieId, e) {
+    if (this.props.session.topMovieDragging == true) {
+      e.preventDefault();
+    }
+    this.props.gaStore.addEvent("HorizontalListBar - " + this.props.movie.title, "MovieItem", movieId.toString(), null);
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
   }
@@ -135,8 +138,9 @@ export default class TopMovie extends React.Component {
     return (
       <div style={{ width: "100%" }} className={"top-moviez-inner" + this.state.elementId}>
         <Link
+          draggable="false"
           to={{ pathname: "/movie/" + this.props.movie.id }}
-          onClick={this.movieClicked.bind(this, this.props.movie.id)}
+          onClick={e => this.movieClicked(this.props.movie.id, e)}
           className="top-moviez-post-inner"
         >
           <div
@@ -161,7 +165,7 @@ export default class TopMovie extends React.Component {
 
           <img
             src={
-              MainUrl +
+              MediaUrl +
               "/image.ashx?file=" +
               this.props.movie.thumbnail.url +
               "&height=" +

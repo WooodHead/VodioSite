@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import TopMovie from "./TopMovie";
-import OwlCarousel from "react-owl-carousel";
 import movielistImage from '../../../img/movieList.svg';
+import Slider from 'react-slick'
+import { inject, observer } from "mobx-react";
 
-let dragging = false;
+@inject("session")
+@observer
 export default class TopMovies extends React.Component {
   nextClicked() {
-    this.slider.next();
+    this.slider.slickNext();
   }
 
   prevClicked() {
-    this.slider.prev();
+    this.slider.slickPrev();
   }
 
 
@@ -23,42 +25,52 @@ export default class TopMovies extends React.Component {
   }
 
   render() {
-    var options = {
-      rtl: true,
-      loop: false,
+    const settings = {
       dots: false,
-      margin: 10,
-      responsive: {
-        600: {
-          items: 4,
-          slideBy: 4
-        },
-        1000: {
-          items: 5,
-          slideBy: 5
-        },
-        1200: {
-          items: 6,
-          slideBy: 6
-        },
-        1400: {
-          items: 7,
-          slideBy: 7
-        },
-        1700: {
-          items: 8,
-          slideBy: 8
+      slidesToShow: 8,
+      slidesToScroll: 8,
+      arrows: false,
+      rtl: false,
+      responsive: [{
+        breakpoint: 1400,
+        settings: {
+          slidesToShow: 7,
+          slidesToScroll: 7,
         }
-      }
-    };
+      }, {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 6,
+          slidesToScroll: 6,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 5,
+          slidesToScroll: 5,
+        }
+      }, {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }],
+      beforeChange: () => this.props.session.topMovieDragging = true,
+      afterChange: () => this.props.session.topMovieDragging = false
+    }
     var windowWidth = $(window).width();
     var width = 0;
     if (windowWidth > 1400) {
+      width = Math.round(windowWidth / 8);
+    } else if (windowWidth > 1200) {
       width = Math.round(windowWidth / 7);
     } else if (windowWidth > 1000) {
+      width = Math.round(windowWidth / 6);
+    } else if (windowWidth > 600) {
       width = Math.round(windowWidth / 5);
     } else {
-      width = Math.round(windowWidth / 3);
+      width = Math.round(windowWidth / 4);
     }
     width = Math.round(width * window.devicePixelRatio);
     var height = Math.round(width * 16 / 11);
@@ -82,14 +94,8 @@ export default class TopMovies extends React.Component {
         <div class="slide-next-container">
           <div class="slide-next" onClick={this.nextClicked.bind(this)} />
         </div>
-        <OwlCarousel
-          ref={inst => (this.slider = inst)}
-          className="owl-theme"
-          {...options}
-          style={{
-            width: "100%"
-          }}
-        >
+        <Slider ref={c => this.slider = c} className="max-width-banner" {...settings} style={{ display: 'flex' }}>
+
           {this.props.movies.map(movie => (
             <TopMovie
               analyticsId={this.props.analyticsId}
@@ -103,7 +109,7 @@ export default class TopMovies extends React.Component {
               title={this.props.title}
             />
           ))}
-        </OwlCarousel>
+        </Slider>
         <div class="slide-prev-container">
           <div class="slide-prev" onClick={this.prevClicked.bind(this)} />
         </div>

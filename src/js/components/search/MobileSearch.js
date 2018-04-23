@@ -1,5 +1,5 @@
 import React from "react";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
@@ -135,7 +135,7 @@ export default class MobileSearch extends React.Component {
                           </span>
                           <img
                             src={
-                              MainUrl + "/image.ashx?file=" + search.thumbnail.url + "&width=200"
+                              MediaUrl + "/image.ashx?file=" + search.thumbnail.url + "&width=200"
                             }
                           />
                         </div>

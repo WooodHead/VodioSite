@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import TopMovies from "../topmovies/TopMovies";
-import FeaturedMovies from "../topmovies/FeaturedMovies";
 import Banners from "./Banners";
 import { MainUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
+import FeaturedMovies from '../topmovies/FeaturedMovies'
+import TopMovies from '../topmovies/TopMovies'
 
 @inject("session", "gaStore")
 @observer

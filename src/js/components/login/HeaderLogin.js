@@ -177,7 +177,10 @@ export default class HeaderLogin extends React.Component {
         <div
           className="header-login-win"
           onClick={this.showLogin.bind(this)}
-        />
+        >
+          <div className="header-sign-up">ثبت نام</div>
+          <div className="header-log-in">ورود</div>
+        </div>
       </div>
     );
   }

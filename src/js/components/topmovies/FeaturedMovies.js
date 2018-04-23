@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import FeaturedMovie from "./FeaturedMovie";
-import OwlCarousel from "react-owl-carousel";
 import movielistImage from '../../../img/movieListFeatured.svg';
+import Slider from 'react-slick';
+import { inject, observer } from "mobx-react";
 
-let dragging = false;
+@inject("session")
+@observer
 export default class FeaturedMovies extends React.Component {
     nextClicked() {
-        this.slider.next(3);
+        this.slider.slickNext();
     }
 
     prevClicked() {
-        this.slider.prev(3);
+        this.slider.slickPrev();
     }
 
 
@@ -23,34 +25,46 @@ export default class FeaturedMovies extends React.Component {
     }
 
     render() {
-        var options = {
-            rtl: true,
-            loop: false,
+        const settings = {
             dots: false,
-            margin: 0,
-            responsive: {
-                1000: {
-                    items: 4,
-                    slideBy: 4
-                },
-                1500: {
-                    items: 5,
-                    slideBy: 5
+            slidesToShow: 5,
+            slidesToScroll: 5,
+            arrows: false,
+            rtl: false,
+            infinite: false,
+            responsive: [{
+                breakpoint: 1300,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 4,
                 }
-            }
-        };
+            }, {
+                breakpoint: 1000,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                }
+            }],
+            beforeChange: () => this.props.session.featuredDragging = true,
+            afterChange: () => this.props.session.featuredDragging = false
+        }
         var windowWidth = $(window).width();
         var width = 0;
-        if (windowWidth > 1400) {
-            width = Math.round(windowWidth / 7);
+        var parentWidth = '0';
+        if (windowWidth > 1300) {
+            width = Math.round(windowWidth * 0.75 / 5);
+            parentWidth = 100 / 5 + '%';
         } else if (windowWidth > 1000) {
-            width = Math.round(windowWidth / 5);
+            width = Math.round(windowWidth * 0.75 / 4);
+            parent = 100 / 4 + '%';
         } else {
-            width = Math.round(windowWidth / 3);
+            width = Math.round(windowWidth * 0.75 / 3);
+            parentWidth = 100 / 3 + '%';
         }
-        width = Math.round(width * window.devicePixelRatio);
+        width = Math.round(width);
         var height = Math.round(width * 16 / 11);
         var margin = this.props.margin ? this.props.margin + "px" : "0px";
+
         return (
             <div class="slide-overlay" style={{ marginRight: margin, marginLeft: margin }}>
 
@@ -67,15 +81,7 @@ export default class FeaturedMovies extends React.Component {
                     <div class="slide-next-container-featured">
                         <div class="slide-next-featured" onClick={this.nextClicked.bind(this)} />
                     </div>
-                    <OwlCarousel
-                        ref={inst => (this.slider = inst)}
-                        className="owl-theme"
-                        {...options}
-                        style={{
-                            width: "75%",
-                            marginLeft: "12.5%"
-                        }}
-                    >
+                    <Slider ref={c => this.slider = c} {...settings} className="featured-slider">
                         {this.props.movies.map(movie => (
                             <FeaturedMovie
                                 analyticsId={this.props.analyticsId}
@@ -86,9 +92,10 @@ export default class FeaturedMovies extends React.Component {
                                 height={height}
                                 key={movie.id}
                                 movie={movie}
+                                parentWidth={parentWidth}
                             />
                         ))}
-                    </OwlCarousel>
+                    </Slider>
 
                     <div class="slide-prev-container-featured">
                         <div class="slide-prev-featured" onClick={this.prevClicked.bind(this)} />

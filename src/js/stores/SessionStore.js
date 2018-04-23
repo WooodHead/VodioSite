@@ -39,6 +39,9 @@ class SessionStore {
   @observable categories = null;
   @observable gaUrl = null;
 
+  @observable featuredDragging = false;
+  @observable topMovieDragging = false;
+
   gaStore = null;
   constructor(gas) {
     this.gaStore = gas;

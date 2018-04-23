@@ -1,8 +1,7 @@
 import React from "react";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import OwlCarousel from "react-owl-carousel";
 import bannerImage from "../../../img/Banner Icon.png";
 import Slider from 'react-slick';
 
@@ -75,6 +74,7 @@ export default class Banners extends React.Component {
       if (banner.urlToClick != null) {
         components.push(
           <a
+            
             key={l}
             style={{ cursor: "pointer", position: "relative" }}
             onClick={e => {
@@ -88,9 +88,10 @@ export default class Banners extends React.Component {
           >
 
             <img
+              
               style={{ width: "100%", pointerEvents: "none" }}
               src={
-                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+                MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
               }
             />
           </a>
@@ -98,6 +99,7 @@ export default class Banners extends React.Component {
       } else if (banner.movieId != null && banner.movieId > 0) {
         components.push(
           <Link
+            
             key={l}
             onClick={e => {
               if (!dragging) {
@@ -110,22 +112,23 @@ export default class Banners extends React.Component {
             style={{ position: "relative", width: "100%", cursor: "pointer" }}
           >
             <img
+              
               style={{ width: "100%", pointerEvents: "none" }}
               src={
-                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+                MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
               }
             />
-            <div style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
+            <div  style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
 
-            <div class="banner-text-container" style={{ pointerEvents: "none" }}>
-              <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
-              <div class="banner-container-description">{banner.description}</div>
+            <div  class="banner-text-container" style={{ pointerEvents: "none" }}>
+              <div  style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
+              <div  class="banner-container-description">{banner.description}</div>
             </div>
           </Link>
         );
       } else if (banner.genreId != null || banner.categoryId != null) {
         components.push(
-          <Link
+          <Link 
             style={{ cursor: "pointer" }}
             key={l}
             onClick={this.listClick.bind(
@@ -137,10 +140,10 @@ export default class Banners extends React.Component {
             )}
             to={{ pathname: "/List" }}
           >
-            <img
+            <img 
               style={{ width: "100%" }}
               src={
-                MainUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+                MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
               }
             />
           </Link>

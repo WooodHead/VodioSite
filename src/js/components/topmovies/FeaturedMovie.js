@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { latinToPersian, convertSecondToString } from "../../util/util";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
 @inject("movieStore", "session", "gaStore")
@@ -90,8 +90,11 @@ export default class FeaturedMovie extends React.Component {
         }
     }
 
-    movieClicked(movieId) {
-        this.props.gaStore.addEvent("FeaturedBar - " + this.props.title, "MovieItem", movieId.toString());
+    movieClicked(movieId, e) {
+        if (this.props.session.featuredDragging == true) {
+            e.preventDefault();
+        }
+        this.props.gaStore.addEvent("FeaturedBar - " + this.props.movie.title, "MovieItem", movieId.toString());
         this.props.movieStore.movieId = movieId;
         this.props.movieStore.fetchMovie();
     }
@@ -133,17 +136,20 @@ export default class FeaturedMovie extends React.Component {
         };
 
         return (
-            <div className={"top-moviez-inner" + this.state.elementId + " shadow-item"}>
+            <div className={"top-moviez-inner" + this.state.elementId + " shadow-item"} style={{ width: this.props.parentWidth }}>
                 <Link
+                    draggable="false"
                     to={{ pathname: "/movie/" + this.props.movie.id }}
-                    onClick={this.movieClicked.bind(this, this.props.movie.id)}
+                    onClick={e => this.movieClicked(this.props.movie.id, e)}
                     className="top-moviez-post-inner"
                 >
                     <div
+
                         class={"top-moviez-post-overlay" + this.state.elementId}
                         style={style}
                     >
                         <div
+
                             class={"top-moviez-post-title" + this.state.elementId}
                             style={titleStyle}
                         >
@@ -151,6 +157,7 @@ export default class FeaturedMovie extends React.Component {
                         </div>
                         {this.props.movie.directors && (
                             <div
+
                                 class={"top-moviez-post-director" + this.state.elementId}
                                 style={directorStyle}
                             >
@@ -161,7 +168,7 @@ export default class FeaturedMovie extends React.Component {
 
                     <img
                         src={
-                            MainUrl +
+                            MediaUrl +
                             "/image.ashx?file=" +
                             this.props.movie.thumbnail.url +
                             "&height=" +
@@ -171,33 +178,6 @@ export default class FeaturedMovie extends React.Component {
                         }
                         className="top-moviez-post-image"
                     />
-                    {/* <div className="top-moviez-post-top-layer">
-              <div className="top-moviez-post-add">
-                <ul className="top-moviez-post-top-ul">
-                  <li>{this.props.movie.title}</li>
-                  <li>{latinToPersian(this.state.durationString)}</li>
-                  {this.props.movie.rate != 0 && (
-                    <li>
-                      {latinToPersian(this.props.movie.editorialRate.toString())}
-                      &nbsp; امتیاز از &nbsp;
-                      {latinToPersian(this.props.movie.ratedUsers.toString())}
-                      &nbsp;کاربر&nbsp;
-                    </li>
-                  )}
-
-                  {this.state.director != null ? (
-                    <li>
-                      <Director directors={this.state.director} />
-                    </li>
-                  ) : null}
-                  {this.props.movie.genres != null ? (
-                    <li>
-                      <Genre genres={this.props.movie.genres} />
-                    </li>
-                  ) : null}
-                </ul>
-              </div>
-            </div> */}
                 </Link>
 
             </div>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AgentsMovies from "./AgentMovies";
-import { MainUrl } from "../../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import clboard from '../../../img/clapperboard.png'
@@ -91,7 +91,7 @@ export default class Agent extends React.Component {
                     <img
                       class={"movie-list-item-img"}
                       src={
-                        MainUrl +
+                        MediaUrl +
                         "/image.ashx?file=" +
                         element.thumbnail.url +
                         "&width=" +

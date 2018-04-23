@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { MainUrl } from "../util/RequestHandler";
+import { MainUrl, MediaUrl } from "../util/RequestHandler";
 import "../../css/category.css";
 import categoryImage from '../../img/category.svg';
 
@@ -140,7 +140,7 @@ export default class Category extends React.Component {
                         null
                       )}
                     >
-                      <img src={MainUrl +
+                      <img src={MediaUrl +
                         "/image.ashx?file=" +
                         category.url} style={{
                           width: '40px',
@@ -205,7 +205,7 @@ class SubCategory extends React.Component {
     this.props.session.history.push("/list/" + (category.id + 1) + "/" + gId);
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
-    
+
     this.props.session.listUrl = url;
     var title = category.name;
     if (genre) {

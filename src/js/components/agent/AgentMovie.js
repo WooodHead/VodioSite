@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom";
 import { latinToPersian, convertSecondToString } from "../../util/util"
-import { MainUrl } from "../../util/RequestHandler"
+import { MainUrl, MediaUrl } from "../../util/RequestHandler"
 import { inject, observer } from "mobx-react"
 import createReactClass from 'create-react-class'
 import $ from 'jquery';
@@ -185,7 +185,7 @@ export default class AgentMovie extends React.Component {
           </div>
           {this.state.width != 0 && <img
             src={
-              MainUrl +
+              MediaUrl +
               "/image.ashx?file=" +
               this.props.movie.thumbnail.url +
               "&height=" +

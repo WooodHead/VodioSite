@@ -8,6 +8,7 @@
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.7);
 }
+
 .foodmoodcontent {
   position: absolute;
   background: #ffffff;
@@ -24,19 +25,23 @@
   box-shadow: 0 8px 33px rgba(0, 0, 0, 0.3);
   background: #7a2364;
 }
+
 .foodmoodform {
   position: relative;
   width: 45%;
   float: right;
 }
+
 .closemodal {
   width: 30px;
   margin-top: 20px;
   margin-right: 20px;
 }
+
 .closemodal:path {
   fill: red;
 }
+
 .closemodal:hover {
   border-radius: 40px;
   background: rgba(0, 0, 0, 0.15);
@@ -46,9 +51,10 @@
   display: none;
 }
 
-.retry-after-one-muinute{
+.retry-after-one-muinute {
   display: none;
 }
+
 .close-foodmood {
   position: absolute;
   right: 5px;
@@ -61,24 +67,32 @@
   color: #8a8a8a;
   cursor: pointer;
 }
+
 .close-foodmood:hover {
   background: #ff5a5f;
   color: #ffffff;
 }
+
 .foodmoodform p {
   color: #858585;
   margin: 10px 2%;
 }
+
 .register p button {
   color: #03c8fa;
   background: none;
   border: none;
   cursor: pointer;
 }
-.login p,
-.register p {
+
+.login p, .register p {
   font: 500 0.75em/27px "IRSans", Sans-serif;
 }
+
+.login input, register input {
+  font-size: 16px;
+}
+
 .login p button {
   color: #ee541c;
   background: none;
@@ -86,6 +100,7 @@
   cursor: pointer;
   font-family: "IRSans";
 }
+
 .foodmoodlogo {
   text-align: center;
   display: block;
@@ -94,11 +109,13 @@
   margin: 2% auto;
   padding-top: 70px;
 }
+
 .foodmoodlogo img {
   width: 100%;
   max-width: 140px;
   margin-bottom: 40px;
 }
+
 .foodmoodform input {
   direction: ltr;
   display: block;
@@ -113,17 +130,18 @@
   font-family: "IRSans";
   text-align: center;
 }
-.foodmoodform input:hover,
-.foodmoodform input:focus,
-.foodmoodform button:focus {
+
+.foodmoodform input:hover, .foodmoodform input:focus, .foodmoodform button:focus {
   outline: none;
 }
+
 .pttdemail {
   font-size: 12px;
   float: right;
   color: #3575d3;
   margin-right: 10%;
 }
+
 .submitfoodmood {
   display: block;
   background: #24a59c;
@@ -137,10 +155,12 @@
   margin-bottom: 0px;
   font-family: "IRSans";
 }
+
 .foodmoodpicture {
   width: 55%;
   display: inline-block;
 }
+
 .foodmoodpicture-img {
   float: left;
   width: 100%;
@@ -148,6 +168,7 @@
   height: 520px;
   border-radius: 3px 0 0 3px;
 }
+
 .foodmoodcontent::-webkit-scrollbar {
   margin: 5px;
   width: 6px;
@@ -164,6 +185,7 @@
   border-radius: 5px;
   width: 2px;
 }
+
 @media (max-width: 768px) {
   .foodmoodcontent {
     overflow-y: hidden;
@@ -185,16 +207,19 @@
     display: none;
   }
 }
+
 @media (min-width: 768px) {
   .container {
     width: 750px;
   }
 }
+
 @media (min-width: 992px) {
   .container {
     width: 970px;
   }
 }
+
 @media (min-width: 1200px) {
   .container {
     width: 1170px;
@@ -238,6 +263,7 @@ input:-ms-input-placeholder {
   position: absolute;
   bottom: 0;
 }
+
 .pointer {
   float: left;
   background: url(../img/pointer.png) no-repeat;
@@ -252,7 +278,7 @@ input:-ms-input-placeholder {
   text-align: center;
   font-size: 13px;
   color: #24a59c;
-  direction:rtl;
+  direction: rtl;
 }
 
 .mobile-number {

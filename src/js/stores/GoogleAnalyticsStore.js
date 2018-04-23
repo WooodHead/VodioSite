@@ -31,8 +31,6 @@ class GoogleAnalyticsStore {
     @action
     addEtranction() {
         ReactGA.Plugin.require('ec');
-
-
     }
 
     @action
@@ -59,7 +57,6 @@ class GoogleAnalyticsStore {
                 'revenue': price
             }
         );
-
 
         ReactGA.plugin.execute('ecommerce', 'send');
         ReactGA.plugin.execute('ecommerce', 'clear');
