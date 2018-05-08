@@ -6,6 +6,11 @@ import "../../css/loading-fading.css";
 import fidanImg from '../../img/Fidan-new-Small.png'
 import videopthImg from '../../img/logo-Videopth.svg'
 import { inject, observer } from "mobx-react";
+import telegramImg from '../../img/Telegram.svg'
+import facebookImg from '../../img/Facebook.svg'
+import instagramImg from '../../img/Instagram.svg'
+import twitterImg from '../../img/Twitter.svg'
+import directDownloadAppImg from '../../img/direct-download-app.svg'
 
 @inject("gaStore")
 @observer
@@ -92,36 +97,72 @@ export default class Footer extends React.Component {
     </div>
 
 
+    var downloadPart = <div class="footer-download">
+      <strong className="footer-title">دانلود اپلیکیشن اندروید</strong>
+      <div style={{
+        width: '150px',
+        marginTop: '10px', marginRight: 'calc(50% - 75px)', position: 'relative', cursor: 'pointer'
+      }}>
+        <a href="http://rabara.ir/vodio.apk" style={{ position: 'absolute', width: '100%', height: '100%', top: '0', right: '0' }}></a>
+        <img src={directDownloadAppImg} />
+      </div>
+    </div>
+
     var part2 = <div className="footer-contact">
       <strong className="footer-title">تماس‌با‌ما</strong>
       <div className="footer-contact-content">
         <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
         <p>{latinToPersian("تلفن: ۰۲۱۲۸۴۲۵۹۷۲")}</p>
         <p style={{ marginBottom: "5px" }}>ایمیل: Info@vodio.com</p>
-        <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#00a69c" }} onClick={this.TelegramSupport.bind(this)}>پشتیبانی در تلگرام</a>
-        <div className="footer-contact-content-socail">
-          <a href="https://t.me/vodiochannel" onClick={this.SocialClicked.bind(this, "telegram")} className="telegram">
-            <span className="icon-paper-plane-empty" />
-          </a>
-          <a href="http://instagram.com/vodio.ir" onClick={this.SocialClicked.bind(this, "instagram")} className="instagram">
-            <span className="icon-instagram-1" />
-          </a>
-          <a href="http://twitter.com/vodio_ir" onClick={this.SocialClicked.bind(this, "twitter")} className="twitter">
-            <span className="icon-twitter" />
-          </a>
-          <a
-            onClick={this.SocialClicked.bind(this, "facebook")}
-            href="https://www.facebook.com/vodio.ir/"
-            className="facebook"
-          >
-            <span className="icon-facebook" />
-          </a>
+        <div style={{
+          borderTop: '1px solid #dadada', marginTop: '20px',
+          paddingTop: '20px'
+        }}>
+          <div class="footer-title">پشتیبانی در تلگرام</div>
+          <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#e61d89" }} onClick={this.TelegramSupport.bind(this)}>vodioir@</a>
+        </div>
+        <div style={{
+          paddingTop: '20px',
+          marginTop: '20px',
+          borderTop: '1px solid #dadada'
+        }}>
+          <div class="footer-title">شبکه‌های مجازی</div>
+          <div className="footer-contact-content-socail">
+            <a href="https://t.me/vodiochannel" onClick={this.SocialClicked.bind(this, "telegram")} className="telegram">
+              <img src={telegramImg} style={{
+                width: '25px',
+                marginTop: '12.5px'
+              }} />
+            </a>
+            <a href="http://instagram.com/vodio.ir" onClick={this.SocialClicked.bind(this, "instagram")} className="instagram">
+              <img src={instagramImg} style={{
+                width: '25px',
+                marginTop: '12.5px'
+              }} />
+            </a>
+            <a href="http://twitter.com/vodio_ir" onClick={this.SocialClicked.bind(this, "twitter")} className="twitter">
+              <img src={twitterImg} style={{
+                width: '25px',
+                marginTop: '12.5px'
+              }} />
+            </a>
+            <a
+              onClick={this.SocialClicked.bind(this, "facebook")}
+              href="https://www.facebook.com/vodio.ir/"
+              className="facebook"
+            >
+              <img src={facebookImg} style={{
+                width: '25px',
+                marginTop: '12.5px'
+              }} />
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
     var part3 = <div className="footer-url-finder-download">
-      <strong className="footer-title">
+      <strong className="footer-title" style={{ marginTop: '20px' }}>
         © تمام حقوق این سایت متعلق به ودیو می‌باشد.
   </strong>
       <div className="footer-url-finder-download-content">
@@ -179,8 +220,12 @@ export default class Footer extends React.Component {
     </div>
 
     var part5 = <div className="footer-part4">
-      <img className="footer-fidan-logo" src={fidanImg} />
-      <img className="footer-videopth-logo" src={videopthImg} />
+      <a href="http://www.fidanfilm.ir/">
+        <img className="footer-fidan-logo" src={fidanImg} />
+      </a>
+      <a href="http://videopth.com/">
+        <img className="footer-videopth-logo" src={videopthImg} />
+      </a>
     </div>
 
     return (
@@ -190,6 +235,7 @@ export default class Footer extends React.Component {
         </a>
         <div className="footer-content">
           {part1}
+          {downloadPart}
           {part2}
           <div className="footer-size-1350">
             <div className="footer-size-1350-news">

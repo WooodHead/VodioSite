@@ -5,8 +5,10 @@ import { inject, observer } from "mobx-react";
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import "jquery-visible";
 import clboard from '../../../img/clapperboard.png'
+import { urlCorrection } from '../../util/util'
 
-@inject("session", "search")
+
+@inject("session", "search", "movieStore")
 @observer
 export default class SearchList extends React.Component {
   constructor(props) {
@@ -16,13 +18,13 @@ export default class SearchList extends React.Component {
   componentDidMount() {
     this.props.session.showFooter = false;
     window.onscroll = function () {
+      console.log(this.props.search.aCount)
       if (
         this.props.search.aElements != null &&
         this.props.search.aElements.length != this.props.search.aCount &&
         $("#" + this.props.search.aLastElementId).visible() &&
         this.props.search.isLoading == false
       ) {
-        console.log(this.props.search.aCount + " " + this.props.search.aElements.length)
         this.props.search.fetchANextSearchList();
       }
     }.bind(this);
@@ -76,7 +78,7 @@ export default class SearchList extends React.Component {
             return (
               <div id={"element" + l} class="box movie-list-item" style={{ paddingRight: '5px', paddingLeft: '5px' }} key={l}>
                 <Link
-                  to={{ pathname: "/movie/" + element.id }}
+                  to={{ pathname: "/movie/" + element.id + "/" + urlCorrection(element.title) }}
                   onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >
@@ -93,6 +95,8 @@ export default class SearchList extends React.Component {
                         "&height=" +
                         height
                       }
+                      alt={"دانلود " + element.categories[0].name
+                        + " " + element.title + " اثری از " + element.director.name}
                     />
                   </span>
                   <div style={{ height: '15px' }}></div>

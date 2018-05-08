@@ -4,6 +4,7 @@ import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import clboard from '../../../img/clapperboard.png'
+import { urlCorrection } from '../../util/util'
 
 @inject("session", "gaStore", "movieStore")
 @observer
@@ -25,8 +26,8 @@ export default class Agent extends React.Component {
   }
 
   componentDidMount() {
-    document.title = "";
     this.props.session.showLoading = true;
+    this.props.gaStore.addPageView("/agent/" + this.props.match.params.id);
     $.ajax({
       type: "GET",
       url: MainUrl + "/agent.ashx?id=" + this.props.match.params.id,
@@ -52,6 +53,7 @@ export default class Agent extends React.Component {
   }
 
   movieClicked(movieId) {
+    this.props.gaStore.addEvent("agent", "MovieItem", movieId.toString(), null);
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
   }
@@ -60,7 +62,6 @@ export default class Agent extends React.Component {
     if (this.state.elements == null) {
       return <div />;
     } else {
-      document.title = this.state.result.data.name;
       var childElements = null;
       childElements = this.state.elements.movies.map(
         function (element, l) {
@@ -79,10 +80,17 @@ export default class Agent extends React.Component {
             }
             width = Math.round(width);
             var height = Math.round(width / 11 * 16);
+            var director;
+            element.roles.map(function (role) {
+              if (role.name == "کارگردان") {
+                director = role.agents[0]
+              }
+            })
+
             return (
               <div id={"element" + l} class="box movie-list-item" style={{ paddingRight: '5px', paddingLeft: '5px' }} key={l}>
                 <Link
-                  to={{ pathname: "/movie/" + element.id }}
+                  to={{ pathname: "/movie/" + element.id + "/" + urlCorrection(element.title) }}
                   onClick={this.movieClicked.bind(this, element.id)}
                   class="movie-list-item-link"
                 >
@@ -99,6 +107,8 @@ export default class Agent extends React.Component {
                         "&height=" +
                         height
                       }
+                      alt={"دانلود " + element.categories[0].name
+                        + " " + element.title + " اثری از " + director.name}
                     />
                   </span>
                   <div style={{ height: '15px' }}></div>
@@ -132,7 +142,7 @@ export default class Agent extends React.Component {
             fontFamily: 'irsansbold', float: 'right',
             marginTop: '5px'
           }}>فیلم‌های</div>
-          <div style={{
+          <h1 style={{
             fontSize: '13px',
             fontFamily: 'irsansbold',
             color: '#eb0089',
@@ -140,7 +150,7 @@ export default class Agent extends React.Component {
             marginLeft: '5px',
             float: 'right',
             marginTop: '5px'
-          }}>{this.state.result.data.name}</div>
+          }}>{this.state.result.data.name}</h1>
           {this.state.result.data.roles.map((role, l) => {
             return <div key={l} onClick={(e) => this.filterClicked(e, role.role)} class={l == 0 ? "search-filter search-filter-active" : "search-filter"} > {role.role}</div>
           })}

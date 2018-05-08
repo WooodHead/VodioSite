@@ -6,8 +6,11 @@ import Search from "./search/Search";
 import HeaderLogin from "./login/HeaderLogin";
 import { Link } from "react-router-dom";
 import Category from "./Category";
+import cancelImg from '../../img/cancel.png'
+import appImg from '../../img/app-logo.svg'
+import downloadAppImg from '../../img/download-app.svg'
 
-@inject("session","gaStore")
+@inject("session", "gaStore")
 @observer
 export default class Header extends React.Component {
   constructor(props) {
@@ -18,7 +21,11 @@ export default class Header extends React.Component {
     };
   }
 
+
   componentDidMount() {
+    if (/Android/i.test(navigator.userAgent) && $(window).width() < 750) {
+      $("#header").css('height', $("#header").height() + 100)
+    }
     $(window).click(
       function () {
         $("#myDropdown").hide(100);
@@ -94,9 +101,70 @@ export default class Header extends React.Component {
     this.props.session.history.push("/factors");
   }
 
+  closeAppDownload() {
+    $("#AppDownloadBar").css('display', 'none')
+    $("#header").css('height', $("#header").height() - 100)
+  }
+
   render() {
     return (
       <header id="header" style={{ background: "white" }}>
+        {/Android/i.test(navigator.userAgent) && $(window).width() < 750 && <div id="AppDownloadBar" style={{ width: '100%', height: '100px', background: '#e1e1e1' }}>
+          <img src={cancelImg} style={{
+            width: '15px',
+            paddingRight: '10px',
+            float: 'right',
+            paddingTop: '42px',
+            cursor: 'pointer'
+          }} onClick={this.closeAppDownload.bind(this)} />
+          <img src={appImg} style={{
+            width: '65px',
+            marginTop: '17px',
+            float: 'right',
+            marginRight: '10px'
+          }} />
+          <div style={{
+            float: 'right',
+            marginRight: '10px',
+            marginTop: '20px'
+          }}>
+            <div style={{
+              fontFamily: 'irsansbold',
+              textAlign: 'right',
+              fontSize: '22px'
+            }}>ودیو</div>
+            <div style={{
+              textAlign: 'right',
+              fontSize: '12px'
+            }}>دریافت نسخه اندروید</div>
+          </div>
+          <div style={{
+            width: '80px',
+            border: '1px solid',
+            borderRadius: '5px',
+            padding: '5px 20px 7px 20px',
+            float: 'left',
+            marginTop: '27px',
+            marginLeft: '20px',
+            color: '#00c4b1',
+            position: 'relative'
+          }}>
+            <a href="http://rabara.ir/vodio.apk" style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0'
+            }}>
+            </a>
+            <img style={{
+              width: '30px',
+              float: 'left',
+              marginRight: '10px'
+            }} src={downloadAppImg} />
+            <div style={{ marginTop: '3px' }}>دانلود</div>
+          </div>
+        </div>}
         <div className="header-inner max-width">
           <Link to={{ pathname: "/" }} className="logo" title="وودیو">
             <img

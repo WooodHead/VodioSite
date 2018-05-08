@@ -23,7 +23,6 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-    document.title = "ودیو مرجع فیلم مستقل";
     this.props.gaStore.addPageView("/home");
 
     this.props.session.showLoading = true;

@@ -1,7 +1,7 @@
 import { action, observable } from "mobx";
 import { MainUrl } from "../util/RequestHandler";
 var moment = require("moment-jalaali");
-import { latinToPersian, convertSecondToString } from "../util/util";
+import { latinToPersian, convertSecondToString, urlCorrection } from '../util/util'
 
 class MovieStore {
   @observable movie = false;
@@ -78,7 +78,7 @@ class MovieStore {
             sounderTemp = role;
           } else if (role.name == "نریشن") {
             narrationTemp = role;
-          }else if (role.name == "فیلم‌بردار") {
+          } else if (role.name == "فیلم‌بردار") {
             cameramanTemp = role;
           }
         });
@@ -125,19 +125,72 @@ class MovieStore {
       url: MainUrl + "/movie.ashx?movieId=" + this.movieId,
       success: function (data, textStatus, request) {
         if (data.data != null) {
+          var directorTemp;
+          var ActorTemp;
+          var providerTemp;
+          var ResearcherTemp;
+          var animatorTemp;
+          var cameramanTemp;
+          var editorTemp;
+          var soundRecorderTemp;
+          var writerTemp;
+          var composerTemp;
+          var sounderTemp; var narrationTemp;
+          $.each(data.data.roles, function (index, role) {
+            if (role.name == "کارگردان") {
+              directorTemp = role;
+            } else if (role.name == "بازیگر") {
+              ActorTemp = role;
+            } else if (role.name == "تهیه کننده") {
+              providerTemp = role;
+            } else if (role.name == "پژوهشگر") {
+              ResearcherTemp = role;
+            } else if (role.name == "صدابردار") {
+              soundRecorderTemp = role;
+            } else if (role.name == "تدوین") {
+              editorTemp = role;
+            } else if (role.name == "نویسنده") {
+              writerTemp = role;
+            } else if (role.name == "آهنگ‌ساز") {
+              composerTemp = role;
+            } else if (role.name == "انیماتور") {
+              animatorTemp = role;
+            } else if (role.name == "صداگذار") {
+              sounderTemp = role;
+            } else if (role.name == "نریشن") {
+              narrationTemp = role;
+            } else if (role.name == "فیلم‌بردار") {
+              cameramanTemp = role;
+            }
+          });
+          this.director = directorTemp;
+          this.researcher = ResearcherTemp;
+          this.provider = providerTemp;
+          this.actors = ActorTemp;
+          this.editors = editorTemp;
+          this.writers = writerTemp;
+          this.composers = composerTemp;
+          this.animators = animatorTemp;
+          this.soundRecorders = soundRecorderTemp;
+          this.sounders = sounderTemp;
+          this.cameramans = cameramanTemp;
+          this.narrations = narrationTemp;
+
           this.movie = data.data;
           this.durationString = convertSecondToString(this.movie.duration);
-          this.fetchRoles();
           this.fetchRelated();
           this.movieDetailClicked = false;
           this.commentClicked = false;
+          console.log("1")
           if (this.transactionId != -1) {
+            console.log("2")
             this.gaStore.addTransaction(this.movie.title, this.movie.price, this.transactionId)
             this.transactionId = -1;
           }
-          if(this.purchaseGaSent == true){
+          if (this.purchaseGaSent == true) {
+            console.log("3")
             this.purchaseGaSent = false;
-            this.gaStore.addEvent("Purchase", this.purchaseGaResult, this.movie.id.toString(),this.movie.price.toString())
+            this.gaStore.addEvent("Purchase", this.purchaseGaResult, this.movie.id.toString(), this.movie.price.toString())
           }
           if (document.getElementById("movie-container") != null) {
             $("#movie-container").animate({ scrollTop: 0 }, "fast");
@@ -147,10 +200,11 @@ class MovieStore {
           }
           if (this.redirectToMovie == true && data.data.bought == true) {
             this.redirectToMovie = false;
-            this.sessionStore.history.push("/movie/" + this.movie.id)
+            this.sessionStore.history.push("/movie/" + this.movie.id + "/" + urlCorrection(this.movie.title))
           }
-        } else {
-          this.sessionStore.history.push("/movie/" + this.movie.id)
+
+
+          this.showLoading = false;
         }
       }.bind(this),
       error: function (request, textStatus, errorThrown) {

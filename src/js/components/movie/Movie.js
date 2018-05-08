@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Player from "./Player";
 import MovieComment from "./MovieComment";
-import { latinToPersian, convertSecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString, urlCorrection } from "../../util/util";
 import TopMovies from "../topmovies/TopMovies";
 import { Link } from "react-router-dom";
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
@@ -95,7 +95,6 @@ export default class Movie extends React.Component {
 
   }
   componentWillUnmount() {
-    document.title = "ودیو مرجع فیلم مستقل";
   }
 
   componentDidMount() {
@@ -169,8 +168,8 @@ export default class Movie extends React.Component {
 
   onCategoryClicked(category, genre) {
     this.props.gaStore.addEvent("Movie", "category", category.id.toString());
-    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
-    this.props.session.history.push("/list/" + (category.id + 1) + "/0");
+    this.props.session.gaUrl = "/list/" + category.id + "/0";
+    this.props.session.history.push("/list/" + category.id + "/0/" + urlCorrection(category.name));
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
     this.props.session.listUrl = url;
@@ -182,7 +181,6 @@ export default class Movie extends React.Component {
 
   render() {
     if (this.props.movieStore.movie) {
-      document.title = "ودیو - " + this.props.movieStore.movie.title;
       $("#tab-detail").removeClass("current");
       $("#tab-comment").removeClass("current");
       var width = Math.round($(".movie-main-content-poster").width());
@@ -214,16 +212,22 @@ export default class Movie extends React.Component {
                         "&height=" +
                         height
                       }
-                      alt={this.props.movieStore.movie.title}
+                      alt={"دانلود " + this.props.movieStore.movie.categories[0].name
+                        + " " + this.props.movieStore.movie.title + " اثری از " + this.props.movieStore.director.agents[0].name}
                     />
                   </div>
                   <div class="movie-main-content-info">
-                    <h1 className="single-product-title">
+                    <div className="single-product-title">
                       {this.props.movieStore.movie.isHd ? <img class="hd-image" src={hdImage} alt="hd" /> : <img class="hd-image" src={sdImage} alt="sd" />}
-                      <span style={{ marginRight: "10px" }}>
+                      <h1 style={{
+                        marginRight: '10px',
+                        fontSize: '20px',
+                        float: 'right',
+                        marginTop: '2px'
+                      }}>
                         {latinToPersian(this.props.movieStore.movie.title)}
-                      </span>
-                    </h1>
+                      </h1>
+                    </div>
                     <div className="single-product-header-meta">
                       <div style={{
                         fontSize: '12px',
@@ -401,15 +405,17 @@ export default class Movie extends React.Component {
                         <strong style={{ color: "wheat", fontSize: "18px" }}>
                           خلاصه داستان:
                         </strong>
-                        <p
+                        <h2
                           style={{
                             textAlign: "justify",
                             textJustify: "inter-word",
-                            color: "white"
+                            color: "white",
+                            fontSize: '14px',
+                            fontWeight: '400'
                           }}
                         >
                           {this.props.movieStore.movie.description}
-                        </p>
+                        </h2>
                       </div>
                     </div>
                   </div>
@@ -493,12 +499,11 @@ var Genre = React.createClass({
         <strong className="inline-class">ژانر : </strong>
         {this.props.genres.map((genre, l) => (
           <div className="inline-class" key={genre.id}>
-            <Link
+            <div
               className="inline-class"
-              to={{ pathname: "/agent/" + genre.id }}
             >
               {genre.name}
-            </Link>
+            </div>
             {this.props.genres.length - 1 != l ? (
               <p className="inline-class"> , </p>
             ) : null}
@@ -518,7 +523,7 @@ var Director = React.createClass({
           <div className="inline-class" key={director.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + director.id }}
+              to={{ pathname: "/agent/" + director.id + "/" + urlCorrection(director.name) }}
             >
               {director.name}
             </Link>
@@ -541,7 +546,7 @@ var SourndRecorder = React.createClass({
           <div className="inline-class" key={sr.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + sr.id }}
+              to={{ pathname: "/agent/" + sr.id + "/" + urlCorrection(sr.name) }}
             >
               {sr.name}
             </Link>
@@ -564,7 +569,7 @@ var Sounder = React.createClass({
           <div className="inline-class" key={sr.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + sr.id }}
+              to={{ pathname: "/agent/" + sr.id + "/" + urlCorrection(sr.name) }}
             >
               {sr.name}
             </Link>
@@ -587,7 +592,7 @@ var Writer = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -610,7 +615,7 @@ var Editor = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -634,7 +639,7 @@ var Cameraman = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -657,7 +662,7 @@ var Composer = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -680,7 +685,7 @@ var Animator = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -703,7 +708,7 @@ var Actor = React.createClass({
           <div className="inline-class" key={actor.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + actor.id }}
+              to={{ pathname: "/agent/" + actor.id + "/" + urlCorrection(actor.name) }}
             >
               {actor.name}
             </Link>
@@ -726,7 +731,7 @@ var Provider = React.createClass({
           <div className="inline-class" key={provider.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + provider.id }}
+              to={{ pathname: "/agent/" + provider.id + "/" + urlCorrection(provider.name) }}
             >
               {provider.name}
             </Link>
@@ -749,7 +754,7 @@ var Narration = React.createClass({
           <div className="inline-class" key={narration.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + narration.id }}
+              to={{ pathname: "/agent/" + narration.id + "/" + urlCorrection(narration.name) }}
             >
               {narration.name}
             </Link>
@@ -772,7 +777,7 @@ var Researcher = React.createClass({
           <div className="inline-class" key={researcher.id}>
             <Link
               className="inline-class "
-              to={{ pathname: "/agent/" + researcher.id }}
+              to={{ pathname: "/agent/" + researcher.id + "/" + urlCorrection(researcher.name) }}
             >
               {researcher.name}
             </Link>

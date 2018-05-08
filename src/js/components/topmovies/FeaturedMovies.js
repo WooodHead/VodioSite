@@ -61,10 +61,9 @@ export default class FeaturedMovies extends React.Component {
             width = Math.round(windowWidth * 0.75 / 3);
             parentWidth = 100 / 3 + '%';
         }
-        width = Math.round(width);
+        width = Math.round($(window).width());
         var height = Math.round(width * 16 / 11);
         var margin = this.props.margin ? this.props.margin + "px" : "0px";
-
         return (
             <div class="slide-overlay" style={{ marginRight: margin, marginLeft: margin }}>
 

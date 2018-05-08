@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import ListIcon from "../../../img/List.svg";
-import { latinToPersian, convertSecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString, urlCorrection } from '../../util/util'
 
 @inject("session", "movieStore")
 @observer
@@ -27,13 +27,13 @@ export default class List extends React.Component {
       this.props.session.isInitiating = false;
     } else {
       if (this.props.session.listUrl == "") {
-        var categoryId = this.props.match.params.categoryId - 1;
-        var genreId = this.props.match.params.genreId - 1;
+        var categoryId = this.props.match.params.categoryId;
+        var genreId = this.props.match.params.genreId;
         this.props.session.listUrl = MainUrl + "/movielist.ashx?";
-        if (categoryId >= 0) {
+        if (categoryId > 0) {
           this.props.session.listUrl += "categoryId=" + categoryId;
         }
-        if (genreId >= 0) {
+        if (genreId > 0) {
           if (categoryId >= 0) {
             this.props.session.listUrl += "&";
           }
@@ -74,7 +74,6 @@ export default class List extends React.Component {
     }.bind(this);
   }
   componentWillUnmount() {
-    document.title = "ودیو مرجع فیلم مستقل";
     this.props.session.showFooter = true;
   }
 
@@ -86,7 +85,6 @@ export default class List extends React.Component {
   render() {
     var childElements = null;
     if (this.props.session.listElements) {
-      document.title = "ودیو - " + this.props.session.title;
       childElements = this.props.session.listElements.map(
         function (element, l) {
           var width = $(".row-header").width();
@@ -103,10 +101,17 @@ export default class List extends React.Component {
           }
           width = Math.round(width);
           var height = Math.round(width / 11 * 16);
+          var director;
+          element.roles.map(function (role) {
+            if (role.name == "کارگردان") {
+              director = role.agents[0]
+            }
+          })
+
           return (
             <div class="box movie-list-item" key={l}>
               <Link
-                to={{ pathname: "/movie/" + element.id }}
+                to={{ pathname: "/movie/" + element.id + "/" + urlCorrection(element.title) }}
                 class="movie-list-item-link"
                 onClick={this.movieClicked.bind(this, element.id)}
               >
@@ -122,6 +127,8 @@ export default class List extends React.Component {
                       "&height=" +
                       height
                     }
+                    alt={"دانلود " + element.categories[0].name
+                      + " " + element.title + " اثری از " + director.name}
                   />
                 </span>
                 <h2 class="movie-list-item-title">

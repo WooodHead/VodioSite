@@ -1,7 +1,7 @@
 import React from 'react'
 import { inject, observer } from "mobx-react";
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
-import { latinToPersian, convertSecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString, urlCorrection } from "../../util/util";
 import invoiceImage from '../../../img/receipt.svg';
 import portalImage from '../../../img/Dargah-Icon.svg';
 
@@ -118,7 +118,7 @@ var Director = React.createClass({
                         <div
                             className="inline-class r-disable"
                             style={{ color: "black", fontFamily: "irsans", fontSize: "14px" }}
-                            to={{ pathname: "/agent/" + director.id }}
+                            to={{ pathname: "/agent/" + director.id + "/" + urlCorrection(director.name) }}
                         >
                             {director.name}
                         </div>

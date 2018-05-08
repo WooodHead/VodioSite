@@ -53,3 +53,16 @@ export function convertSecondToString(second) {
     return minute + " دقیقه";
   }
 }
+
+
+export function urlCorrection(string) {
+  string = string.trim();
+  string = string.replace("_", "-");
+  string = string.replace(" ", "-");
+  string = encodeURI(string)
+  string = string.replace(/%20/g, "-");
+  string = string.replace(/%5F/g, "-");
+  string = string.replace(/%2D/g, "-");
+  string = decodeURI(string)
+  return string;
+}

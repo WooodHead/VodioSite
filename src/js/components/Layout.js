@@ -25,6 +25,7 @@ import Player from './movie/Player';
 import { latinToPersian, persianToLatin } from "../util/util";
 import Favicon from 'react-favicon';
 import favicon from '../../img/Vodio-Small.png';
+import NoMatch from './NoMatch'
 
 @inject("session", "movieStore")
 @withRouter
@@ -161,9 +162,9 @@ class Layout extends React.Component {
           <MobileSearch />
           <Switch>
             <Route exact path="/" component={Main} />
-            <Route path="/movie/:id/:status?/:transactionId?" component={Movie} />
-            <Route path="/agent/:id" component={Agent} />
-            <Route path="/list/:categoryId/:genreId" component={List} />
+            <Route path="/movie/:id/:name/:status?/:transactionId?" component={Movie} />
+            <Route path="/agent/:id/:name" component={Agent} />
+            <Route path="/list/:categoryId/:genreId/:name" component={List} />
             <Route path="/search/:keyword" component={SearchList} />
             <Route path="/vodio" component={Vodio} />
             <Route path="/complaint" component={Complaint} />

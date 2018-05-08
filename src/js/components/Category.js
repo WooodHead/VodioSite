@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { MainUrl, MediaUrl } from "../util/RequestHandler";
 import "../../css/category.css";
 import categoryImage from '../../img/category.svg';
+import { urlCorrection } from '../util/util'
 
 @inject("session", "gaStore")
 @observer
@@ -24,9 +25,9 @@ export default class Category extends React.Component {
   onCategoryClicked(category, genre) {
     var width = $(window).width();
     if (width > 750) {
-      this.props.gaStore.addEvent("CategoriesList", "click", (category.id + 1).toString());
-      this.props.session.gaUrl = "/list/" + (category.id + 1) + "/0";
-      this.props.session.history.push("/list/" + (category.id + 1) + "/0");
+      this.props.gaStore.addEvent("CategoriesList", "click", category.id.toString());
+      this.props.session.gaUrl = "/list/" + category.id + "/0";
+      this.props.session.history.push("/list/" + category.id + "/0/" + urlCorrection(category.name));
       this.props.session.offset = 0;
       var url = this.makeUrl(category, genre);
       this.props.session.listUrl = url;
@@ -197,12 +198,14 @@ class SubCategory extends React.Component {
 
   onGenreClicked(category, genre) {
     var gId = 0;
+    var name = category.name;
     if (genre != null) {
-      gId = genre.id + 1;
+      gId = genre.id;
+      name += "-" + genre.name
     }
-    this.props.gaStore.addEvent("CategoriesList", "click", (category.id + 1).toString() + " - " + gId.toString());
-    this.props.session.gaUrl = "/list/" + (category.id + 1) + "/" + gId;
-    this.props.session.history.push("/list/" + (category.id + 1) + "/" + gId);
+    this.props.gaStore.addEvent("CategoriesList", "click", category.id.toString() + " - " + gId.toString());
+    this.props.session.gaUrl = "/list/" + category.id + "/" + gId;
+    this.props.session.history.push("/list/" + category.id + "/" + gId + "/" + name);
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
 

@@ -1707,6 +1707,7 @@ header#header {
   font: 20px "IRSansBold", Sans-serif;
   letter-spacing: -0.3px;
   color: white;
+  display: flex;
 }
 
 .single-product-title span {
@@ -4682,10 +4683,9 @@ input[type="email"]:-moz-placeholder {
 
 footer#footer {
   width: 100%;
-  padding-bottom: 60px;
   background: #f2f2f2;
   direction: rtl;
-  margin-top: 70px;
+  margin-top: 40px;
 }
 
 .float-top-header {
@@ -4737,8 +4737,9 @@ footer#footer {
 .footer-title {
   display: block;
   width: 100%;
-  font: 500 1.1em/40px "IRSans", Sans-serif;
+  font-family: irsansbold;
   color: #808080;
+  font-size: 13px;
 }
 
 .footer-links ul li {
@@ -4760,6 +4761,16 @@ footer#footer {
   width: 25%;
   float: right;
   margin-left: 5%;
+}
+
+.footer-download {
+  float: right;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #dadada;
+  width: 100%;
+  display: block;
+  text-align: center;
 }
 
 .footer-contact-content, .footer-url-finder-download-content, .footer-news-letter-content {
@@ -4832,11 +4843,13 @@ footer#footer {
 
 .footer-other-sizes-part2 {
   display: none;
+  float: right;
 }
 
 .footer-url-finder-download {
   width: 100%;
   float: right;
+  background: #d7d7d7;
 }
 
 .footer-url-finder-download-content {
@@ -4881,11 +4894,17 @@ footer#footer {
   width: 100%;
   float: left;
   overflow: hidden;
+  border-top: 1px solid #dadada;
+  margin-top: 20px;
+  padding-top: 20px;
 }
 
 .footer-part4 {
   width: 25%;
   float: right;
+  border-top: 1px solid #dadada;
+  margin-top: 30px;
+  padding-top: 20px;
 }
 
 .footer-fidan-logo {
@@ -5207,6 +5226,8 @@ footer#footer {
   .footer-contact {
     width: 100%;
     margin-top: 20px;
+    border-top: 1px solid #dadada;
+    padding-top: 20px;
     text-align: center;
   }
   .footer-url-finder-download {
@@ -5426,8 +5447,8 @@ footer#footer {
     margin-left: 4%;
   }
   .footer-content {
-    width: 92%;
-    margin-right: 4%;
+    width: 100%;
+    margin-right: 0%;
   }
 }
 

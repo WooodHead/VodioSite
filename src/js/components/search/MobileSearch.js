@@ -3,6 +3,7 @@ import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import search from "../../../img/search.svg";
 import { Link } from "react-router-dom";
+import { urlCorrection } from '../../util/util'
 
 @inject("session", "search", "movieStore", "gaStore")
 @observer
@@ -60,12 +61,12 @@ export default class MobileSearch extends React.Component {
     }
   }
 
-  movieClicked(movieId) {
+  movieClicked(movieId, movieTitle) {
     this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
     this.props.gaStore.addEvent("Search", "MovieItem", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.session.history.push("/movie/" + movieId);
+    this.props.session.history.push("/movie/" + movieId + "/" + urlCorrection(movieTitle));
   }
 
   render() {
@@ -125,7 +126,7 @@ export default class MobileSearch extends React.Component {
                       <li key={"li" + l} id={"li" + l} class="search-result-li"  >
                         <a
                           id={"link" + l}
-                          onClick={this.movieClicked.bind(this, search.id)}
+                          onClick={this.movieClicked.bind(this, search.id, search.title)}
                           class="search-result-item"
                         />
                         <div >

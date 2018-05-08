@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { latinToPersian, convertSecondToString } from "../../util/util";
+import { latinToPersian, convertSecondToString, urlCorrection } from '../../util/util'
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 
@@ -139,7 +139,7 @@ export default class FeaturedMovie extends React.Component {
             <div className={"top-moviez-inner" + this.state.elementId + " shadow-item"} style={{ width: this.props.parentWidth }}>
                 <Link
                     draggable="false"
-                    to={{ pathname: "/movie/" + this.props.movie.id }}
+                    to={{ pathname: "/movie/" + this.props.movie.id + "/" + urlCorrection(this.props.movie.title) }}
                     onClick={e => this.movieClicked(this.props.movie.id, e)}
                     className="top-moviez-post-inner"
                 >
@@ -176,6 +176,8 @@ export default class FeaturedMovie extends React.Component {
                             "&width=" +
                             this.props.width
                         }
+                        alt={"دانلود " + this.props.movie.categories[0].name
+                            + " " + this.props.movie.title + " اثری از " + this.props.movie.directors[0].name}
                         className="top-moviez-post-image"
                     />
                 </Link>
@@ -223,7 +225,7 @@ var Director = React.createClass({
                     <div className="inline-class" key={director.id}>
                         <Link
                             className="inline-class"
-                            to={{ pathname: "/agent/" + director.id }}
+                            to={{ pathname: "/agent/" + director.id + "/" + urlCorrection(director.name) }}
                         >
                             {director.name}
                         </Link>

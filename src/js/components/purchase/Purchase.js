@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import ListIcon from "../../../img/List.svg";
+import { urlCorrection } from '../../util/util'
 
 @inject("session", "movieStore", "gaStore")
 @observer
@@ -88,7 +89,7 @@ export default class Purchase extends React.Component {
           return (
             <div class="box movie-list-item" key={l}>
               <Link
-                to={{ pathname: "/movie/" + element.id }}
+                to={{ pathname: "/movie/" + element.id + "/" + urlCorrection(element.title) }}
                 class="movie-list-item-link"
                 onClick={this.movieClicked.bind(this, element.id)}
               >

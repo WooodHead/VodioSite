@@ -61,16 +61,22 @@ export default class TopMovies extends React.Component {
     }
     var windowWidth = $(window).width();
     var width = 0;
+    var parentWidth = '0';
     if (windowWidth > 1400) {
       width = Math.round(windowWidth / 8);
+      parentWidth = 100 / 8 + '%';
     } else if (windowWidth > 1200) {
       width = Math.round(windowWidth / 7);
+      parentWidth = 100 / 7 + '%';
     } else if (windowWidth > 1000) {
       width = Math.round(windowWidth / 6);
+      parentWidth = 100 / 6 + '%';
     } else if (windowWidth > 600) {
       width = Math.round(windowWidth / 5);
+      parentWidth = 100 / 5 + '%';
     } else {
       width = Math.round(windowWidth / 4);
+      parentWidth = 100 / 4 + '%';
     }
     width = Math.round(width * window.devicePixelRatio);
     var height = Math.round(width * 16 / 11);
@@ -107,6 +113,7 @@ export default class TopMovies extends React.Component {
               key={movie.id}
               movie={movie}
               title={this.props.title}
+              parentWidth={parentWidth}
             />
           ))}
         </Slider>

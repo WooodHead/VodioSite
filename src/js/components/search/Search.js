@@ -3,6 +3,7 @@ import { MainUrl, MediaUrl } from "../../util/RequestHandler";
 import { inject, observer } from "mobx-react";
 import exit from "../../../img/search.svg";
 import { Link } from "react-router-dom";
+import { urlCorrection } from '../../util/util'
 
 @inject("session", "search", "movieStore", "gaStore")
 @observer
@@ -12,12 +13,8 @@ export default class Search extends React.Component {
     this.state = { searchResult: null, searchInputValue: "", sarachIndex: 0 };
   }
 
-  componentWillUnmount() {
-    document.title = "ودیو مرجع فیلم مستقل";
-  }
 
   componentDidMount() {
-    document.title = "جستجو";
     $(window).click(
       function () {
         this.setState({ searchResult: null, searchInputValue: "" });
@@ -155,12 +152,12 @@ export default class Search extends React.Component {
     this.search();
   }
 
-  movieClicked(movieId) {
+  movieClicked(movieId, movieTitle) {
     this.props.gaStore.addEvent("Search", "search", this.state.searchInputValue.toString());
     this.props.gaStore.addEvent("ItemEvent", "MovieItem", movieId.toString());
     this.props.movieStore.movieId = movieId;
     this.props.movieStore.fetchMovie();
-    this.props.session.history.push("/movie/" + movieId);
+    this.props.session.history.push("/movie/" + movieId + "/" + urlCorrection(movieTitle));
   }
 
   render() {
@@ -195,7 +192,7 @@ export default class Search extends React.Component {
                       <li key={"li" + l} id={"li" + l} class="search-result-li" >
                         <a
                           id={"link" + l}
-                          onClick={this.movieClicked.bind(this, search.id)}
+                          onClick={this.movieClicked.bind(this, search.id, search.title)}
                           class="search-result-item"
                         />
                         <div>

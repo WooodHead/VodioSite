@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom";
-import { latinToPersian, convertSecondToString } from "../../util/util"
+import { latinToPersian, convertSecondToString, urlCorrection } from '../../util/util'
 import { MainUrl, MediaUrl } from "../../util/RequestHandler"
 import { inject, observer } from "mobx-react"
 import createReactClass from 'create-react-class'
@@ -162,7 +162,7 @@ export default class AgentMovie extends React.Component {
     return (
       <div >
         <Link
-          to={{ pathname: "/movie/" + this.props.movie.id }}
+          to={{ pathname: "/movie/" + this.props.movie.id + "/" + urlCorrection(this.props.movie.title) }}
           id={this.props.elementId} style={{ cursor: "pointer", position: "relative" }}>
           <div
             className={"top-moviez-post-overlay" + this.props.elementId}
@@ -239,7 +239,7 @@ var Director = createReactClass({
           <div className="inline-class" key={director.id}>
             <Link
               className="inline-class"
-              to={{ pathname: "/agent/" + director.id }}
+              to={{ pathname: "/agent/" + director.id + "/" + urlCorrection(director.name) }}
             >
               {director.name}
             </Link>
