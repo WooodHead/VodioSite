@@ -50,7 +50,7 @@
     "webpack-merge": "^4.1.1"
   },
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js --port 9988",
     "build": "webpack --config webpack.prod.js"
   },
   "author": "",

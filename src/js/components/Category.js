@@ -94,6 +94,14 @@ export default class Category extends React.Component {
     }
   }
 
+  toggleCategoryItem(category) {
+    var width = $(window).width();
+    if (width > 750) {
+      console.log(category.id)
+      $("#category" + category.id).toggle(100)
+    }
+  }
+
   render() {
     if (this.props.categories != null) {
       var width = $(window).width();
@@ -104,76 +112,110 @@ export default class Category extends React.Component {
       }
     }
     return (
-      <div class="header-category">
-        <div class="header-category-show" id="header-category-show">
-          <img style={{
-            width: '13px',
-            marginRight: '20px'
-          }} src={categoryImage} />
-          <span>دسته‌بندی‌ها</span>
-        </div>
-        <div id="category-header" class="header-category-drop-down">
-          <div
-            class="closemainmenu"
-            id="closemainmenu"
-            onClick={this.closeMainMenu.bind(this)}
-          />
-          <div class="header-category-drop-down-main-menu">
-            {this.props.categories != null ? (
-              <ul
-                style={{
-                  width: "100%",
-                  height: "230px"
-                }}
+      <div>
+        {width > 750 ?
+          <div>
+            {this.props.categories != null &&
+              <ul class="category-ul"
               >
                 {this.props.categories.map(category => (
                   <li
-                    id={"category" + category.id}
+                    class="category-item-li"
                     key={category.id}
-                    className="header-category-drop-down-main-menu-item"
+                    id={category.id}
+                    onClick={this.toggleCategoryItem.bind(this, category)}
                   >
-                    <a
-                      class="category-item"
-                      id={category.id}
-                      onClick={this.onCategoryClicked.bind(
-                        this,
-                        category,
-                        null
-                      )}
-                    >
-                      <img src={MediaUrl +
-                        "/image.ashx?file=" +
-                        category.url} style={{
-                          width: '40px',
-                          height: '30px',
-                          marginRight: 'calc(50% - 20px)',
-                          marginTop: '15px',
-                          objectFit: 'contain'
-                        }} />
-                      <strong>{category.name}</strong>
-                    </a>
+                    <img src={MediaUrl +
+                      "/image.ashx?file=" +
+                      category.url} style={{
+                        width: '15px',
+                        objectFit: 'contain',
+                        float: 'right',
+                        marginRight: '8px',
+                        marginLeft: '3px',
+                        marginTop: '5px'
+                      }} />
+                    <span style={{ color: '#eb0089', fontSize: '13px', float: 'right', marginTop: '3px' }}>{category.name}</span>
                     <SubCategory
                       category={category}
-                      identifier={"category12" + category.id}
+                      identifier={"category" + category.id}
                       onClose={this.closeMainMenu.bind(this)}
                     />
                   </li>
                 ))}
               </ul>
-            ) : (
-                <div
-                  className="loader-container"
-                  style={{
-                    display: "block",
-                    marginLeft: "44%",
-                    marginTop: "110px"
-                  }}
-                >
-                  <div className="loader" />
-                </div>
-              )}
-          </div>
-        </div>
+            }
+          </div> :
+          <div class="header-category">
+            <div class="header-category-show" id="header-category-show">
+              <img style={{
+                width: '13px',
+                marginRight: '20px'
+              }} src={categoryImage} />
+              <span>دسته‌بندی‌ها</span>
+            </div>
+            <div id="category-header" class="header-category-drop-down">
+              <div
+                class="closemainmenu"
+                id="closemainmenu"
+                onClick={this.closeMainMenu.bind(this)}
+              />
+              <div class="header-category-drop-down-main-menu">
+                {this.props.categories != null ? (
+                  <ul
+                    style={{
+                      width: "100%",
+                      height: "230px"
+                    }}
+                  >
+                    {this.props.categories.map(category => (
+                      <li
+                        id={"category" + category.id}
+                        key={category.id}
+                        className="header-category-drop-down-main-menu-item"
+                      >
+                        <a
+                          class="category-item"
+                          id={category.id}
+                          onClick={this.onCategoryClicked.bind(
+                            this,
+                            category,
+                            null
+                          )}
+                        >
+                          <img src={MediaUrl +
+                            "/image.ashx?file=" +
+                            category.url} style={{
+                              width: '40px',
+                              height: '30px',
+                              marginRight: 'calc(50% - 20px)',
+                              marginTop: '15px',
+                              objectFit: 'contain'
+                            }} />
+                          <strong>{category.name}</strong>
+                        </a>
+                        <SubCategory
+                          category={category}
+                          identifier={"category12" + category.id}
+                          onClose={this.closeMainMenu.bind(this)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                    <div
+                      className="loader-container"
+                      style={{
+                        display: "block",
+                        marginLeft: "44%",
+                        marginTop: "110px"
+                      }}
+                    >
+                      <div className="loader" />
+                    </div>
+                  )}
+              </div>
+            </div></div>}
       </div>
     );
   }
@@ -205,7 +247,7 @@ class SubCategory extends React.Component {
     }
     this.props.gaStore.addEvent("CategoriesList", "click", category.id.toString() + " - " + gId.toString());
     this.props.session.gaUrl = "/list/" + category.id + "/" + gId;
-    this.props.session.history.push("/list/" + category.id + "/" + gId + "/" + name);
+    this.props.session.history.push("/list/" + category.id + "/" + gId + "/" + urlCorrection(name));
     this.props.session.offset = 0;
     var url = this.makeUrl(category, genre);
 
@@ -222,20 +264,18 @@ class SubCategory extends React.Component {
 
   render() {
     var allGenres = null;
-    if ($(window).width() < 741) {
-      allGenres = (
-        <li>
-          <a
-            onClick={this.onGenreClicked.bind(this, this.props.category, null)}
-          >
-            همه
+    allGenres = (
+      <li>
+        <a
+          onClick={this.onGenreClicked.bind(this, this.props.category, null)}
+        >
+          همه
           </a>
-        </li>
-      );
-    }
+      </li>
+    );
 
     return (
-      <ul id={this.props.identifier}>
+      <ul id={this.props.identifier} class="subscategory">
         {allGenres}
         {this.props.category.genres.map(genre => (
           <li key={genre.id}>

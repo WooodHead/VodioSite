@@ -134,35 +134,33 @@ export default class Player extends React.Component {
         , gaStoreCategory: "player - film"
       });
       gaStoreCategory = "player - film";
-      // $.ajax({
-      //   type: "GET",
-      //   url: "http://185.105.238.196:8080/StreamTokenHandler.ashx?token=" +
-      //     this.props.session.session +
-      //     "&movieId=" +
-      //     this.props.movie.id,
-      //   success: function (data, textStatus, request) {
-      //     var tokenIndex = data.indexOf("token");
-      //     var tokenPart = data.substr(tokenIndex + 6);
-      //     var token = tokenPart.split("#")[0];
-      //     this.setState({ playerToken: token.trim() });
-      //     setInterval(function () {
-      //       var video = document.getElementById("video");
-      //       if (!video.paused) {
-      //         $.ajax({
-      //           type: "GET",
-      //           url: MainUrl + "/watchtime.ashx?time=" + video.currentTime + "&token=" + this.state.playerToken,
-      //           success: function (data, textStatus, request) {
-      //             console.log(data);
-      //           },
-      //           error: function (request, textStatus, errorThrown) {
-      //             console.log(errorThrown)
-      //           }
-      //         });
-      //       }
-      //     }.bind(this), 30000);
-      //   }.bind(this),
-      //   error: function (request, textStatus, errorThrown) { }
-      // });
+      $.ajax({
+        type: "GET",
+        url: "http://185.105.238.196:8080/StreamTokenHandler.ashx?token=" +
+          this.props.session.session +
+          "&movieId=" +
+          this.props.movie.id,
+        success: function (data, textStatus, request) {
+          var tokenIndex = data.indexOf("token");
+          var tokenPart = data.substr(tokenIndex + 6);
+          var token = tokenPart.split("#")[0];
+          this.setState({ playerToken: token.trim() });
+          setInterval(function () {
+            var video = document.getElementById("video");
+            if (!video.paused) {
+              $.ajax({
+                type: "GET",
+                url: MainUrl + "/watchtime.ashx?time=" + Math.round(video.currentTime) + "&token=" + this.state.playerToken,
+                success: function (data, textStatus, request) {
+                },
+                error: function (request, textStatus, errorThrown) {
+                }
+              });
+            }
+          }.bind(this), 30000);
+        }.bind(this),
+        error: function (request, textStatus, errorThrown) { }
+      });
 
     }
 

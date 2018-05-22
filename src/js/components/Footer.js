@@ -11,6 +11,9 @@ import facebookImg from '../../img/Facebook.svg'
 import instagramImg from '../../img/Instagram.svg'
 import twitterImg from '../../img/Twitter.svg'
 import directDownloadAppImg from '../../img/direct-download-app.svg'
+import locationImg from '../../img/Location.svg'
+import telephoneImg from '../../img/Tel.svg'
+import emailImg from '../../img/Email.svg'
 
 @inject("gaStore")
 @observer
@@ -77,73 +80,65 @@ export default class Footer extends React.Component {
   }
 
   render() {
-    var part1 = <div className="footer-links">
-      <strong className="footer-title footer-title-links">لینک‌ها</strong>
+    var links = <div className="footer-links">
       <ul className="footer-title-ul">
-
-        <li>
-          <Link to={{ pathname: "/vodio" }}>درباره ما</Link>
+        <li >
+          <Link style={{ fontFamily: 'irsansbold', fontSize: '14px' }} to={{ pathname: "/vodio" }}>درباره ما</Link>
         </li>
-        <li>
-          <Link to={{ pathname: "/rules" }}>قوانین سایت</Link>
+        <li >
+          <Link style={{ fontFamily: 'irsansbold', fontSize: '14px' }} to={{ pathname: "/rules" }}>قوانین سایت</Link>
         </li>
-        <li>
-          <Link to={{ pathname: "/faq" }}>پرسش های متداول</Link>
+        <li >
+          <Link style={{ fontFamily: 'irsansbold', fontSize: '14px' }} to={{ pathname: "/faq" }}>پرسش های متداول</Link>
         </li>
-        <li>
-          <Link to={{ pathname: "/complaint" }}>ثبت شکایت</Link>
+        <li >
+          <Link style={{ fontFamily: 'irsansbold', fontSize: '14px' }} to={{ pathname: "/complaint" }}>ثبت شکایت</Link>
+        </li>
+        <li >
+          <a style={{ fontFamily: 'irsansbold', fontSize: '14px' }} href="https://t.me/vodioir" onClick={this.TelegramSupport.bind(this)}>پشتیبانی در تلگرام</a>
         </li>
       </ul>
     </div>
 
-
-    var downloadPart = <div class="footer-download">
-      <strong className="footer-title">دانلود اپلیکیشن اندروید</strong>
+    var downloadPart = <div class="footer-download top-border">
+      <strong className="footer-title" style={{ marginTop: '9px' }}>دانلود اپلیکیشن اندروید</strong>
       <div style={{
-        width: '150px',
-        marginTop: '10px', marginRight: 'calc(50% - 75px)', position: 'relative', cursor: 'pointer'
+        width: '160px',
+        marginTop: '10px', marginRight: 'calc(50% - 80px)', position: 'relative', cursor: 'pointer'
       }}>
         <a href="http://rabara.ir/vodio.apk" style={{ position: 'absolute', width: '100%', height: '100%', top: '0', right: '0' }}></a>
         <img src={directDownloadAppImg} />
       </div>
     </div>
 
-    var part2 = <div className="footer-contact">
-      <strong className="footer-title">تماس‌با‌ما</strong>
+    var contacts = <div className="footer-contact">
+      <strong class="footer-title tablet-show">تماس با ما</strong>
       <div className="footer-contact-content">
-        <p>مجیدیه شمالی ، خیابان کمالی، بن بست سعید، پلاک ۴</p>
-        <p>{latinToPersian("تلفن: ۰۲۱۲۸۴۲۵۹۷۲")}</p>
-        <p style={{ marginBottom: "5px" }}>ایمیل: Info@vodio.com</p>
-        <div style={{
-          borderTop: '1px solid #dadada', marginTop: '20px',
-          paddingTop: '20px'
-        }}>
-          <div class="footer-title">پشتیبانی در تلگرام</div>
-          <a href="https://t.me/vodioir" style={{ fontFamily: "irsansbold", color: "#e61d89" }} onClick={this.TelegramSupport.bind(this)}>vodioir@</a>
-        </div>
-        <div style={{
-          paddingTop: '20px',
-          marginTop: '20px',
-          borderTop: '1px solid #dadada'
-        }}>
-          <div class="footer-title">شبکه‌های مجازی</div>
+        <div class="footer-contact-location"><img src={locationImg} style={{ float: 'right', marginLeft: '5px', width: '10px', marginTop: '7px' }} />{latinToPersian('ولیعصر - بالاتر از زرتشت - کوچه پزشک پور - پلاک 25')}</div>
+        <div class="footer-contact-tel"><img src={telephoneImg} style={{ float: 'right', marginLeft: '5px', width: '10px', marginTop: '7px' }} />{latinToPersian("تلفن: 02188807480")}</div>
+        <div class="footer-contact-email"><img src={emailImg} style={{ float: 'right', marginLeft: '5px', width: '10px', marginTop: '7px' }} />ایمیل: Info@vodio.com</div>
+        <div class="top-border">
+          <strong class="footer-title tablet-show">شبکه‌های اجتماعی</strong>
           <div className="footer-contact-content-socail">
             <a href="https://t.me/vodiochannel" onClick={this.SocialClicked.bind(this, "telegram")} className="telegram">
               <img src={telegramImg} style={{
                 width: '25px',
-                marginTop: '12.5px'
+                marginTop: '7.5px',
+                marginRight: '7.5px'
               }} />
             </a>
             <a href="http://instagram.com/vodio.ir" onClick={this.SocialClicked.bind(this, "instagram")} className="instagram">
               <img src={instagramImg} style={{
                 width: '25px',
-                marginTop: '12.5px'
+                marginTop: '7.5px',
+                marginRight: '7.5px'
               }} />
             </a>
             <a href="http://twitter.com/vodio_ir" onClick={this.SocialClicked.bind(this, "twitter")} className="twitter">
               <img src={twitterImg} style={{
                 width: '25px',
-                marginTop: '12.5px'
+                marginTop: '7.5px',
+                marginRight: '7.5px'
               }} />
             </a>
             <a
@@ -153,7 +148,8 @@ export default class Footer extends React.Component {
             >
               <img src={facebookImg} style={{
                 width: '25px',
-                marginTop: '12.5px'
+                marginTop: '7.5px',
+                marginRight: '7.5px'
               }} />
             </a>
           </div>
@@ -161,8 +157,8 @@ export default class Footer extends React.Component {
       </div>
     </div>
 
-    var part3 = <div className="footer-url-finder-download">
-      <strong className="footer-title" style={{ marginTop: '20px' }}>
+    var ownership = <div className="footer-url-finder-download">
+      <strong className="footer-title" >
         © تمام حقوق این سایت متعلق به ودیو می‌باشد.
   </strong>
       <div className="footer-url-finder-download-content">
@@ -219,7 +215,7 @@ export default class Footer extends React.Component {
       </div>
     </div>
 
-    var part5 = <div className="footer-part4">
+    var part5 = <div className="footer-part4 top-border">
       <a href="http://www.fidanfilm.ir/">
         <img className="footer-fidan-logo" src={fidanImg} />
       </a>
@@ -234,24 +230,16 @@ export default class Footer extends React.Component {
           <span className="icon-angle-up" />
         </a>
         <div className="footer-content">
-          {part1}
-          {downloadPart}
-          {part2}
-          <div className="footer-size-1350">
-            <div className="footer-size-1350-news">
-              {part3}
-              {part4}
-            </div>
-            {part5}
+          <div class="footer-part1">
+            {links}
+            {contacts}
           </div>
-          <div className="footer-other-sizes-part1">
-            {part4}
+          <div class="footer-part2">
+            {downloadPart}
             {part5}
-          </div>
-          <div className="footer-other-sizes-part2">
-            {part3}
           </div>
         </div>
+        {ownership}
       </footer>
     );
   }

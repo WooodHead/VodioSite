@@ -145,11 +145,19 @@ export default class Movie extends React.Component {
   }
 
   purchase() {
-    this.props.gaStore.addEvent("Movie", "purchaseButton", this.props.match.params.id.toString());
-    this.props.session.history.push({
-      pathname: "/invoice/" + this.props.movieStore.movie.id,
-      state: { director: this.props.movieStore.director }
-    });
+    if (
+      this.props.session.session != null &&
+      this.props.session.session != ""
+    ) {
+      this.props.gaStore.addEvent("Movie", "purchaseButton", this.props.match.params.id.toString());
+      this.props.session.history.push({
+        pathname: "/invoice/" + this.props.movieStore.movie.id,
+        state: { director: this.props.movieStore.director }
+      });
+    } else {
+      this.props.session.showLogin = true;
+      this.props.session.movieIdForPurchase = this.props.movieStore.movie.id;
+    }
   }
 
   makeUrl(category, genre) {

@@ -108,7 +108,7 @@ export default class Factors extends React.Component {
                 </td>
                 {/* <td style={{ textAlign: "center",padding:'10px 0px'}}>{element.amount}</td> */}
                 <td style={{ textAlign: "center", padding: "10px 0px", direction: "rtl" }}>
-                  {latinToPersian(element.movie.price + " تومان")}
+                  {latinToPersian(element.amount + " تومان")}
                 </td>
                 <td style={{ textAlign: "center", padding: "10px 0px" }}>
                   {element.result ? "موفق" : "ناموفق"}

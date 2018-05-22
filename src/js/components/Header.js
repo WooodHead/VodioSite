@@ -23,7 +23,7 @@ export default class Header extends React.Component {
 
 
   componentDidMount() {
-    if (/Android/i.test(navigator.userAgent) && $(window).width() < 750) {
+    if (/Android/i.test(navigator.userAgent)) {
       $("#header").css('height', $("#header").height() + 100)
     }
     $(window).click(
@@ -62,6 +62,16 @@ export default class Header extends React.Component {
             this.setState({
               categories: data.data
             });
+            var width = $(window).width();
+            if (width > 750) {
+              data.data.map(category => {
+                $("#" + category.id).hover(function () {
+                  $("#" + "category" + category.id).css('display', 'inline')
+                }, function () {
+                  $("#" + "category" + category.id).css('display', 'none')
+                })
+              });
+            }
             this.props.session.categories = data.data;
           }.bind(this),
           error: function (request, textStatus, errorThrown) { }
@@ -109,7 +119,7 @@ export default class Header extends React.Component {
   render() {
     return (
       <header id="header" style={{ background: "white" }}>
-        {/Android/i.test(navigator.userAgent) && $(window).width() < 750 && <div id="AppDownloadBar" style={{ width: '100%', height: '100px', background: '#e1e1e1' }}>
+        {/Android/i.test(navigator.userAgent) && <div id="AppDownloadBar" style={{ width: '100%', height: '100px', background: '#e1e1e1' }}>
           <img src={cancelImg} style={{
             width: '15px',
             paddingRight: '10px',
@@ -142,9 +152,9 @@ export default class Header extends React.Component {
             width: '80px',
             border: '1px solid',
             borderRadius: '5px',
-            padding: '5px 20px 7px 20px',
+            padding: '4px 15px 4px 15px',
             float: 'left',
-            marginTop: '27px',
+            marginTop: '30px',
             marginLeft: '20px',
             color: '#00c4b1',
             position: 'relative'
@@ -158,7 +168,7 @@ export default class Header extends React.Component {
             }}>
             </a>
             <img style={{
-              width: '30px',
+              width: '20px',
               float: 'left',
               marginRight: '10px'
             }} src={downloadAppImg} />

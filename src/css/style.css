@@ -4688,6 +4688,10 @@ footer#footer {
   margin-top: 40px;
 }
 
+.footer-title-ul {
+  display: flex;
+}
+
 .float-top-header {
   display: block;
   width: 40px;
@@ -4722,30 +4726,44 @@ footer#footer {
 }
 
 .footer-content {
-  padding-top: 60px;
+  padding-top: 40px;
   overflow: hidden;
   display: inline-block;
   width: calc(75%);
   margin-right: calc(12.5%);
+  padding-bottom: 30px;
+}
+
+.footer-part1 {
+  width: calc(100% - 220px);
+  float: right;
+}
+
+.footer-part2 {
+  width: 220px;
+  float: right;
 }
 
 .footer-links {
   float: right;
-  width: 15%;
+  width: 100%;
+}
+
+.tablet-show {
+  display: none !important;
+  text-align: center;
 }
 
 .footer-title {
   display: block;
   width: 100%;
-  font-family: irsansbold;
   color: #808080;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .footer-links ul li {
-  list-style: url(../img/footer-list-style.png);
-  margin-right: 15px;
-  font: 500 0.75em/40px "IRSans", Sans-serif;
+  list-style: none;
+  margin: 0 0 0 50px;
 }
 
 .footer-links ul li a {
@@ -4758,16 +4776,13 @@ footer#footer {
 }
 
 .footer-contact {
-  width: 25%;
+  width: 100%;
   float: right;
-  margin-left: 5%;
+  margin-top: 20px;
 }
 
 .footer-download {
   float: right;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #dadada;
   width: 100%;
   display: block;
   text-align: center;
@@ -4787,12 +4802,12 @@ footer#footer {
 
 .footer-contact-content-socail a {
   display: block;
-  width: 50px;
-  height: 50px;
-  background: #e6e6e6;
+  width: 40px;
+  height: 40px;
+  background: black;
   float: right;
   border-radius: 50%;
-  margin-left: 20px;
+  margin-left: 10px;
   color: #898989;
   transition: all 0.3s cubic-bezier(0, 0, 0.55, 1.21);
 }
@@ -4848,12 +4863,10 @@ footer#footer {
 
 .footer-url-finder-download {
   width: 100%;
-  float: right;
   background: #d7d7d7;
-}
-
-.footer-url-finder-download-content {
-  margin-bottom: 10px;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .footer-url-finder-download-btn {
@@ -4900,16 +4913,12 @@ footer#footer {
 }
 
 .footer-part4 {
-  width: 25%;
+  width: 100%;
   float: right;
-  border-top: 1px solid #dadada;
-  margin-top: 30px;
-  padding-top: 20px;
 }
 
 .footer-fidan-logo {
-  width: 100px;
-  margin-right: 20px;
+  width: 80px;
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
   -webkit-transition: 1s ease-out;
@@ -4924,7 +4933,7 @@ footer#footer {
 }
 
 .footer-videopth-logo {
-  width: 140px;
+  width: 120px;
   height: 100px;
   margin-right: 20px;
   -webkit-filter: grayscale(100%);
@@ -5034,8 +5043,8 @@ footer#footer {
 
 .invoice-parent-container {
   padding-top: 100px;
-  width: 750px;
-  margin-left: calc(50% - 375px);
+  width: 700px;
+  margin-left: calc(50% - 350px);
   text-align: justify;
   direction: rtl;
 }
@@ -5050,23 +5059,20 @@ footer#footer {
 }
 
 .invoice-container {
-  display: inline-flex;
   width: 100%;
-  border: 1px solid #f3f3f3;
   border-radius: 5px;
   position: relative;
   background: #eee;
-}
-
-.invoice-detail-container {
-  width: 100%;
-  margin-right: 10px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .invoice-title {
   font-family: irsansbold;
-  font-size: 25px;
-  margin-top: 10px;
+  font-size: 18px;
+  color: black;
+  margin-top: 5px;
+  display: flex;
 }
 
 .invoice-price {
@@ -5077,14 +5083,13 @@ footer#footer {
 }
 
 .invoice-purchase {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  display: inline-flex;
+  width: 40%;
+  display: inline;
 }
 
 .invoice-purchase-btn {
   font-size: 15px;
+  width: 210px;
   text-align: center;
   float: left;
   background: #00a69c;
@@ -5095,6 +5100,56 @@ footer#footer {
   cursor: pointer;
   padding: 9px;
   display: inline-flex;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.invoice-thumbnail {
+  width: 150px;
+  height: 214px;
+}
+
+.invoice-coupon-btn {
+  font-size: 15px;
+  float: right;
+  background: #08d695;
+  border-radius: 5px;
+  color: white;
+  border: 0px;
+  margin-top: 8px;
+  cursor: pointer;
+  padding-top: 9px;
+  margin-left: 10px;
+  width: 55px;
+  text-align: center;
+  padding-bottom: 9px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  bottom: 60px;
+}
+
+.invoice-coupon-input {
+  border-radius: 5px;
+  border: none;
+  height: 40px;
+  width: 150px;
+  float: right;
+  margin-left: 10px;
+  margin-top: 10px;
+  text-align: center;
+  font-family: irsansbold;
+  position: absolute;
+  bottom: 60px;
+  left: 60px;
+}
+
+.invoice-purchase-img {
+  width: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 .invoice-description {
@@ -5108,19 +5163,6 @@ footer#footer {
     width: calc(100% - 180px);
     margin-left: 90px;
   }
-  .footer-links {
-    width: 25%;
-  }
-  .footer-contact {
-    width: 40%;
-    margin-left: 0px;
-  }
-  .footer-url-finder-download {
-    width: 100%;
-    margin-top: 30px;
-    padding-left: 0px;
-    text-align: center;
-  }
   .footer-news-letter {
     width: 100%;
     margin-top: 0px;
@@ -5128,15 +5170,11 @@ footer#footer {
   .footer-size-1350 {
     display: none;
   }
-  .footer-part4 {
-    width: 100%;
-    margin-top: 20px;
-  }
-  .footer-fidan-logo {
-    margin-right: 0px;
-  }
   .footer-other-sizes-part1, .footer-other-sizes-part2 {
     display: block;
+  }
+  .footer-links ul li {
+    margin: 0 0 0 20px;
   }
 }
 
@@ -5151,31 +5189,6 @@ footer#footer {
     width: 580px;
     margin-left: calc(50% - 260px);
   }
-  .invoice-purchase-btn {
-    margin-bottom: 10px;
-  }
-  .invoice-parent-container {
-    width: 580px;
-    margin-left: calc(50% - 260px);
-  }
-  .invoice-purchase {
-    position: inherit;
-    display: block;
-    margin-right: 10px;
-    margin-left: 10px;
-    width: calc(100% - 20px);
-  }
-  .footer-links {
-    width: 55%;
-  }
-  .footer-contact {
-    width: 45%;
-    margin-left: 0;
-  }
-  .footer-url-finder-download {
-    width: 100%;
-    margin-top: 20px;
-  }
   .footer-news-letter {
     width: 55%;
     float: right;
@@ -5183,9 +5196,45 @@ footer#footer {
   .footer-other-sizes-part1 {
     width: 100%;
   }
+  .footer-content {
+    width: 100%;
+    margin-right: 0;
+  }
+  .footer-part1 {
+    width: 100%;
+  }
+  .footer-part2 {
+    width: 100%;
+  }
+  .footer-contact-content-socail {
+    margin-right: calc(50% - 90px);
+  }
+  .footer-links {
+    margin-right: calc(50% - 245px);
+  }
+  .tablet-show {
+    display: block !important;
+  }
+  .footer-contact {
+    border-top: 1px solid #dadada;
+    padding-top: 20px;
+  }
+  .top-border {
+    border-top: 1px solid #dadada;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
   .footer-part4 {
-    width: 45%;
-    float: left;
+    text-align: center;
+  }
+  .footer-contact-location {
+    margin-right: calc(50% - 133.5px);
+  }
+  .footer-contact-tel {
+    margin-right: calc(50% - 52.5px);
+  }
+  .footer-contact-email {
+    margin-right: calc(50% - 70px);
   }
 }
 
@@ -5196,10 +5245,6 @@ footer#footer {
 */
 
 @media all and (max-width: 750px) {
-  .footer-content {
-    width: 500px;
-    margin-right: calc(50% - 235px);
-  }
   .faq-name {
     width: 100%;
   }
@@ -5219,48 +5264,16 @@ footer#footer {
     width: 80%;
     margin-left: 10%;
   }
-  .footer-links {
-    width: 100%;
-    text-align: center;
-  }
-  .footer-contact {
-    width: 100%;
-    margin-top: 20px;
-    border-top: 1px solid #dadada;
-    padding-top: 20px;
-    text-align: center;
-  }
-  .footer-url-finder-download {
-    width: 100%;
-    text-align: center;
-  }
   .footer-news-letter {
     width: 100%;
     margin-top: 20px;
     text-align: center;
   }
-  .footer-part4 {
-    width: 100%;
-  }
   .footer-title-links {
     display: none;
   }
-  .footer-title-ul, .footer-title-ul li {
-    display: flex;
-    text-align: center;
-    list-style: none;
-  }
-  .footer-contact-content-socail {
-    margin-right: calc(50% - 130px);
-  }
   .footer-news-letter-form-input-bg {
     margin-right: calc(50% - 150px);
-  }
-  .footer-fidan-logo {
-    margin-right: calc(50% - 130px);
-  }
-  .footer-title-ul {
-    margin-right: calc(50% - 160px);
   }
   .footer-fidan-logo {
     -webkit-filter: grayscale(0);
@@ -5278,21 +5291,10 @@ footer#footer {
 
 */
 
-@media screen and (max-width: 520px) {
-  .footer-content {
-    width: calc(100% - 20px);
-    margin-right: 10px;
-  }
+@media screen and (max-width: 540px) {
   .vodio-container {
     width: 90%;
     margin-left: 5%;
-  }
-  .invoice-purchase {
-    position: inherit;
-    display: block;
-    margin-right: 10px;
-    margin-left: 10px;
-    width: calc(100% - 20px);
   }
   .invoice-price {
     font-size: 18px;
@@ -5300,10 +5302,16 @@ footer#footer {
     margin-top: 8px;
     font-family: irsansbold;
   }
-  .invoice-purchase-btn {
+  .footer-title-ul {
+    display: block;
+    text-align: center;
+  }
+  .footer-links {
     width: 100%;
-    padding-right: calc(50% - 100px);
-    margin-top: 15px;
+    margin-right: 0px;
+  }
+  .footer-links ul li {
+    margin: 0;
   }
 }
 
@@ -5401,10 +5409,6 @@ footer#footer {
     font-size: 0.9em;
     margin-top: 0px;
   }
-  .footer-content {
-    width: 90%;
-    margin-right: 5%;
-  }
   .single-product-container-center {
     width: 90%;
   }
@@ -5445,10 +5449,6 @@ footer#footer {
   .single-product-dec-header ul {
     width: 92%;
     margin-left: 4%;
-  }
-  .footer-content {
-    width: 100%;
-    margin-right: 0%;
   }
 }
 
@@ -5721,4 +5721,64 @@ footer#footer {
 .search-filter-active {
   color: white;
   background: #eb0089;
+}
+
+.invoice-detail {
+  display: flex;
+  width: 60%;
+}
+
+.coupon-failed {
+  position: absolute;
+  left: 10px;
+  bottom: 105px;
+  color: red;
+  width: 210px;
+  text-align: center;
+  font-size: 13px;
+  font-family: irsansbold;
+}
+
+.coupon-success {
+  position: absolute;
+  left: 10px;
+  width: 210px;
+  font-family: irsansbold;
+  font-size: 13px;
+  color: #08d695;
+  bottom: 110px;
+  text-align: center;
+}
+
+.invoice-price-discount-line {
+  text-decoration: line-through;
+  font-size: 12px;
+}
+
+.invoice-discount {
+  padding-right: 5px;
+  color: #08d695;
+  font-family: irsansbold;
+  font-size: 18px;
+}
+
+@media all and (max-width:1000px) {
+  .invoice-detail {
+    width: 100%;
+  }
+  .invoice-purchase {
+    width: 100%;
+    height: 150px;
+  }
+}
+
+@media all and (max-width:1100px) {
+  .header-inner {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .search-container {
+    width: 230px;
+    margin-left: 0px;
+  }
 }
