@@ -15,7 +15,8 @@ export default class FAQ extends React.Component {
       body: "",
       subject: "",
       errorInfo: "",
-      successInfo: ""
+      successInfo: "",
+      number: ""
     };
   }
   componentDidMount() {
@@ -47,36 +48,47 @@ export default class FAQ extends React.Component {
   changeSubject(e) {
     this.setState({ subject: e.target.value });
   }
-  sendEmail() {
-    $("#loading").show();
-    $.ajax({
-      type: "POST",
-      url: MainUrl + "/sendemail.ashx",
-      data: JSON.stringify({
-        name: this.state.name,
-        family: this.state.text,
-        email: $.trim(this.state.email),
-        body: this.state.body,
-        subject: this.state.subject,
-        type:"سوال"
-      }),
-      dataType: "json",
-      success: function (data, textStatus, jQxhr) {
-        if (data.errorCode != 0) {
-          this.setState({ errorInfo: data.msg });
-          this.setState({ successInfo: "" });
-        } else {
-          this.setState({ successInfo: data.msg });
-          this.setState({ errorInfo: "" });
-        }
-        $("#loading").hide();
-      }.bind(this),
-      error: function (request, textStatus, errorThrown) {
-        this.setState({ errorInfo: "لطفا دوباره تلاش کنید" });
-        $("#loading").hide();
-      }.bind(this)
-    });
+
+  changeNumber(e) {
+    this.setState({ number: e.target.value });
   }
+
+  sendEmail() {
+    this.setState({ errorInfo: "" });
+    if (this.state.number == "") {
+      this.setState({ errorInfo: "تمام پارامترها رو پر کنید." });
+    } else {
+      $("#loading").show();
+      $.ajax({
+        type: "POST",
+        url: MainUrl + "/sendemail.ashx",
+        data: JSON.stringify({
+          name: this.state.name,
+          family: this.state.family,
+          email: $.trim(this.state.email),
+          body: this.state.body,
+          subject: this.state.subject,
+          msisdn: this.state.number,
+          type: "سوال"
+        }),
+        dataType: "json",
+        success: function (data, textStatus, jQxhr) {
+          if (data.errorCode != 0) {
+            this.setState({ errorInfo: data.msg });
+            this.setState({ successInfo: "" });
+          } else {
+            this.setState({ successInfo: data.msg });
+            this.setState({ errorInfo: "" });
+          }
+          $("#loading").hide();
+        }.bind(this),
+        error: function (request, textStatus, errorThrown) {
+          this.setState({ errorInfo: "لطفا دوباره تلاش کنید" });
+          $("#loading").hide();
+        }.bind(this)
+      });
+    }
+  } 
   render() {
     return (
       <div class="vodio-container">
@@ -159,14 +171,25 @@ export default class FAQ extends React.Component {
                 />
               </div>
             </div>
-            <div style={{ width: "100%" }}>
-              <input
-                type="email"
-                style={{ marginTop: "5px" }}
-                class="faq-question-email"
-                placeholder="ایمیل"
-                onChange={this.changeEmail.bind(this)}
-              />
+            <div class="question-container"
+              style={{ marginTop: "5px" }}
+            >
+              <div class="faq-name">
+                <input
+                  type="email"
+                  class="faq-question-email faq-question-name"
+                  placeholder="ایمیل"
+                  onChange={this.changeEmail.bind(this)}
+                />
+              </div>
+              <div class="faq-name">
+                <input
+                  type="text"
+                  class="faq-question-email"
+                  placeholder="شماره همراه"
+                  onChange={this.changeNumber.bind(this)}
+                />
+              </div>
             </div>
             <div style={{ width: "100%" }}>
               <input

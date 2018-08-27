@@ -111,12 +111,13 @@ export default class Search extends React.Component {
 
   searchFunction(e) {
     this.setState({ searchInputValue: e.target.value });
-    if (e.target.value.length > 2) {
+    if (e.target.value.length > 1) {
       $.ajax({
         type: "GET",
         url: MainUrl + "/search.ashx?keyword=" + e.target.value,
         success: function (data, textStatus, request) {
           this.setState({ searchResult: data.data });
+          console.log(data.data)
           $(".search-result-item").off("mouseover");
           $("#searchInput").off("keydown");
           this.searchSelectionAndHover();

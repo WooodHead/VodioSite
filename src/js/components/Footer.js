@@ -216,7 +216,7 @@ export default class Footer extends React.Component {
     </div>
 
     var part5 = <div className="footer-part4 top-border">
-      <a href="http://www.fidanfilm.ir/">
+      <a href="http://www.fidanfilm.ir/" rel="nofollow">
         <img className="footer-fidan-logo" src={fidanImg} />
       </a>
       <a href="http://videopth.com/">

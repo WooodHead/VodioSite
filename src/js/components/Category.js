@@ -267,7 +267,8 @@ class SubCategory extends React.Component {
     allGenres = (
       <li>
         <a
-          onClick={this.onGenreClicked.bind(this, this.props.category, null)}
+            style={{width:'74px',height:'47px',display:'block',paddingTop:'12px'}}
+            onClick={this.onGenreClicked.bind(this, this.props.category, null)}
         >
           همه
           </a>
@@ -280,6 +281,7 @@ class SubCategory extends React.Component {
         {this.props.category.genres.map(genre => (
           <li key={genre.id}>
             <a
+            style={{width:'74px',height:'47px',display:'block',paddingTop:'12px'}}
               onClick={this.onGenreClicked.bind(
                 this,
                 this.props.category,

@@ -47,10 +47,13 @@ export function persianToLatin(string) {
 export function convertSecondToString(second) {
   var hour = parseInt(second / 3600);
   var minute = parseInt((second - hour * 3600) / 60);
+  var seconds =  parseInt(second - hour * 3600 - minute * 60);
   if (hour != 0) {
     return hour + " ساعت و " + minute + " دقیقه";
-  } else {
-    return minute + " دقیقه";
+  } else if(minute != 0) {
+    return minute + " دقیقه و " + seconds + " ثانیه";
+  }else{
+    return seconds + " ثانیه";
   }
 }
 

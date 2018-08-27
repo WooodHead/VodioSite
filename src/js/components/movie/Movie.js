@@ -330,6 +330,7 @@ export default class Movie extends React.Component {
                             ) : null}
                           </div>
                         ) : (
+                          this.props.movieStore.movie.price != 0 &&
                           <a
                             onClick={this.purchase.bind(this)}
                             className="single-product-add"

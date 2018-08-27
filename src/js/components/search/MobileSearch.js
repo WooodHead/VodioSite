@@ -32,7 +32,7 @@ export default class MobileSearch extends React.Component {
 
   searchFunction(e) {
     this.setState({ searchInputValue: e.target.value });
-    if (e.target.value.length > 2) {
+    if (e.target.value.length > 1) {
       $.ajax({
         type: "GET",
         url: MainUrl + "/search.ashx?keyword=" + e.target.value,

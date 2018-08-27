@@ -16,6 +16,7 @@ export default class Complaint extends React.Component {
       subject: "",
       errorInfo: "",
       successInfo: "",
+      number: ""
     };
   }
   componentDidMount() {
@@ -46,36 +47,47 @@ export default class Complaint extends React.Component {
   changeSubject(e) {
     this.setState({ subject: e.target.value });
   }
+
+  changeNumber(e) {
+    this.setState({ number: e.target.value });
+  }
+
   sendEmail() {
-    $("#loading").show();
-    $.ajax({
-      type: "POST",
-      url: MainUrl + "/sendemail.ashx",
-      data: JSON.stringify({
-        name: this.state.name,
-        family: this.state.text,
-        email: $.trim(this.state.email),
-        body: this.state.body,
-        subject: this.state.subject,
-        type:"مشکل"
-      }),
-      dataType: "json",
-      success: function (data, textStatus, jQxhr) {
-        if (data.errorCode != 0) {
-          this.setState({})
-          this.setState({ errorInfo: data.msg });
-          this.setState({ successInfo: "" });
-        } else {
-          this.setState({ successInfo: "مشکل شما ثبت شد.در اسرع وقت با شما تماس میگیریم" });
-          this.setState({ errorInfo: "" });
-        }
-        $("#loading").hide();
-      }.bind(this),
-      error: function (request, textStatus, errorThrown) {
-        this.setState({ errorInfo: "لطفا دوباره تلاش کنید" });
-        $("#loading").hide();
-      }.bind(this)
-    });
+    this.setState({ errorInfo: "" });
+    if (this.state.number == "") {
+      this.setState({ errorInfo: "تمام پارامترها رو پر کنید." });
+    } else {
+      $("#loading").show();
+      $.ajax({
+        type: "POST",
+        url: MainUrl + "/sendemail.ashx",
+        data: JSON.stringify({
+          name: this.state.name,
+          family: this.state.family,
+          email: $.trim(this.state.email),
+          body: this.state.body,
+          subject: this.state.subject,
+          msisdn: this.state.number,
+          type: "مشکل"
+        }),
+        dataType: "json",
+        success: function (data, textStatus, jQxhr) {
+          if (data.errorCode != 0) {
+            this.setState({})
+            this.setState({ errorInfo: data.msg });
+            this.setState({ successInfo: "" });
+          } else {
+            this.setState({ successInfo: "مشکل شما ثبت شد.در اسرع وقت با شما تماس میگیریم" });
+            this.setState({ errorInfo: "" });
+          }
+          $("#loading").hide();
+        }.bind(this),
+        error: function (request, textStatus, errorThrown) {
+          this.setState({ errorInfo: "لطفا دوباره تلاش کنید" });
+          $("#loading").hide();
+        }.bind(this)
+      });
+    }
   }
   render() {
     return (
@@ -129,14 +141,25 @@ export default class Complaint extends React.Component {
                 />
               </div>
             </div>
-            <div style={{ width: "100%" }}>
-              <input
-                type="email"
-                style={{ marginTop: "5px" }}
-                class="faq-question-email"
-                placeholder="ایمیل"
-                onChange={this.changeEmail.bind(this)}
-              />
+            <div class="question-container"
+              style={{ marginTop: "5px" }}
+            >
+              <div class="faq-name">
+                <input
+                  type="email"
+                  class="faq-question-email faq-question-name"
+                  placeholder="ایمیل"
+                  onChange={this.changeEmail.bind(this)}
+                />
+              </div>
+              <div class="faq-name">
+                <input
+                  type="text"
+                  class="faq-question-email"
+                  placeholder="شماره همراه"
+                  onChange={this.changeNumber.bind(this)}
+                />
+              </div>
             </div>
             <div style={{ width: "100%" }}>
               <input

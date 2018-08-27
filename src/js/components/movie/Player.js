@@ -117,7 +117,7 @@ export default class Player extends React.Component {
     if (this.props.isTrailer == true) {
       this.setState({
         url:
-          "http://185.105.238.196:8080/StreamTokenHandler.ashx?movieId=" +
+          "http://185.105.238.196/StreamTokenHandler.ashx?movieId=" +
           this.props.movie.id +
           "&trailer=1"
         , gaStoreCategory: "player - trailer"
@@ -127,7 +127,7 @@ export default class Player extends React.Component {
       document.body.style.overflowY = "hidden";
       this.setState({
         url:
-          "http://185.105.238.196:8080/StreamTokenHandler.ashx?token=" +
+          "http://185.105.238.196/StreamTokenHandler.ashx?token=" +
           this.props.session.session +
           "&movieId=" +
           this.props.movie.id
@@ -136,7 +136,7 @@ export default class Player extends React.Component {
       gaStoreCategory = "player - film";
       $.ajax({
         type: "GET",
-        url: "http://185.105.238.196:8080/StreamTokenHandler.ashx?token=" +
+        url: "http://185.105.238.196/StreamTokenHandler.ashx?token=" +
           this.props.session.session +
           "&movieId=" +
           this.props.movie.id,

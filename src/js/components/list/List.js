@@ -62,6 +62,7 @@ export default class List extends React.Component {
     }
 
     window.onscroll = function () {
+      console.log(this.props.session.count)
       if (!this.props.session.isInitiating) {
         var d = document.documentElement;
         var height = d.scrollTop + $(window).height() - 90;

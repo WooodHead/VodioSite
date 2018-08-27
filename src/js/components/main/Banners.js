@@ -70,7 +70,7 @@ export default class Banners extends React.Component {
 
   render() {
     var components = [];
-    var width = window.screen.availWidth * window.devicePixelRatio;
+    var width = window.screen.availWidth;
     this.props.bundle.banners.forEach((banner, l) => {
       if (banner.urlToClick != null) {
         components.push(
@@ -98,35 +98,54 @@ export default class Banners extends React.Component {
           </a>
         );
       } else if (banner.movieId != null && banner.movieId > 0) {
-        components.push(
-          <Link
+        if (banner.movieId == 340) {
+          components.push(
+            <Link key={l} to={{ pathname: "/search/دیدی و بودی" }} style={{ position: "relative", width: "100%", cursor: "pointer" }}
+            >
+              <img
+                style={{ width: "100%", pointerEvents: "none" }}
+                src={
+                  MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+                }
+              />
+              <div style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
 
-            key={l}
-            onClick={e => {
-              if (!dragging) {
-                this.props.movieStore.movieId = banner.movieId;
-                this.props.movieStore.fetchMovie();
-                this.props.gaStore.addEvent("Home", "banner", banner.id.toString());
-              } else { e.preventDefault() }
-            }}
-            to={{ pathname: "/movie/" + banner.movieId + "/" + urlCorrection(banner.movieName) }}
-            style={{ position: "relative", width: "100%", cursor: "pointer" }}
-          >
-            <img
+              <div class="banner-text-container" style={{ pointerEvents: "none" }}>
+                <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
+                <div class="banner-container-description">{banner.description}</div>
+              </div>
+            </Link>
+          );
+        } else {
+          components.push(
+            <Link
+              key={l}
+              onClick={e => {
+                if (!dragging) {
+                  this.props.movieStore.movieId = banner.movieId;
+                  this.props.movieStore.fetchMovie();
+                  this.props.gaStore.addEvent("Home", "banner", banner.id.toString());
+                } else { e.preventDefault() }
+              }}
+              to={{ pathname: "/movie/" + banner.movieId + "/" + urlCorrection(banner.movieName) }}
+              style={{ position: "relative", width: "100%", cursor: "pointer" }}
+            >
+              <img
 
-              style={{ width: "100%", pointerEvents: "none" }}
-              src={
-                MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
-              }
-            />
-            <div style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
+                style={{ width: "100%", pointerEvents: "none" }}
+                src={
+                  MediaUrl + "/image.ashx?file=" + banner.url + "&width=" + width
+                }
+              />
+              <div style={{ pointerEvents: "none", position: "absolute", top: "0", right: "0", bottom: "0", left: "0", zIndex: "2" }}></div>
 
-            <div class="banner-text-container" style={{ pointerEvents: "none" }}>
-              <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
-              <div class="banner-container-description">{banner.description}</div>
-            </div>
-          </Link>
-        );
+              <div class="banner-text-container" style={{ pointerEvents: "none" }}>
+                <div style={{ display: 'inline-flex' }}><img class="banner-container-icon" src={bannerImage} /><div></div>{banner.title}</div>
+                <div class="banner-container-description">{banner.description}</div>
+              </div>
+            </Link>
+          );
+        }
       } else if (banner.genreId != null || banner.categoryId != null) {
         components.push(
           <Link

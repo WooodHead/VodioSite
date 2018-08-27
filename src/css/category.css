@@ -205,9 +205,9 @@
 .subscategory li {
   list-style: none;
   font-size: 13px;
-  padding: 12px;
+  height: 47px;
   float: right;
-  width: 50px;
+  width: 74px;
   border-bottom: 1px solid #dadada;
 }
 
